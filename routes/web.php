@@ -13,33 +13,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-Route::get('/aset', function () {
-    return view('admin.aset');
-});
-Route::get('/page', function () {
-    return view('landing-page.page');
-});
-Route::get('/login', function () {
-    return view('Login.login');
-});
-Route::get('/lupa', function () {
-    return view('Login.lupa-sandi');
-});
-Route::get('/daftar', function () {
-    return view('Login.daftar');
-});
-Route::get('/dashboard', function () {
-    return view('admin.dashboard');
-});
-Route::get('/pengajuan', function () {
-    return view('admin.pengajuan');
-});
-Route::get('/laporan', function () {
-    return view('admin.laporan');
-});
-Route::get('/user', function () {
-    return view('admin.user');
-});
+//halaman public
+Route::view('/', 'home')->name('home');
+Route::view('/rank', 'rank')->name('rank');
+Route::view('/auth/login', 'auth.login')->name('auth.login');
+Route::view('/auth/lupa_password', 'auth.lupa_password')->name('auth.lupa_password');
+
+
+//halaman admin
+Route::view('/admin/dashboard', 'admin.dashboard')->name('admin.dashboard');
+Route::view('/admin/kelola_aset/index', 'admin.kelola_aset.index')->name('admin.kelola_aset.index');
+Route::view('/admin/kelola_data_user/index', 'admin.kelola_data_user.index')->name('admin.kelola_data_user.index');
+Route::view('/admin/kelola_pengajuan/index', 'admin.kelola_pengajuan.index')->name('admin.kelola_pengajuan.index');
+Route::view('/admin/laporan/index', 'admin.laporan.index')->name('admin.laporan.index');

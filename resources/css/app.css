@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+@source "../../vendor/laravel/framework/src/illuminate/Pagination/resources/view/*.blade.php";
+@source "../views/**/*.blade.php";
+
+@theme {
+    --color-costume-primary: #3C77D5;
+    --color-costume-second: #649FFF;
+}

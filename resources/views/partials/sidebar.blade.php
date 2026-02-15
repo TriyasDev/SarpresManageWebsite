@@ -1,38 +1,94 @@
- <nav class="flex-1 space-y-1 lg:space-y-2 overflow--auto">
+{{-- Hapus Teks Ini Jika Sudah Jadi --}}
 
-       <a href="#" class="flex items-center gap-3 lg:gap-4 px-4 lg:px-6 py-2.5 lg:py-3 text-white font-medium  rounded-xl text-white font-medium text-sm lg:text-base">
-                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-user-circle"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M9 10a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" /><path d="M6.168 18.849a4 4 0 0 1 3.832 -2.849h4a4 4 0 0 1 3.834 2.855" /></svg>
-                   <span>Triyas Mbarba</span>
-                </a>
+<aside id="sidebar" class="fixed inset-y-0 left-0 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out z-40 w-64 bg-costume-primary flex flex-col h-screen overflow-y-auto">
+    <!-- Close Button (Mobile Only) -->
+    <button id="closeSidebarBtn" class="lg:hidden absolute top-4 right-4 text-white hover:bg-blue-700 p-2 rounded-[30px] transition-colors duration-200" aria-label="Close Sidebar">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+    </button>
 
-                <a href="/dashboard" class="flex items-center gap-3 lg:gap-4 px-4 lg:px-6 py-2.5 lg:py-3 text-white font-medium hover:bg-blue-400 rounded-xl text-white font-medium text-sm lg:text-base">
-                    <svg class="w-5 h-5 lg:w-6 lg:h-6 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
-                    </svg>
-                    <span>Dashboard</span>
-                </a>
-                <a href="/aset" class="flex items-center gap-3 lg:gap-4 px-4 lg:px-6 py-2.5 lg:py-3 text-white font-medium hover:bg-blue-400 rounded-xl transition text-sm lg:text-base">
-                    <svg class="w-5 h-5 lg:w-6 lg:h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/>
-                    </svg>
-                    <span>Kelola Aset</span>
-                </a>
-                <a href="/pengajuan" class="flex items-center gap-3 lg:gap-4 px-4 lg:px-6 py-2.5 lg:py-3 text-white font-medium hover:bg-blue-400 rounded-xl transition text-sm lg:text-base">
-                    <svg class="w-5 h-5 lg:w-6 lg:h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                    </svg>
-                    <span>Kelola Pengajuan</span>
-                </a>
-                <a href="/laporan" class="flex items-center gap-3 lg:gap-4 px-4 lg:px-6 py-2.5 lg:py-3 text-white font-medium hover:bg-blue-400 rounded-xl transition text-sm lg:text-base">
-                    <svg class="w-5 h-5 lg:w-6 lg:h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                    </svg>
-                    <span>Laporan Aset</span>
-                </a>
-                <a href="/user" class="flex items-center gap-3 lg:gap-4 px-4 lg:px-6 py-2.5 lg:py-3 text-white font-medium hover:bg-blue-400 rounded-xl transition text-sm lg:text-base">
-                    <svg class="w-5 h-5 lg:w-6 lg:h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                    </svg>
-                    <span>Kelola Data User</span>
-                </a>
-            </nav>
+    <!-- Logo Section -->
+    <div class="flex items-center gap-3 mb-15 px-6 pt-6">
+        <div class="w-13 h-13 rounded-full flex items-center justify-center overflow-hidden shrink-0">
+            <x-icon-logo-klikaset/>
+        </div>
+        <h1 class="text-white text-lg font-bold tracking-tight">KlikAset</h1>
+    </div>
+
+<!-- Admin Profile Section -->
+<div class="mx-4 mb-6">
+    <div class="bg-linear-to-r rounded-[30px] p-3.5 shadow-sm">
+        <div class="flex items-center gap-2.5">
+            <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center shrink-0">
+                <span class="text-costume-primary font-bold text-sm">
+                    {{ substr(Auth::user()->name ?? 'A', 0, 1) }}
+                </span>
+            </div>
+            <div class="flex-1 min-w-0">
+                <p class="text-white text-xs opacity-80">Halo,</p>
+                <p class="text-white font-bold text-sm truncate">{{ Auth::user()->name ?? 'Admin 01' }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Navigation Menu -->
+    <nav class="flex-1 space-y-1.5 px-4 overflow-y-auto">
+        <!-- Dashboard -->
+        <a href="/admin/dashboard" class="group flex items-center gap-3 px-4 py-2.5 rounded-[30px] text-white font-bold text-[0.96rem] transition-all duration-200 @if(request()->is('admin/dashboard')) bg-costume-second @else hover:bg-costume-second @endif">
+            <x-icon-chart class="w-10 h-10 shrink-0 text-white"/>
+            <span class="relative inline-block">
+                Dashboard
+                <span class="absolute left-0 bottom-[-4px] @if(request()->is('admin/dashboard')) w-12 @else w-0 @endif h-[2px] bg-white rounded-full transition-all duration-300 ease-in-out group-hover:w-12"></span>
+            </span>
+        </a>
+
+        <!-- Kelola Aset -->
+        <a href="/admin/kelola_aset/index" class="group flex items-center gap-3 px-4 py-2.5 rounded-[30px] text-white font-bold text-[0.96rem] transition-all duration-200 @if(request()->is('admin/kelola_aset/index')) bg-costume-second @else hover:bg-costume-second @endif">
+            <x-icon-album class="w-10 h-10 shrink-0 text-white"/>
+            <span class="relative inline-block">
+                Kelola Aset
+                <span class="absolute left-0 bottom-[-4px] @if(request()->is('admin/kelola_aset/index')) w-12 @else w-0 @endif h-[3px] bg-white rounded-full transition-all duration-300 ease-in-out group-hover:w-12"></span>
+            </span>
+        </a>
+
+        <!-- Kelola Pengajuan -->
+        <a href="/admin/kelola_pengajuan/index" class="group flex items-center gap-3 px-4 py-2.5 rounded-[30px] text-white font-bold text-[0.96rem] transition-all duration-200 @if(request()->is('admin/kelola_pengajuan/index')) bg-costume-second @else hover:bg-costume-second @endif">
+            <x-icon-inbox-unread class="w-10 h-10 shrink-0 text-white"/>
+            <span class="relative inline-block">
+                Kelola Pengajuan
+                <span class="absolute left-0 bottom-[-4px] @if(request()->is('admin/kelola_pengajuan/index')) w-12 @else w-0 @endif h-[2px] bg-white rounded-full transition-all duration-300 ease-in-out group-hover:w-12"></span>
+            </span>
+        </a>
+
+        <!-- Laporan -->
+        <a href="/admin/laporan/index" class="group flex items-center gap-3 px-4 py-2.5 rounded-[30px] text-white font-bold text-[0.96rem] transition-all duration-200 @if(request()->is('admin/laporan/index')) bg-costume-second @else hover:bg-costume-second @endif">
+            <x-icon-notebook class="w-10 h-10 shrink-0 text-white"/>
+            <span class="relative inline-block">
+                Laporan
+                <span class="absolute left-0 bottom-[-4px] @if(request()->is('admin/laporan/index')) w-12 @else w-0 @endif h-[3px] bg-white rounded-full transition-all duration-300 ease-in-out group-hover:w-12"></span>
+            </span>
+        </a>
+
+        <!-- Kelola Data User -->
+        <a href="/admin/kelola_data_user/index" class="group flex items-center gap-3 px-4 py-2.5 rounded-[30px] text-white font-bold text-[0.96rem] transition-all duration-200 @if(request()->is('admin/kelola_data_user/index')) bg-costume-second @else hover:bg-costume-second @endif">
+            <x-icon-shield-user class="w-10 h-10 shrink-0 text-white"/>
+            <span class="relative inline-block">
+                Kelola Data User
+                <span class="absolute left-0 bottom-[-4px] @if(request()->is('admin/kelola_data_user/index')) w-12 @else w-0 @endif h-[2px] bg-white rounded-full transition-all duration-300 group-hover:w-12"></span>
+            </span>
+        </a>
+    </nav>
+
+    <!-- Logout Button -->
+    <div class="px-4 pb-6 mt-auto pt-4">
+        <a href="#" class="group flex items-center gap-3 px-4 py-2.5 text-white font-bold rounded-[30px] transition-all duration-200 hover:bg-red-500 text-[0.96rem]">
+            <x-icon-logout-3 class="w-10 h-10 shrink-0 text-white"/>
+            <span class="relative inline-block">
+                Logout
+                <span class="absolute left-0 bottom-[-4px] w-0 h-[2px] bg-white rounded-full transition-all duration-300 group-hover:w-12"></span>
+            </span>
+        </a>
+    </div>
+</aside>
