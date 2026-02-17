@@ -81,14 +81,17 @@
         </a>
     </nav>
 
-    <!-- Logout Button -->
-    <div class="px-4 pb-6 mt-auto pt-4">
-        <a href="#" class="group flex items-center gap-3 px-4 py-2.5 text-white font-bold rounded-[30px] transition-all duration-200 hover:bg-red-500 text-[0.96rem]">
+<!-- Logout Button -->
+<div class="px-4 pb-6 mt-auto pt-4">
+    <form method="POST" action="{{ route('auth.logout') }}">
+        @csrf
+        <button type="submit" class="group flex items-center gap-3 px-4 py-2.5 text-white font-bold rounded-[30px] transition-all duration-200 hover:bg-red-500 text-[0.96rem] w-full text-left">
             <x-icon-logout-3 class="w-10 h-10 shrink-0 text-white"/>
             <span class="relative inline-block">
                 Logout
                 <span class="absolute left-0 bottom-[-4px] w-0 h-[2px] bg-white rounded-full transition-all duration-300 group-hover:w-12"></span>
             </span>
-        </a>
-    </div>
+        </button>
+    </form>
+</div>
 </aside>
