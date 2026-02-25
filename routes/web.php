@@ -79,3 +79,7 @@ Route::middleware('auth')->group(function () {
         // Route::get('/riwayat', [PeminjamanController::class, 'history'])->name('riwayat');
     });
 });
+
+Route::get('/form', function () {
+    return view('form');
+});
