@@ -36,7 +36,7 @@
     <!-- Navigation Menu -->
     <nav class="flex-1 space-y-1.5 px-4 overflow-y-auto">
         <!-- Dashboard -->
-        <a href="/admin/dashboard" class="group flex items-center gap-3 px-4 py-2.5 rounded-[30px] text-white font-bold text-[0.96rem] transition-all duration-200 @if(request()->is('admin/dashboard')) bg-costume-second @else hover:bg-costume-second @endif">
+        <a href="{{ route('admin.dashboard') }}" class="group flex items-center gap-3 px-4 py-2.5 rounded-[30px] text-white font-bold text-[0.96rem] transition-all duration-200 @if(request()->is('admin/dashboard')) bg-costume-second @else hover:bg-costume-second @endif">
             <x-icon-chart class="w-10 h-10 shrink-0 text-white"/>
             <span class="relative inline-block">
                 Dashboard
@@ -45,7 +45,8 @@
         </a>
 
         <!-- Kelola Aset -->
-        <a href="/admin/kelola_aset/index" class="group flex items-center gap-3 px-4 py-2.5 rounded-[30px] text-white font-bold text-[0.96rem] transition-all duration-200 @if(request()->is('admin/kelola_aset/index')) bg-costume-second @else hover:bg-costume-second @endif">
+        <a href="{{ route('admin.kelola_aset') }}" class="group flex items-center gap-3 px-4 py-2.5 rounded-[30px] text-white font-bold text-[0.96rem] transition-all duration-200 @if(request()->is('admin/kelola_aset*')) bg-costume-second @else hover:bg-costume-second @endif">
+>>>>>>> 0c85189 (Backend v2 "Revisi route dan pembuatan controller admin")
             <x-icon-album class="w-10 h-10 shrink-0 text-white"/>
             <span class="relative inline-block">
                 Kelola Aset
@@ -54,29 +55,29 @@
         </a>
 
         <!-- Kelola Pengajuan -->
-        <a href="/admin/kelola_pengajuan/index" class="group flex items-center gap-3 px-4 py-2.5 rounded-[30px] text-white font-bold text-[0.96rem] transition-all duration-200 @if(request()->is('admin/kelola_pengajuan/index')) bg-costume-second @else hover:bg-costume-second @endif">
+        <a href="{{ route('admin.kelola_pengajuan') }}" class="group flex items-center gap-3 px-4 py-2.5 rounded-[30px] text-white font-bold text-[0.96rem] transition-all duration-200 @if(request()->is('admin/kelola_pengajuan*')) bg-costume-second @else hover:bg-costume-second @endif">
             <x-icon-inbox-unread class="w-10 h-10 shrink-0 text-white"/>
             <span class="relative inline-block">
                 Kelola Pengajuan
-                <span class="absolute left-0 bottom-[-4px] @if(request()->is('admin/kelola_pengajuan/index')) w-12 @else w-0 @endif h-[2px] bg-white rounded-full transition-all duration-300 ease-in-out group-hover:w-12"></span>
+                <span class="absolute left-0 bottom-[-4px] @if(request()->is('admin/kelola_pengajuan*')) w-12 @else w-0 @endif h-[2px] bg-white rounded-full transition-all duration-300 ease-in-out group-hover:w-12"></span>
             </span>
         </a>
 
         <!-- Laporan -->
-        <a href="/admin/laporan/index" class="group flex items-center gap-3 px-4 py-2.5 rounded-[30px] text-white font-bold text-[0.96rem] transition-all duration-200 @if(request()->is('admin/laporan/index')) bg-costume-second @else hover:bg-costume-second @endif">
+        <a href="{{ route('admin.kelola_laporan') }}" class="group flex items-center gap-3 px-4 py-2.5 rounded-[30px] text-white font-bold text-[0.96rem] transition-all duration-200 @if(request()->is('admin/laporan*')) bg-costume-second @else hover:bg-costume-second @endif">
             <x-icon-notebook class="w-10 h-10 shrink-0 text-white"/>
             <span class="relative inline-block">
                 Laporan
-                <span class="absolute left-0 bottom-[-4px] @if(request()->is('admin/laporan/index')) w-12 @else w-0 @endif h-[3px] bg-white rounded-full transition-all duration-300 ease-in-out group-hover:w-12"></span>
+                <span class="absolute left-0 bottom-[-4px] @if(request()->is('admin/laporan*')) w-12 @else w-0 @endif h-[3px] bg-white rounded-full transition-all duration-300 ease-in-out group-hover:w-12"></span>
             </span>
         </a>
 
         <!-- Kelola Data User -->
-        <a href="/admin/kelola_data_user/index" class="group flex items-center gap-3 px-4 py-2.5 rounded-[30px] text-white font-bold text-[0.96rem] transition-all duration-200 @if(request()->is('admin/kelola_data_user/index')) bg-costume-second @else hover:bg-costume-second @endif">
+        <a href="{{ route('admin.kelola_data_user') }}" class="group flex items-center gap-3 px-4 py-2.5 rounded-[30px] text-white font-bold text-[0.96rem] transition-all duration-200 @if(request()->is('admin/kelola_data_user*')) bg-costume-second @else hover:bg-costume-second @endif">
             <x-icon-shield-user class="w-10 h-10 shrink-0 text-white"/>
             <span class="relative inline-block">
                 Kelola Data User
-                <span class="absolute left-0 bottom-[-4px] @if(request()->is('admin/kelola_data_user/index')) w-12 @else w-0 @endif h-[2px] bg-white rounded-full transition-all duration-300 group-hover:w-12"></span>
+                <span class="absolute left-0 bottom-[-4px] @if(request()->is('admin/kelola_data_user*')) w-12 @else w-0 @endif h-[2px] bg-white rounded-full transition-all duration-300 group-hover:w-12"></span>
             </span>
         </a>
     </nav>

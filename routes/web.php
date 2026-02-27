@@ -1,7 +1,12 @@
 <?php
-
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
+
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\KelolaAsetController;
+use App\Http\Controllers\Admin\KelolaDataUserController;
+use App\Http\Controllers\Admin\KelolaLaporanController;
+use App\Http\Controllers\Admin\KelolaPengajuanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,14 +59,12 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     */
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
-        Route::get('/dashboard', function () {
-            return view('admin.dashboard');
-        })->name('dashboard');
-
-        // Route::get('/kelola_aset', [BarangController::class, 'index'])->name('barang.index');
-        // Route::get('/kelola_data_user', [KelolaDataUserController::class, 'index'])->name('peminjaman.index');
-        // Route::get('/kelola_pengajuan', [KelolaPengajuanController::class, 'index'])->name('peminjaman.index');
-        // Route::get('/laporan', [LaporanController::class, 'index'])->name('peminjaman.index');
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/kelola_aset', [KelolaAsetController::class, 'index'])->name('kelola_aset');
+        Route::get('/kelola_data_user', [KelolaDataUserController::class, 'index'])->name('kelola_data_user');
+        Route::get('/kelola_laporan', [KelolaLaporanController::class, 'index'])->name('kelola_laporan');
+        Route::get('/kelola_pengajuan', [KelolaPengajuanController::class, 'index'])->name('kelola_pengajuan');
+>>>>>>> 0c85189 (Backend v2 "Revisi route dan pembuatan controller admin")
     });
 
     /*
