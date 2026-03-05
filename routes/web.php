@@ -1,4 +1,5 @@
 <?php
+
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
@@ -64,7 +65,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/kelola_data_user', [KelolaDataUserController::class, 'index'])->name('kelola_data_user');
         Route::get('/kelola_laporan', [KelolaLaporanController::class, 'index'])->name('kelola_laporan');
         Route::get('/kelola_pengajuan', [KelolaPengajuanController::class, 'index'])->name('kelola_pengajuan');
->>>>>>> 0c85189 (Backend v2 "Revisi route dan pembuatan controller admin")
     });
 
     /*

@@ -383,10 +383,10 @@
         </div>
 
         <div class="flex items-center justify-center gap-2">
-            <a href="/from"
+            <a href="/form"
                 class="block w-50 py-3.5 bg-costume-primary text-white text-center rounded-xl font-semibold hover:bg-costume-primary/90 transition-all shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 group">
                 <span class="flex items-center justify-center gap-2">
-                    Pinjam Sekarang
+                    Lihat Lainnnya
                     <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor"
                         viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
