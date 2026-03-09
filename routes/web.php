@@ -91,3 +91,18 @@ Route::middleware('auth')->group(function () {
 Route::get('/form', function () {
     return view('form');
 });
+
+
+
+// Tambahkan di dalam group admin yang sudah ada
+Route::get('/kelola-data-user', [KelolaDataUserController::class, 'index'])
+    ->name('admin.kelola-data-user.index');
+
+Route::post('/kelola-data-user', [KelolaDataUserController::class, 'store'])
+    ->name('admin.kelola-data-user.store');
+
+Route::put('/kelola-data-user/{user}', [KelolaDataUserController::class, 'update'])
+    ->name('admin.kelola-data-user.update');
+
+Route::delete('/kelola-data-user/{user}', [KelolaDataUserController::class, 'destroy'])
+    ->name('admin.kelola-data-user.destroy');

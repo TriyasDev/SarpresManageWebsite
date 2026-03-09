@@ -43,19 +43,9 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    /**
-     * Nama table di database
-     */
     protected $table = 'tb_user';
-
-    /**
-     * Primary key table
-     */
     protected $primaryKey = 'id_user';
 
-    /**
-     * Field yang boleh diisi mass assignment
-     */
     protected $fillable = [
         'username',
         'email',
@@ -64,35 +54,28 @@ class User extends Authenticatable
         'role',
         'rank',
         'point',
+        'nipd',        // ← tambah
+        'alamat',      // ← tambah
+        'tanggal_lahir', // ← tambah
+        'jenis_kelamin', // ← tambah
     ];
 
-    /**
-     * Field yang di-hidden saat di-serialize (untuk keamanan)
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Casting type data
-     */
     protected $casts = [
         'point' => 'integer',
+        'tanggal_lahir' => 'date', // ← tambah
     ];
 
-    /**
-     * Check apakah user adalah admin
-     */
-    public function isAdmin()
+    public function isAdmin(): bool
     {
         return $this->role === 'admin';
     }
 
-    /**
-     * Check apakah user adalah peminjam
-     */
-    public function isPeminjam()
+    public function isPeminjam(): bool
     {
         return $this->role === 'peminjam';
     }
