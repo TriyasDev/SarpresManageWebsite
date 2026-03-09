@@ -8,24 +8,32 @@ return new class extends Migration {
     /**
      * Run the migrations.
      */
-    public function up(): void {
+    public function up(): void
+    {
         Schema::create('tb_laporan', function (Blueprint $table) {
             $table->id('id_laporan');
+            $table->unsignedBigInteger('id_peminjaman');
             $table->unsignedBigInteger('id_admin');
-            $table->string('jenis_laporan', 50);
-            $table->timestamp('priode_awal')->nullable();
-            $table->timestamp('priode_akhir')->nullable();
-            $table->string('file_laporan', 255);
-            $table->timestamp('created_at')->useCurrent();
+
+            $table->enum('jenis_laporan', ['dikembalikan', 'telat mengembalikan', 'hilang']);
+            $table->enum('kondisi_barang', ['baik', 'masih di pinjam', 'rusak']);
+
+            $table->timestamp('tanggal_dipinjam')->nullable();
+            $table->timestamp('tanggal_dikembalikan')->nullable();
+            $table->string('foto_bukti', 255);
+
+            $table->timestamps();
 
             $table->foreign('id_admin')->references('id_user')->on('tb_user');
+            $table->foreign('id_peminjaman')->references('id_peminjaman')->on('tb_peminjaman');
         });
     }
 
     /**
      * Reverse the migrations.
      */
-    public function down(): void {
+    public function down(): void
+    {
         Schema::dropIfExists('tb_laporan');
     }
 };

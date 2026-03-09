@@ -40,17 +40,16 @@
             <x-icon-chart class="w-10 h-10 shrink-0 text-white"/>
             <span class="relative inline-block">
                 Dashboard
-                <span class="absolute left-0 bottom-[-4px] @if(request()->is('admin/dashboard')) w-12 @else w-0 @endif h-[2px] bg-white rounded-full transition-all duration-300 ease-in-out group-hover:w-12"></span>
+                <span class="absolute left-0 bottom-[-4px] @if(request()->is('admin/dashboard')) w-12 @else w-0 @endif h-[3px] bg-white rounded-full transition-all duration-300 ease-in-out group-hover:w-12"></span>
             </span>
         </a>
 
         <!-- Kelola Aset -->
         <a href="{{ route('admin.kelola_aset') }}" class="group flex items-center gap-3 px-4 py-2.5 rounded-[30px] text-white font-bold text-[0.96rem] transition-all duration-200 @if(request()->is('admin/kelola_aset*')) bg-costume-second @else hover:bg-costume-second @endif">
->>>>>>> 0c85189 (Backend v2 "Revisi route dan pembuatan controller admin")
             <x-icon-album class="w-10 h-10 shrink-0 text-white"/>
             <span class="relative inline-block">
                 Kelola Aset
-                <span class="absolute left-0 bottom-[-4px] @if(request()->is('admin/kelola_aset/index')) w-12 @else w-0 @endif h-[3px] bg-white rounded-full transition-all duration-300 ease-in-out group-hover:w-12"></span>
+                <span class="absolute left-0 bottom-[-4px] @if(request()->is('admin/kelola_aset*')) w-12 @else w-0 @endif h-[3px] bg-white rounded-full transition-all duration-300 ease-in-out group-hover:w-12"></span>
             </span>
         </a>
 
@@ -59,16 +58,16 @@
             <x-icon-inbox-unread class="w-10 h-10 shrink-0 text-white"/>
             <span class="relative inline-block">
                 Kelola Pengajuan
-                <span class="absolute left-0 bottom-[-4px] @if(request()->is('admin/kelola_pengajuan*')) w-12 @else w-0 @endif h-[2px] bg-white rounded-full transition-all duration-300 ease-in-out group-hover:w-12"></span>
+                <span class="absolute left-0 bottom-[-4px] @if(request()->is('admin/kelola_pengajuan*')) w-12 @else w-0 @endif h-[3px] bg-white rounded-full transition-all duration-300 ease-in-out group-hover:w-12"></span>
             </span>
         </a>
 
         <!-- Laporan -->
-        <a href="{{ route('admin.kelola_laporan') }}" class="group flex items-center gap-3 px-4 py-2.5 rounded-[30px] text-white font-bold text-[0.96rem] transition-all duration-200 @if(request()->is('admin/laporan*')) bg-costume-second @else hover:bg-costume-second @endif">
+        <a href="{{ route('admin.kelola_laporan') }}" class="group flex items-center gap-3 px-4 py-2.5 rounded-[30px] text-white font-bold text-[0.96rem] transition-all duration-200 @if(request()->is('admin/kelola_laporan*')) bg-costume-second @else hover:bg-costume-second @endif">
             <x-icon-notebook class="w-10 h-10 shrink-0 text-white"/>
             <span class="relative inline-block">
-                Laporan
-                <span class="absolute left-0 bottom-[-4px] @if(request()->is('admin/laporan*')) w-12 @else w-0 @endif h-[3px] bg-white rounded-full transition-all duration-300 ease-in-out group-hover:w-12"></span>
+                Kelola Laporan
+                <span class="absolute left-0 bottom-[-4px] @if(request()->is('admin/kelola_laporan*')) w-12 @else w-0 @endif h-[3px] bg-white rounded-full transition-all duration-300 ease-in-out group-hover:w-12"></span>
             </span>
         </a>
 
@@ -77,7 +76,7 @@
             <x-icon-shield-user class="w-10 h-10 shrink-0 text-white"/>
             <span class="relative inline-block">
                 Kelola Data User
-                <span class="absolute left-0 bottom-[-4px] @if(request()->is('admin/kelola_data_user*')) w-12 @else w-0 @endif h-[2px] bg-white rounded-full transition-all duration-300 group-hover:w-12"></span>
+                <span class="absolute left-0 bottom-[-4px] @if(request()->is('admin/kelola_data_user*')) w-12 @else w-0 @endif h-[3px] bg-white rounded-full transition-all duration-300 group-hover:w-12"></span>
             </span>
         </a>
     </nav>
@@ -90,7 +89,7 @@
             <x-icon-logout-3 class="w-10 h-10 shrink-0 text-white"/>
             <span class="relative inline-block">
                 Logout
-                <span class="absolute left-0 bottom-[-4px] w-0 h-[2px] bg-white rounded-full transition-all duration-300 group-hover:w-12"></span>
+                <span class="absolute left-0 bottom-[-4px] w-0 h-[3px] bg-white rounded-full transition-all duration-300 group-hover:w-12"></span>
             </span>
         </button>
     </form>

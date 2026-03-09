@@ -80,7 +80,7 @@
 
         <div class="flex flex-col md:flex-row items-center justify-between gap-6 lg:gap-8">
             <!-- Legend -->
-            <div class="space-y-3 min-w-[180px]">
+            <div class="space-y-3 min-w-45">
                 <div class="flex items-center gap-3">
                     <div class="w-4 h-4 bg-teal-400 rounded-md shrink-0"></div>
                     <span class="text-xs lg:text-sm font-medium text-gray-700">Prasarana</span>

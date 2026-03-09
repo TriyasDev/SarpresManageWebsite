@@ -31,14 +31,23 @@
             </div>
 
             {{-- Auth Buttons --}}
-            <div class="hidden md:flex items-center gap-3">
-                <a href="{{ route('auth.login') }}" class="px-5 py-2 rounded-[30px] border-2 border-gray-200 text-gray-700 text-sm font-medium hover:border-costume-primary hover:text-costume-primary transition-all duration-200">
-                    Login
-                </a>
-                <a href="#" class="px-5 py-2 rounded-[30px] bg-costume-primary text-white text-sm font-medium hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
-                    Daftar
-                </a>
-            </div>
+<div class="hidden md:flex items-center gap-3">
+    @auth
+        <form method="POST" action="{{ route('auth.logout') }}">
+            @csrf
+            <button type="submit" class="px-5 py-2 rounded-[30px] border-2 border-gray-200 text-gray-700 text-sm font-medium hover:border-red-500 hover:text-red-500 transition-all duration-200">
+                Logout
+            </button>
+        </form>
+    @else
+        <a href="{{ route('auth.login') }}" class="px-5 py-2 rounded-[30px] border-2 border-gray-200 text-gray-700 text-sm font-medium hover:border-costume-primary hover:text-costume-primary transition-all duration-200">
+            Login
+        </a>
+        <a href="#" class="px-5 py-2 rounded-[30px] bg-costume-primary text-white text-sm font-medium hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
+            Daftar
+        </a>
+    @endauth
+</div>
 
             {{-- Mobile Menu Button --}}
             <button id="mobileMenuBtn" class="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors">
@@ -57,14 +66,23 @@
             <a href="#sarana" class="block text-sm font-medium text-gray-600 hover:text-costume-primary transition-colors py-2">Sarana/Prasarana</a>
             <a href="#pinjam" class="block text-sm font-medium text-gray-600 hover:text-costume-primary transition-colors py-2">Pinjam</a>
             <a href="#rank" class="block text-sm font-medium text-gray-600 hover:text-costume-primary transition-colors py-2">Rank</a>
-            <div class="pt-3 space-y-2 border-t border-gray-100">
-                <a href="{{ route('auth.login') }}" class="block w-full text-center px-5 py-2 rounded-[30px] border-2 border-gray-200 text-gray-700 text-sm font-medium hover:border-costume-primary hover:text-costume-primary transition-all">
-                    Login
-                </a>
-                <a href="#" class="block w-full text-center px-5 py-2 rounded-[30px] bg-costume-primary text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-sm">
-                    Daftar
-                </a>
-            </div>
+<div class="pt-3 space-y-2 border-t border-gray-100">
+    @auth
+        <form method="POST" action="{{ route('auth.logout') }}">
+            @csrf
+            <button type="submit" class="block w-full text-center px-5 py-2 rounded-[30px] border-2 border-gray-200 text-gray-700 text-sm font-medium hover:border-red-500 hover:text-red-500 transition-all">
+                Logout
+            </button>
+        </form>
+    @else
+        <a href="{{ route('auth.login') }}" class="block w-full text-center px-5 py-2 rounded-[30px] border-2 border-gray-200 text-gray-700 text-sm font-medium hover:border-costume-primary hover:text-costume-primary transition-all">
+            Login
+        </a>
+        <a href="#" class="block w-full text-center px-5 py-2 rounded-[30px] bg-costume-primary text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-sm">
+            Daftar
+        </a>
+    @endauth
+</div>
         </div>
     </div>
 </nav>
