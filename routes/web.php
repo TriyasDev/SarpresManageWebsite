@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\KelolaAsetController;
 use App\Http\Controllers\Admin\KelolaDataUserController;
 use App\Http\Controllers\Admin\KelolaLaporanController;
 use App\Http\Controllers\Admin\KelolaPengajuanController;
+use App\Http\Controllers\UserDashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,7 +26,6 @@ Route::get('/', function () {
 |--------------------------------------------------------------------------
 */
 Route::middleware('guest')->group(function () {
-    // Login
     Route::get('/login', [AuthController::class, 'showLogin'])->name('auth.login');
     Route::post('/login', [AuthController::class, 'login']);
 
@@ -50,20 +50,26 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
 
     /*
-    |--------------------------------------------------------------------------
+    |----------------------------------------------------------------------
     | Admin Routes
-    |--------------------------------------------------------------------------
+    |----------------------------------------------------------------------
     */
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+        // Kelola Aset
         Route::get('/kelola_aset', [KelolaAsetController::class, 'index'])->name('kelola_aset');
         Route::post('/kelola_aset', [KelolaAsetController::class, 'store'])->name('kelola_aset.store');
         Route::put('/kelola_aset/{id}', [KelolaAsetController::class, 'update'])->name('kelola_aset.update');
         Route::delete('/kelola_aset/{id}', [KelolaAsetController::class, 'destroy'])->name('kelola_aset.destroy');
 
+        // Kelola Data User
         Route::get('/kelola_data_user', [KelolaDataUserController::class, 'index'])->name('kelola_data_user');
+        Route::post('/kelola_data_user', [KelolaDataUserController::class, 'store'])->name('kelola_data_user.store');
+        Route::put('/kelola_data_user/{user}', [KelolaDataUserController::class, 'update'])->name('kelola_data_user.update');
+        Route::delete('/kelola_data_user/{user}', [KelolaDataUserController::class, 'destroy'])->name('kelola_data_user.destroy');
 
+        // Kelola Laporan
         Route::get('/kelola_laporan', [KelolaLaporanController::class, 'index'])->name('kelola_laporan');
         Route::post('/kelola_laporan', [KelolaLaporanController::class, 'store'])->name('kelola_laporan.store');
         Route::delete('/kelola_laporan/trash', [KelolaLaporanController::class, 'trash'])->name('kelola_laporan.trash');
@@ -73,36 +79,41 @@ Route::middleware('auth')->group(function () {
         Route::get('/kelola_laporan/export/pdf', [KelolaLaporanController::class, 'exportPdf'])->name('kelola_laporan.export_pdf');
         Route::get('/kelola_laporan/export/excel', [KelolaLaporanController::class, 'exportExcel'])->name('kelola_laporan.export_excel');
 
+        // Kelola Pengajuan
         Route::get('/kelola_pengajuan', [KelolaPengajuanController::class, 'index'])->name('kelola_pengajuan');
     });
 
     /*
-    |--------------------------------------------------------------------------
+    |----------------------------------------------------------------------
     | Peminjam Routes
-    |--------------------------------------------------------------------------
+    |----------------------------------------------------------------------
     */
     Route::middleware('role:peminjam')->prefix('peminjam')->name('peminjam.')->group(function () {
         Route::get('/', function () {
             return view('home');
         })->name('home');
     });
+
+    /*
+    |----------------------------------------------------------------------
+    | User Dashboard Routes
+    |----------------------------------------------------------------------
+    */
+    Route::prefix('user')->name('user.')->group(function () {
+        Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/riwayat',   [UserDashboardController::class, 'riwayat'])->name('riwayat');
+        Route::get('/profile',   [UserDashboardController::class, 'profile'])->name('profile');
+        Route::get('/pinjaman',  [UserDashboardController::class, 'pinjaman'])->name('pinjaman');
+        Route::get('/sarpras',   [UserDashboardController::class, 'sarpras'])->name('sarpras');
+        Route::get('/rank',      [UserDashboardController::class, 'rank'])->name('rank');
+    });
 });
 
+/*
+|--------------------------------------------------------------------------
+| Dev / Misc
+|--------------------------------------------------------------------------
+*/
 Route::get('/form', function () {
     return view('form');
 });
-
-
-
-// Tambahkan di dalam group admin yang sudah ada
-Route::get('/kelola-data-user', [KelolaDataUserController::class, 'index'])
-    ->name('admin.kelola-data-user.index');
-
-Route::post('/kelola-data-user', [KelolaDataUserController::class, 'store'])
-    ->name('admin.kelola-data-user.store');
-
-Route::put('/kelola-data-user/{user}', [KelolaDataUserController::class, 'update'])
-    ->name('admin.kelola-data-user.update');
-
-Route::delete('/kelola-data-user/{user}', [KelolaDataUserController::class, 'destroy'])
-    ->name('admin.kelola-data-user.destroy');
