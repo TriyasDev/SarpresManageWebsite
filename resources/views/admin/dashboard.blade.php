@@ -9,9 +9,18 @@
         <h2 class="text-base lg:text-lg font-bold text-gray-800">
             Statistik Peminjaman Sarpras Bulanan
         </h2>
-        <button class="px-4 py-2 border border-gray-200 rounded-[30px] text-xs lg:text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors duration-200 whitespace-nowrap">
-            Tahun ini ▼
-        </button>
+<div class="flex gap-2">
+    <a href="?tahun=ini"
+       class="px-4 py-2 border rounded-[30px] text-xs lg:text-sm font-medium transition-colors duration-200 whitespace-nowrap
+              {{ $filterTahun === 'ini' ? 'bg-blue-600 text-white border-blue-600' : 'border-gray-200 text-gray-700 hover:bg-gray-50' }}">
+        Tahun Ini
+    </a>
+    <a href="?tahun=lalu"
+       class="px-4 py-2 border rounded-[30px] text-xs lg:text-sm font-medium transition-colors duration-200 whitespace-nowrap
+              {{ $filterTahun === 'lalu' ? 'bg-blue-600 text-white border-blue-600' : 'border-gray-200 text-gray-700 hover:bg-gray-50' }}">
+        Tahun Lalu
+    </a>
+</div>
     </div>
     <div class="relative h-64 sm:h-72 lg:h-80">
         <canvas id="barChart"></canvas>
@@ -29,7 +38,7 @@
             </div>
             <div>
                 <p class="text-xs lg:text-sm text-gray-500 font-medium mb-0.5">Total Aset</p>
-                <p class="text-2xl lg:text-3xl font-bold text-gray-900">50</p>
+                <p class="text-2xl lg:text-3xl font-bold text-gray-900">{{ $totalAset }}</p>
             </div>
         </div>
 
@@ -40,7 +49,7 @@
             </div>
             <div>
                 <p class="text-xs lg:text-sm text-gray-500 font-medium mb-0.5">Pengajuan Baru</p>
-                <p class="text-2xl lg:text-3xl font-bold text-gray-900">50</p>
+                <p class="text-2xl lg:text-3xl font-bold text-gray-900">{{ $pengajuanBaru }}</p>
             </div>
         </div>
 
@@ -51,7 +60,7 @@
             </div>
             <div>
                 <p class="text-xs lg:text-sm text-gray-500 font-medium mb-0.5">Sedang Dipinjam</p>
-                <p class="text-2xl lg:text-3xl font-bold text-gray-900">50</p>
+                <p class="text-2xl lg:text-3xl font-bold text-gray-900">{{ $sedangDipinjam }}</p>
             </div>
         </div>
 
@@ -62,7 +71,7 @@
             </div>
             <div>
                 <p class="text-xs lg:text-sm text-gray-500 font-medium mb-0.5">Total Peminjaman Bulan Ini</p>
-                <p class="text-2xl lg:text-3xl font-bold text-gray-900">500</p>
+                <p class="text-2xl lg:text-3xl font-bold text-gray-900">{{ $totalPeminjamanBulanIni }}</p>
             </div>
         </div>
     </div>
@@ -73,9 +82,22 @@
             <h2 class="text-base lg:text-lg font-bold text-gray-800">
                 Jenis Barang Yang Sering Di Pinjam
             </h2>
-            <button class="px-4 py-2 border border-gray-200 rounded-[30px] text-xs lg:text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors duration-200 whitespace-nowrap">
-                Tahun ini ▼
-            </button>
+<div class="space-y-3 min-w-45">
+    @php
+        $legendColors = ['bg-teal-400', 'bg-orange-400', 'bg-blue-500', 'bg-purple-600', 'bg-rose-500', 'bg-yellow-400'];
+    @endphp
+    @foreach($donutLabels as $index => $label)
+    <div class="flex items-center gap-3">
+        <div class="w-4 h-4 rounded-md shrink-0"
+             style="background-color: {{ $donutColors[$index] ?? '#ccc' }}"></div>
+        <span class="text-xs lg:text-sm font-medium text-gray-700">{{ $label }}</span>
+    </div>
+    @endforeach
+
+    @if(empty($donutLabels))
+    <p class="text-xs text-gray-400">Belum ada data</p>
+    @endif
+</div>
         </div>
 
         <div class="flex flex-col md:flex-row items-center justify-between gap-6 lg:gap-8">
@@ -110,16 +132,17 @@
 
 @push('scripts')
 <script>
-    // Bar Chart Configuration
+    // ── Bar Chart ─────────────────────────────────────────────
     const barCtx = document.getElementById('barChart');
     if (barCtx) {
         new Chart(barCtx, {
             type: 'bar',
             data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                         'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
                 datasets: [{
                     label: 'Peminjaman',
-                    data: [120, 150, 130, 70, 90, 85, 80, 175, 160, 115, 110, 105],
+                    data: @json($barChartData),
                     backgroundColor: [
                         '#3B82F6', '#EC4899', '#8B5CF6', '#06B6D4',
                         '#10B981', '#F59E0B', '#F97316', '#F97316',
@@ -134,63 +157,40 @@
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: {
-                        display: false
-                    },
+                    legend: { display: false },
                     tooltip: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        backgroundColor: 'rgba(0,0,0,0.8)',
                         padding: 12,
                         borderRadius: 8,
-                        titleFont: {
-                            size: 13,
-                            weight: 'bold'
-                        },
-                        bodyFont: {
-                            size: 12
-                        }
+                        titleFont: { size: 13, weight: 'bold' },
+                        bodyFont: { size: 12 }
                     }
                 },
                 scales: {
                     y: {
                         beginAtZero: true,
-                        max: 200,
-                        ticks: {
-                            stepSize: 25,
-                            font: {
-                                size: 11
-                            },
-                            color: '#6B7280'
-                        },
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.05)'
-                        }
+                        ticks: { stepSize: 25, font: { size: 11 }, color: '#6B7280' },
+                        grid: { color: 'rgba(0,0,0,0.05)' }
                     },
                     x: {
-                        ticks: {
-                            font: {
-                                size: 11
-                            },
-                            color: '#6B7280'
-                        },
-                        grid: {
-                            display: false
-                        }
+                        ticks: { font: { size: 11 }, color: '#6B7280' },
+                        grid: { display: false }
                     }
                 }
             }
         });
     }
 
-    // Donut Chart Configuration
+    // ── Donut Chart ───────────────────────────────────────────
     const donutCtx = document.getElementById('donutChart');
     if (donutCtx) {
         new Chart(donutCtx, {
             type: 'doughnut',
             data: {
-                labels: ['Prasarana', 'Media Pendidikan', 'Perlengkapan Kelas', 'Fasilitas Penunjang'],
+                labels: @json($donutLabels),
                 datasets: [{
-                    data: [30, 25, 25, 20],
-                    backgroundColor: ['#2DD4BF', '#FB923C', '#3B82F6', '#9333EA'],
+                    data: @json($donutData),
+                    backgroundColor: @json($donutColors),
                     borderWidth: 0,
                     spacing: 2
                 }]
@@ -200,23 +200,18 @@
                 maintainAspectRatio: false,
                 cutout: '68%',
                 plugins: {
-                    legend: {
-                        display: false
-                    },
+                    legend: { display: false },
                     tooltip: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        backgroundColor: 'rgba(0,0,0,0.8)',
                         padding: 12,
                         borderRadius: 8,
-                        titleFont: {
-                            size: 13,
-                            weight: 'bold'
-                        },
-                        bodyFont: {
-                            size: 12
-                        },
+                        titleFont: { size: 13, weight: 'bold' },
+                        bodyFont: { size: 12 },
                         callbacks: {
                             label: function(context) {
-                                return context.label + ': ' + context.parsed + '%';
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const pct = total > 0 ? Math.round(context.parsed / total * 100) : 0;
+                                return context.label + ': ' + context.parsed + ' (' + pct + '%)';
                             }
                         }
                     }
@@ -225,23 +220,21 @@
         });
     }
 
-    // Mobile Menu Toggle
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    const sidebar = document.getElementById('sidebar');
+    // ── Mobile Menu ───────────────────────────────────────────
+    const mobileMenuBtn   = document.getElementById('mobileMenuBtn');
+    const sidebar         = document.getElementById('sidebar');
     const closeSidebarBtn = document.getElementById('closeSidebarBtn');
-    const overlay = document.getElementById('overlay');
+    const overlay         = document.getElementById('overlay');
 
     if (mobileMenuBtn && sidebar && closeSidebarBtn && overlay) {
         mobileMenuBtn.addEventListener('click', () => {
             sidebar.classList.remove('-translate-x-full');
             overlay.classList.remove('hidden');
         });
-
         closeSidebarBtn.addEventListener('click', () => {
             sidebar.classList.add('-translate-x-full');
             overlay.classList.add('hidden');
         });
-
         overlay.addEventListener('click', () => {
             sidebar.classList.add('-translate-x-full');
             overlay.classList.add('hidden');

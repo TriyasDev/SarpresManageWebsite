@@ -54,10 +54,10 @@ class User extends Authenticatable
         'role',
         'rank',
         'point',
-        'nipd',        // ← tambah
-        'alamat',      // ← tambah
-        'tanggal_lahir', // ← tambah
-        'jenis_kelamin', // ← tambah
+        'nipd',
+        'alamat',
+        'tanggal_lahir',
+        'jenis_kelamin',
     ];
 
     protected $hidden = [
@@ -67,7 +67,7 @@ class User extends Authenticatable
 
     protected $casts = [
         'point' => 'integer',
-        'tanggal_lahir' => 'date', // ← tambah
+        'tanggal_lahir' => 'date',
     ];
 
     public function isAdmin(): bool
