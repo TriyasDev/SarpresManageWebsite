@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -33,4 +34,3 @@ class KelolaPengajuanController extends Controller
     //     return redirect()->back()->with('success', 'Data berhasil dihapus');
     // }
 }
-
