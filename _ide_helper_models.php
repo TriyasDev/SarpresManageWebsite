@@ -25,10 +25,13 @@ namespace App\Models{
  * @property string $foto
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
  * @method static \Illuminate\Database\Eloquent\Builder|Barang newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Barang newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Barang onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Barang query()
  * @method static \Illuminate\Database\Eloquent\Builder|Barang whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Barang whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Barang whereDeskripsi($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Barang whereFoto($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Barang whereIdBarang($value)
@@ -38,7 +41,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Barang whereKondisi($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Barang whereNamaBarang($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Barang whereUpdatedAt($value)
- * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder|Barang withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Barang withoutTrashed()
  */
 	class Barang extends \Eloquent {}
 }

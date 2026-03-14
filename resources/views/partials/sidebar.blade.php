@@ -41,7 +41,7 @@
             </span>
         </a>
 
-        <a href="{{ route('admin.kelola_aset') }}" class="group flex items-center gap-3 px-4 py-2.5 rounded-[30px] text-white font-bold text-[0.96rem] transition-all duration-200 @if(request()->is('admin/kelola_aset*')) bg-costume-second @else hover:bg-costume-second @endif">
+        <a href="{{ route('admin.kelola_aset.index') }}" class="group flex items-center gap-3 px-4 py-2.5 rounded-[30px] text-white font-bold text-[0.96rem] transition-all duration-200 @if(request()->is('admin/kelola_aset*')) bg-costume-second @else hover:bg-costume-second @endif">
             <x-icon-album class="w-10 h-10 shrink-0 text-white"/>
             <span class="relative inline-block">
                 Kelola Aset

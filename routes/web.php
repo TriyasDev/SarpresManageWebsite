@@ -59,10 +59,15 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-        Route::get('/kelola_aset', [KelolaAsetController::class, 'index'])->name('kelola_aset');
+        Route::get('/kelola_aset', [KelolaAsetController::class, 'index'])->name('kelola_aset.index');
+        Route::get('/kelola_aset/create', [KelolaAsetController::class, 'create'])->name('kelola_aset.create');
         Route::post('/kelola_aset', [KelolaAsetController::class, 'store'])->name('kelola_aset.store');
-        Route::put('/kelola_aset/{id}', [KelolaAsetController::class, 'update'])->name('kelola_aset.update');
-        Route::delete('/kelola_aset/{id}', [KelolaAsetController::class, 'destroy'])->name('kelola_aset.destroy');
+        Route::get('/kelola_aset/trash', [KelolaAsetController::class, 'trash'])->name('kelola_aset.trash');
+        Route::get('/kelola_aset/{barang}/edit', [KelolaAsetController::class, 'edit'])->name('kelola_aset.edit');
+        Route::put('/kelola_aset/{barang}', [KelolaAsetController::class, 'update'])->name('kelola_aset.update');
+        Route::delete('/kelola_aset/{barang}', [KelolaAsetController::class, 'destroy'])->name('kelola_aset.destroy');
+        Route::put('/kelola_aset/{id}/restore', [KelolaAsetController::class, 'restore'])->name('kelola_aset.restore');
+        Route::delete('/kelola_aset/{id}/force', [KelolaAsetController::class, 'forceDelete'])->name('kelola_aset.force_delete');
 
         Route::get('/kelola_data_user', [KelolaDataUserController::class, 'index'])->name('kelola_data_user.index');
         Route::get('/kelola_data_user/create', [KelolaDataUserController::class, 'create'])->name('kelola_data_user.create');
