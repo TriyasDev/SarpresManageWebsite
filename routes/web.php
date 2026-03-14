@@ -64,10 +64,15 @@ Route::middleware('auth')->group(function () {
         Route::put('/kelola_aset/{id}', [KelolaAsetController::class, 'update'])->name('kelola_aset.update');
         Route::delete('/kelola_aset/{id}', [KelolaAsetController::class, 'destroy'])->name('kelola_aset.destroy');
 
-        Route::get('/kelola-data-user', [KelolaDataUserController::class, 'index'])->name('kelola_data_user.index');
-        Route::post('/kelola-data-user', [KelolaDataUserController::class, 'store'])->name('kelola_data_user.store');
-        Route::put('/kelola-data-user/{user}', [KelolaDataUserController::class, 'update'])->name('kelola_data_user.update');
-        Route::delete('/kelola-data-user/{user}', [KelolaDataUserController::class, 'destroy'])->name('kelola_data_user.destroy');
+        Route::get('/kelola_data_user', [KelolaDataUserController::class, 'index'])->name('kelola_data_user.index');
+        Route::get('/kelola_data_user/create', [KelolaDataUserController::class, 'create'])->name('kelola_data_user.create');
+        Route::post('/kelola_data_user', [KelolaDataUserController::class, 'store'])->name('kelola_data_user.store');
+        Route::get('/kelola_data_user/trash', [KelolaDataUserController::class, 'trash'])->name('kelola_data_user.trash');
+        Route::get('/kelola_data_user/{user}/edit', [KelolaDataUserController::class, 'edit'])->name('kelola_data_user.edit');
+        Route::put('/kelola_data_user/{user}', [KelolaDataUserController::class, 'update'])->name('kelola_data_user.update');
+        Route::delete('/kelola_data_user/{user}', [KelolaDataUserController::class, 'destroy'])->name('kelola_data_user.destroy');
+        Route::put('/kelola_data_user/{user}/restore', [KelolaDataUserController::class, 'restore'])->name('kelola_data_user.restore');
+        Route::delete('/kelola_data_user/{user}/force', [KelolaDataUserController::class, 'forceDelete'])->name('kelola_data_user.force_delete');
 
         Route::get('/kelola_laporan', [KelolaLaporanController::class, 'index'])->name('kelola_laporan');
         Route::post('/kelola_laporan', [KelolaLaporanController::class, 'store'])->name('kelola_laporan.store');

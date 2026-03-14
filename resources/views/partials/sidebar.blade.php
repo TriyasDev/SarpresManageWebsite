@@ -66,7 +66,7 @@
             </span>
         </a>
 
-        <a href="{{ route('admin.kelola_data_user') }}"
+        <a href="{{ route('admin.kelola_data_user.index') }}"
             class="group flex items-center gap-3 px-4 py-2.5 rounded-[30px] text-white font-bold text-[0.96rem] transition-all duration-200 @if(request()->is('admin/kelola_data_user*')) bg-costume-second @else hover:bg-costume-second @endif">
             <x-icon-shield-user class="w-10 h-10 shrink-0 text-white" />
             <span class="relative inline-block">

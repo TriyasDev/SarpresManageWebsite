@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Hash;
 
 class KelolaDataUserController extends Controller
 {
+    // ──────────────────────────────────────────────────────────────
+    //  INDEX – daftar user aktif
+    // ──────────────────────────────────────────────────────────────
     public function index(Request $request)
     {
         $search = $request->get('search');
@@ -16,15 +19,28 @@ class KelolaDataUserController extends Controller
         $users = User::where('role', 'peminjam')
             ->when($search, function ($query) use ($search) {
                 $query->where('username', 'like', "%{$search}%")
-                    ->orWhere('nipd', 'like', "%{$search}%");
+                      ->orWhere('nipd', 'like', "%{$search}%");
             })
             ->latest()
             ->paginate(10)
-            ->appends(request()->query()); // ← ganti withQueryString()
+            ->appends($request->query());
 
-        return view('admin.kelola_data_user.index', compact('users', 'search'));
+        $trashedCount = User::onlyTrashed()->where('role', 'peminjam')->count();
+
+        return view('admin.kelola_data_user.index', compact('users', 'search', 'trashedCount'));
     }
 
+    // ──────────────────────────────────────────────────────────────
+    //  CREATE – form tambah user baru
+    // ──────────────────────────────────────────────────────────────
+    public function create()
+    {
+        return view('admin.kelola_data_user.create');
+    }
+
+    // ──────────────────────────────────────────────────────────────
+    //  STORE – simpan user baru
+    // ──────────────────────────────────────────────────────────────
     public function store(Request $request)
     {
         $request->validate([
@@ -52,19 +68,32 @@ class KelolaDataUserController extends Controller
             'point'         => 0,
         ]);
 
-        return redirect()->route('admin.kelola-data-user.index')
+        return redirect()->route('admin.kelola_data_user.index')
             ->with('success', 'User berhasil ditambahkan!');
     }
 
-    public function update(Request $request, $id)
+    // ──────────────────────────────────────────────────────────────
+    //  EDIT – form edit user
+    // ──────────────────────────────────────────────────────────────
+    public function edit(User $user)
     {
-        $user = User::findOrFail($id);
+        abort_if($user->role !== 'peminjam', 403);
+
+        return view('admin.kelola_data_user.edit', compact('user'));
+    }
+
+    // ──────────────────────────────────────────────────────────────
+    //  UPDATE – simpan perubahan user
+    // ──────────────────────────────────────────────────────────────
+    public function update(Request $request, User $user)
+    {
+        abort_if($user->role !== 'peminjam', 403);
 
         $request->validate([
             'username'      => 'required|string|max:255',
-            'email'         => 'required|email|unique:tb_user,email,' . $id . ',id_user',
+            'email'         => 'required|email|unique:tb_user,email,' . $user->id_user . ',id_user',
             'no_telpon'     => 'nullable|string|max:20',
-            'nipd'          => 'required|string|unique:tb_user,nipd,' . $id . ',id_user',
+            'nipd'          => 'required|string|unique:tb_user,nipd,' . $user->id_user . ',id_user',
             'alamat'        => 'required|string',
             'tanggal_lahir' => 'required|date',
             'jenis_kelamin' => 'required|in:laki-laki,perempuan',
@@ -84,16 +113,64 @@ class KelolaDataUserController extends Controller
                 : $user->password,
         ]);
 
-        return redirect()->route('admin.kelola-data-user.index')
-            ->with('success', 'User berhasil diupdate!');
+        return redirect()->route('admin.kelola_data_user.index')
+            ->with('success', 'Data user berhasil diperbarui!');
     }
 
-    public function destroy($id)
+    // ──────────────────────────────────────────────────────────────
+    //  DESTROY – soft delete
+    // ──────────────────────────────────────────────────────────────
+    public function destroy(User $user)
     {
-        $user = User::findOrFail($id);
-        $user->delete();
+        abort_if($user->role !== 'peminjam', 403);
 
-        return redirect()->route('admin.kelola-data-user.index')
-            ->with('success', 'User berhasil dihapus!');
+        $user->delete(); // soft delete
+
+        return redirect()->route('admin.kelola_data_user.index')
+            ->with('success', 'User berhasil dipindahkan ke tempat sampah.');
+    }
+
+    // ──────────────────────────────────────────────────────────────
+    //  TRASH – daftar user yang dihapus (soft deleted)
+    // ──────────────────────────────────────────────────────────────
+    public function trash(Request $request)
+    {
+        $search = $request->get('search');
+
+        $trashedUsers = User::onlyTrashed()
+            ->where('role', 'peminjam')
+            ->when($search, function ($query) use ($search) {
+                $query->where('username', 'like', "%{$search}%")
+                      ->orWhere('nipd', 'like', "%{$search}%");
+            })
+            ->latest('deleted_at')
+            ->paginate(10)
+            ->appends($request->query());
+
+        return view('admin.kelola_data_user.trash', compact('trashedUsers', 'search'));
+    }
+
+    // ──────────────────────────────────────────────────────────────
+    //  RESTORE – kembalikan user dari sampah
+    // ──────────────────────────────────────────────────────────────
+    public function restore($id)
+    {
+        $user = User::onlyTrashed()->where('role', 'peminjam')->findOrFail($id);
+        $user->restore();
+
+        return redirect()->route('admin.kelola_data_user.trash')
+            ->with('success', 'User berhasil dipulihkan.');
+    }
+
+    // ──────────────────────────────────────────────────────────────
+    //  FORCE DELETE – hapus permanen
+    // ──────────────────────────────────────────────────────────────
+    public function forceDelete($id)
+    {
+        $user = User::onlyTrashed()->where('role', 'peminjam')->findOrFail($id);
+        $user->forceDelete();
+
+        return redirect()->route('admin.kelola_data_user.trash')
+            ->with('success', 'User berhasil dihapus secara permanen.');
     }
 }
