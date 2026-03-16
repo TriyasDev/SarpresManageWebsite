@@ -144,6 +144,7 @@
             </div>
 
             {{-- Category Tabs --}}
+<<<<<<< HEAD:resources/views/user/home.blade.php
             <div class="flex flex-wrap justify-center gap-3 mb-12 opacity-0 translate-y-5 [&.visible]:opacity-100 [&.visible]:translate-y-0 transition-all duration-700" data-animate>
                 <a href="{{ route('peminjam.home') }}"
                     class="px-6 py-2.5 rounded-full font-medium text-sm transition-all
@@ -181,6 +182,60 @@
                                 @elseif($barang->jumlah_tersedia > 0) bg-orange-500
                                 @else bg-red-500 @endif">
                                 {{ $barang->jumlah_tersedia > 0 ? $barang->jumlah_tersedia . ' Tersedia' : 'Habis' }}
+=======
+            <div class="flex flex-wrap justify-center gap-3 mb-12 opacity-0 translate-y-5 [&.visible]:opacity-100 [&.visible]:translate-y-0 transition-all duration-700"
+                data-animate>
+                <button data-tab="prasarana"
+                    class="tab-btn active px-6 py-2.5 bg-costume-primary text-white rounded-full font-medium text-sm shadow-md shadow-blue-500/25 hover:shadow-lg transition-all">
+                    Prasarana
+                </button>
+                <button data-tab="media-pendidikan"
+                    class="tab-btn px-6 py-2.5 bg-white text-slate-700 rounded-full font-medium text-sm border border-slate-200 hover:border-costume-primary  transition-all">
+                    Media Pendidikan
+                </button>
+                <button data-tab="perlengkapan-kelas"
+                    class="tab-btn px-6 py-2.5 bg-white text-slate-700 rounded-full font-medium text-sm border border-slate-200 hover:border-costume-primary  transition-all">
+                    Perlengkapan Kelas
+                </button>
+                <button data-tab="fasilitas-penunjang"
+                    class="tab-btn px-6 py-2.5 bg-white text-slate-700 rounded-full font-medium text-sm border border-slate-200 hover:border-costume-primary  transition-all">
+                    Fasilitas Penunjang
+                </button>
+            </div>
+
+            {{-- Assets Grid --}}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="assets-grid">
+                @php
+                    $assets = [
+                        // Prasarana
+                        ['image' => 'monitor.png', 'title' => 'Monitor Dell 24"', 'category' => 'Elektronik', 'tab' => 'prasarana', 'available' => 30, 'condition' => 'Sangat Baik'],
+                        ['image' => 'Laptop.png', 'title' => 'Laptop Asus ROG', 'category' => 'Elektronik', 'tab' => 'prasarana', 'available' => 20, 'condition' => 'Sangat Baik'],
+
+                        // Media Pendidikan
+                        ['image' => 'bbc.jpg', 'title' => 'Proyektor Epson', 'category' => 'Multimedia', 'tab' => 'media-pendidikan', 'available' => 15, 'condition' => 'Baik'],
+                        ['image' => 'bbc.jpg', 'title' => 'Kamera Canon', 'category' => 'Multimedia', 'tab' => 'media-pendidikan', 'available' => 8, 'condition' => 'Sangat Baik'],
+
+                        // Perlengkapan Kelas
+                        ['image' => 'bbc.jpg', 'title' => 'Papan Tulis', 'category' => 'Alat Tulis', 'tab' => 'perlengkapan-kelas', 'available' => 25, 'condition' => 'Baik'],
+                        ['image' => 'bbc.jpg', 'title' => 'Meja Belajar', 'category' => 'Furnitur', 'tab' => 'perlengkapan-kelas', 'available' => 40, 'condition' => 'Baik'],
+
+                        // Fasilitas Penunjang
+                        ['image' => 'bbc.jpg', 'title' => 'Ruang Meeting', 'category' => 'Fasilitas', 'tab' => 'fasilitas-penunjang', 'available' => 3, 'condition' => 'Sangat Baik'],
+                        ['image' => 'bbc.jpg', 'title' => 'Ruang BK', 'category' => 'Fasilitas', 'tab' => 'fasilitas-penunjang', 'available' => 2, 'condition' => 'Baik'],
+                        ['image' => 'bbc.jpg', 'title' => 'Aula', 'category' => 'Fasilitas', 'tab' => 'fasilitas-penunjang', 'available' => 1, 'condition' => 'Sangat Baik'],
+                    ];
+                @endphp
+
+                @foreach($assets as $asset)
+                    <div class="asset-card group bg-white rounded-2xl border border-slate-200 overflow-hidden hover:border-costume-primary hover:shadow-xl transition-all duration-300 opacity-0 translate-y-5 [&.visible]:opacity-100 [&.visible]:translate-y-0"
+                        data-animate data-tab="{{ $asset['tab'] }}">
+                        <div class="relative h-48 bg-gradient-to-br from-slate-100 to-slate-200 overflow-hidden">
+                            <img src="{{ asset($asset['image']) }}" alt="{{ $asset['title'] }}"
+                                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                            <div
+                                class="absolute top-3 right-3 px-3 py-1.5 {{ $asset['available'] > 10 ? 'bg-emerald-500' : ($asset['available'] > 5 ? 'bg-amber-500' : 'bg-orange-500') }} text-white text-xs font-bold rounded-full shadow-lg">
+                                {{ $asset['available'] }} Tersedia
+>>>>>>> a1eaa3d380fa522ca4e22563fc353780076bc704:resources/views/home.blade.php
                             </div>
                         </div>
                         <div class="p-5">
@@ -210,9 +265,23 @@
                     </div>
                 @endforelse
             </div>
+
+            {{-- Empty state --}}
+            <div id="empty-state" class="hidden text-center py-16">
+                <svg class="w-16 h-16 mx-auto text-slate-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                        d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                </svg>
+                <p class="text-slate-500 text-lg font-medium">Tidak ada aset di kategori ini.</p>
+            </div>
+
         </div>
     </section>
+<<<<<<< HEAD:resources/views/user/home.blade.php
 
+=======
+    {{-- ===================================== --}}
+>>>>>>> a1eaa3d380fa522ca4e22563fc353780076bc704:resources/views/home.blade.php
     {{-- PINJAM SECTION --}}
     <section class="py-24 bg-white" id="pinjam">
         <div class="max-w-7xl mx-auto px-6 lg:px-8">
@@ -342,6 +411,60 @@
             });
         }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
 
-        document.querySelectorAll('[data-animate]').forEach(el => observer.observe(el));
+        // Observe all animated elements
+        document.querySelectorAll('[data-animate]').forEach(el => {
+            observer.observe(el);
+        });
+
+
+
+
+        (function () {
+            const tabs = document.querySelectorAll('.tab-btn');
+            const cards = document.querySelectorAll('.asset-card');
+            const grid = document.getElementById('assets-grid');
+            const empty = document.getElementById('empty-state');
+
+            function filterCards(activeTab) {
+                let visible = 0;
+
+                cards.forEach(card => {
+                    const match = card.dataset.tab === activeTab;
+
+                    if (match) {
+                        card.style.display = '';
+                        card.classList.remove('visible');
+                        requestAnimationFrame(() => {
+                            requestAnimationFrame(() => card.classList.add('visible'));
+                        });
+                        visible++;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+
+                empty.classList.toggle('hidden', visible > 0);
+                grid.classList.toggle('hidden', visible === 0);
+            }
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => {
+                        t.classList.remove('active', 'bg-costume-primary', 'text-white', 'shadow-md', 'shadow-blue-500/25');
+                        t.classList.add('bg-white', 'text-slate-700', 'border', 'border-slate-200');
+                    });
+
+                    tab.classList.add('active', 'bg-costume-primary', 'text-white', 'shadow-md', 'shadow-blue-500/25');
+                    tab.classList.remove('bg-white', 'text-slate-700', 'border', 'border-slate-200');
+
+                    filterCards(tab.dataset.tab);
+                });
+            });
+
+            // Aktifkan tab pertama saat load
+            const firstTab = tabs[0];
+            if (firstTab) filterCards(firstTab.dataset.tab);
+        })();
+
     </script>
 @endpush

@@ -46,9 +46,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
 
     /*
-    |--------------------------------------------------------------------------
+    |----------------------------------------------------------------------
     | Admin Routes
-    |--------------------------------------------------------------------------
+    |----------------------------------------------------------------------
     */
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -91,14 +91,28 @@ Route::middleware('auth')->group(function () {
     });
 
     /*
-    |--------------------------------------------------------------------------
+    |----------------------------------------------------------------------
     | Peminjam Routes
-    |--------------------------------------------------------------------------
+    |----------------------------------------------------------------------
     */
     Route::middleware('role:peminjam')->prefix('peminjam')->name('peminjam.')->group(function () {
         Route::get('/home',           [HomeController::class,          'index'])->name('home');
         Route::get('/user-dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
         Route::get('/form',           [FormController::class,          'index'])->name('form');
         Route::get('/rank',           [RankController::class,          'index'])->name('rank');
+    });
+
+    /*
+    |----------------------------------------------------------------------
+    | User Dashboard Routes
+    |----------------------------------------------------------------------
+    */
+    Route::prefix('user')->name('user.')->group(function () {
+        Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/riwayat',   [UserDashboardController::class, 'riwayat'])->name('riwayat');
+        Route::get('/profile',   [UserDashboardController::class, 'profile'])->name('profile');
+        Route::get('/pinjaman',  [UserDashboardController::class, 'pinjaman'])->name('pinjaman');
+        Route::get('/sarpras',   [UserDashboardController::class, 'sarpras'])->name('sarpras');
+        Route::get('/rank',      [UserDashboardController::class, 'rank'])->name('rank');
     });
 });
