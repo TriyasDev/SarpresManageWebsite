@@ -498,7 +498,7 @@
             <nav class="flex flex-col gap-1 flex-1">
                 <p class="text-blue-300 text-[10px] font-semibold uppercase tracking-widest px-3 mb-1">Menu</p>
 
-                <a href="{{ route('user.dashboard') }}" class="nav-link active">
+                <a href="{{ route('peminjam.dashboard') }}" class="nav-link active">
                     <span class="nav-indicator"></span>
                     <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -507,7 +507,7 @@
                     Dashboard
                 </a>
 
-                <a href="{{ route('user.riwayat') }}" class="nav-link">
+                <a href="{{ route('peminjam.form') }}" class="nav-link">
                     <span class="nav-indicator"></span>
                     <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -677,7 +677,7 @@
                                 </div>
                             @endforeach
                         </div>
-                        <a href="{{ route('user.rank') }}"
+                        <a href="{{ route('peminjam.rank') }}"
                             class="text-[11px] text-blue-600 hover:underline font-semibold text-right block mt-1">Lihat
                             Semua →</a>
                     </div>
@@ -690,7 +690,7 @@
                             <p class="font-bold text-gray-800 text-sm">Daftar Pinjaman Aktif</p>
                             <p class="text-xs text-gray-400 mt-0.5">Peminjaman yang sedang berjalan</p>
                         </div>
-                        <a href="{{ route('user.riwayat') }}"
+                        <a href="{{ route('peminjam.form') }}"
                             class="text-xs text-blue-600 font-semibold hover:underline flex items-center gap-1">
                             Lihat Semua Riwayat
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
