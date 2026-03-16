@@ -9,12 +9,28 @@ use Illuminate\Support\Facades\Storage;
 
 class KelolaAsetController extends Controller
 {
+    // ──────────────────────────────────────────────────────────────
+    //  INDEX – daftar aset aktif (card grid)
+    // ──────────────────────────────────────────────────────────────
     public function index()
     {
-        $barangs = Barang::latest()->get();
-        return view('admin.kelola_aset.index', compact('barangs'));
+        $barangs      = Barang::latest()->get();
+        $trashedCount = Barang::onlyTrashed()->count();
+
+        return view('admin.kelola_aset.index', compact('barangs', 'trashedCount'));
     }
 
+    // ──────────────────────────────────────────────────────────────
+    //  CREATE – form tambah aset
+    // ──────────────────────────────────────────────────────────────
+    public function create()
+    {
+        return view('admin.kelola_aset.create');
+    }
+
+    // ──────────────────────────────────────────────────────────────
+    //  STORE – simpan aset baru
+    // ──────────────────────────────────────────────────────────────
     public function store(Request $request)
     {
         $request->validate([
@@ -41,13 +57,23 @@ class KelolaAsetController extends Controller
             'foto'            => $fotoPath,
         ]);
 
-        return redirect()->route('admin.kelola_aset')->with('success', 'Aset berhasil ditambahkan.');
+        return redirect()->route('admin.kelola_aset.index')
+            ->with('success', 'Aset berhasil ditambahkan.');
     }
 
-    public function update(Request $request, $id)
+    // ──────────────────────────────────────────────────────────────
+    //  EDIT – form edit aset
+    // ──────────────────────────────────────────────────────────────
+    public function edit(Barang $barang)
     {
-        $barang = Barang::findOrFail($id);
+        return view('admin.kelola_aset.edit', compact('barang'));
+    }
 
+    // ──────────────────────────────────────────────────────────────
+    //  UPDATE – simpan perubahan aset
+    // ──────────────────────────────────────────────────────────────
+    public function update(Request $request, Barang $barang)
+    {
         $request->validate([
             'nama_barang' => 'required|string|max:100',
             'kategori'    => 'required|string|max:100',
@@ -75,19 +101,63 @@ class KelolaAsetController extends Controller
             'foto'            => $fotoPath,
         ]);
 
-        return redirect()->route('admin.kelola_aset')->with('success', 'Aset berhasil diperbarui.');
+        return redirect()->route('admin.kelola_aset.index')
+            ->with('success', 'Aset berhasil diperbarui.');
     }
 
-    public function destroy($id)
+    // ──────────────────────────────────────────────────────────────
+    //  DESTROY – soft delete
+    // ──────────────────────────────────────────────────────────────
+    public function destroy(Barang $barang)
     {
-        $barang = Barang::findOrFail($id);
+        $barang->delete(); // soft delete — foto tetap ada di storage
+
+        return redirect()->route('admin.kelola_aset.index')
+            ->with('success', 'Aset dipindahkan ke tempat sampah.');
+    }
+
+    // ──────────────────────────────────────────────────────────────
+    //  TRASH – daftar aset yang dihapus sementara
+    // ──────────────────────────────────────────────────────────────
+    public function trash(Request $request)
+    {
+        $search = $request->get('search');
+
+        $trashedBarangs = Barang::onlyTrashed()
+            ->when($search, fn($q) => $q->where('nama_barang', 'like', "%{$search}%"))
+            ->latest('deleted_at')
+            ->paginate(12)
+            ->appends($request->query());
+
+        return view('admin.kelola_aset.trash', compact('trashedBarangs', 'search'));
+    }
+
+    // ──────────────────────────────────────────────────────────────
+    //  RESTORE – pulihkan aset dari sampah
+    // ──────────────────────────────────────────────────────────────
+    public function restore($id)
+    {
+        $barang = Barang::onlyTrashed()->findOrFail($id);
+        $barang->restore();
+
+        return redirect()->route('admin.kelola_aset.trash')
+            ->with('success', 'Aset berhasil dipulihkan.');
+    }
+
+    // ──────────────────────────────────────────────────────────────
+    //  FORCE DELETE – hapus permanen beserta fotonya
+    // ──────────────────────────────────────────────────────────────
+    public function forceDelete($id)
+    {
+        $barang = Barang::onlyTrashed()->findOrFail($id);
 
         if ($barang->foto) {
             Storage::disk('public')->delete($barang->foto);
         }
 
-        $barang->delete();
+        $barang->forceDelete();
 
-        return redirect()->route('admin.kelola_aset')->with('success', 'Aset berhasil dihapus.');
+        return redirect()->route('admin.kelola_aset.trash')
+            ->with('success', 'Aset berhasil dihapus secara permanen.');
     }
 }

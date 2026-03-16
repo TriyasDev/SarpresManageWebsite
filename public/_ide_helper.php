@@ -17968,38 +17968,6 @@ namespace Spatie\LaravelIgnition\Facades {
             }
     }
 
-namespace Illuminate\Support {
-            /**
-     * @template TKey of array-key
-     * @template-covariant TValue
-     * @implements \ArrayAccess<TKey, TValue>
-     * @implements \Illuminate\Support\Enumerable<TKey, TValue>
-     */        class Collection {
-                    /**
-         * @see \Maatwebsite\Excel\Mixins\DownloadCollectionMixin::downloadExcel()
-         * @param string $fileName
-         * @param string|null $writerType
-         * @param mixed $withHeadings
-         * @param array $responseHeaders
-         * @static
-         */        public static function downloadExcel($fileName, $writerType = null, $withHeadings = false, $responseHeaders = [])
-        {
-                        return \Illuminate\Support\Collection::downloadExcel($fileName, $writerType, $withHeadings, $responseHeaders);
-        }
-                    /**
-         * @see \Maatwebsite\Excel\Mixins\StoreCollectionMixin::storeExcel()
-         * @param string $filePath
-         * @param string|null $disk
-         * @param string|null $writerType
-         * @param mixed $withHeadings
-         * @static
-         */        public static function storeExcel($filePath, $disk = null, $writerType = null, $withHeadings = false)
-        {
-                        return \Illuminate\Support\Collection::storeExcel($filePath, $disk, $writerType, $withHeadings);
-        }
-            }
-    }
-
 namespace Illuminate\Http {
             /**
      */        class Request {
@@ -18049,6 +18017,56 @@ namespace Illuminate\Http {
             }
     }
 
+namespace Illuminate\Support {
+            /**
+     * @template TKey of array-key
+     * @template-covariant TValue
+     * @implements \ArrayAccess<TKey, TValue>
+     * @implements \Illuminate\Support\Enumerable<TKey, TValue>
+     */        class Collection {
+                    /**
+         * @see \Maatwebsite\Excel\Mixins\DownloadCollectionMixin::downloadExcel()
+         * @param string $fileName
+         * @param string|null $writerType
+         * @param mixed $withHeadings
+         * @param array $responseHeaders
+         * @static
+         */        public static function downloadExcel($fileName, $writerType = null, $withHeadings = false, $responseHeaders = [])
+        {
+                        return \Illuminate\Support\Collection::downloadExcel($fileName, $writerType, $withHeadings, $responseHeaders);
+        }
+                    /**
+         * @see \Maatwebsite\Excel\Mixins\StoreCollectionMixin::storeExcel()
+         * @param string $filePath
+         * @param string|null $disk
+         * @param string|null $writerType
+         * @param mixed $withHeadings
+         * @static
+         */        public static function storeExcel($filePath, $disk = null, $writerType = null, $withHeadings = false)
+        {
+                        return \Illuminate\Support\Collection::storeExcel($filePath, $disk, $writerType, $withHeadings);
+        }
+            }
+    }
+
+namespace Illuminate\Routing {
+            /**
+     */        class SortedMiddleware {
+            }
+    }
+
+namespace Spatie\LaravelIgnition\Http\Requests {
+            /**
+     */        class ExecuteSolutionRequest {
+            }
+    }
+
+namespace Illuminate\Foundation\Http {
+            /**
+     */        class FormRequest {
+            }
+    }
+
 namespace Illuminate\Database\Eloquent {
             /**
      * @template TKey of array-key
@@ -18079,12 +18097,6 @@ namespace App\Http\Requests {
             }
             /**
      */        class VerifyCodeRequest {
-            }
-    }
-
-namespace Illuminate\Foundation\Http {
-            /**
-     */        class FormRequest {
             }
     }
 

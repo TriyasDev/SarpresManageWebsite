@@ -8,12 +8,14 @@ use App\Exports\LaporanExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Maatwebsite\Excel\Facades\Excel;
 
 class KelolaLaporanController extends Controller
 {
+    // ──────────────────────────────────────────────────────────────
+    //  INDEX – daftar laporan aktif
+    // ──────────────────────────────────────────────────────────────
     public function index(Request $request)
     {
         $query = Laporan::with(['peminjam.user', 'peminjam.aset', 'admin'])
@@ -22,11 +24,11 @@ class KelolaLaporanController extends Controller
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
-                $q->whereHas('peminjam.user', function ($q2) use ($search) {
-                    $q2->where('nama', 'like', "%$search%");
-                })->orWhereHas('peminjam.aset', function ($q2) use ($search) {
-                    $q2->where('nama_aset', 'like', "%$search%");
-                });
+                $q->whereHas('peminjam.user', fn($q2) =>
+                    $q2->where('username', 'like', "%$search%")
+                )->orWhereHas('peminjam.aset', fn($q2) =>
+                    $q2->where('nama_barang', 'like', "%$search%")
+                );
             });
         }
 
@@ -38,21 +40,32 @@ class KelolaLaporanController extends Controller
             $query->where('kondisi_barang', $request->kondisi_barang);
         }
 
-        /** @var \Illuminate\Contracts\Pagination\LengthAwarePaginator $laporans */
-        $laporans = $query->paginate(10)->withQueryString();
+        $laporans     = $query->paginate(10)->withQueryString();
+        $trashedCount = Laporan::onlyTrashed()->count();
 
-        return view('admin.kelola_laporan.index', compact('laporans'));
+        return view('admin.kelola_laporan.index', compact('laporans', 'trashedCount'));
     }
 
+    // ──────────────────────────────────────────────────────────────
+    //  CREATE – form tambah laporan
+    // ──────────────────────────────────────────────────────────────
+    public function create()
+    {
+        return view('admin.kelola_laporan.create');
+    }
+
+    // ──────────────────────────────────────────────────────────────
+    //  STORE – simpan laporan baru
+    // ──────────────────────────────────────────────────────────────
     public function store(Request $request)
     {
         $request->validate([
-            'id_peminjaman'       => 'required|exists:tb_peminjaman,id_peminjaman',
-            'jenis_laporan'       => 'required|in:dikembalikan,telat mengembalikan,hilang',
-            'kondisi_barang'      => 'required|in:baik,masih di pinjam,rusak',
-            'tanggal_dipinjam'    => 'nullable|date',
+            'id_peminjaman'        => 'required|exists:tb_peminjaman,id_peminjaman',
+            'jenis_laporan'        => 'required|in:dikembalikan,telat mengembalikan,hilang',
+            'kondisi_barang'       => 'required|in:baik,masih di pinjam,rusak',
+            'tanggal_dipinjam'     => 'nullable|date',
             'tanggal_dikembalikan' => 'nullable|date',
-            'foto_bukti'          => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'foto_bukti'           => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         $data = $request->only([
@@ -65,7 +78,6 @@ class KelolaLaporanController extends Controller
 
         $data['id_admin'] = Auth::id();
 
-        // Upload foto bukti
         if ($request->hasFile('foto_bukti')) {
             $data['foto_bukti'] = $request->file('foto_bukti')
                 ->store('laporan/foto', 'public');
@@ -73,34 +85,33 @@ class KelolaLaporanController extends Controller
 
         Laporan::create($data);
 
-        return redirect()->route('admin.kelola_laporan')
+        return redirect()->route('admin.kelola_laporan.index')
             ->with('success', 'Laporan berhasil ditambahkan.');
     }
 
-    public function show($id)
-    {
-        $laporan = Laporan::with(['peminjaman.user', 'peminjaman.aset', 'admin'])
-            ->findOrFail($id);
-
-        return view('admin.kelola_aset.show', compact('laporan'));
-    }
-
+    // ──────────────────────────────────────────────────────────────
+    //  EDIT – form edit laporan
+    // ──────────────────────────────────────────────────────────────
     public function edit($id)
     {
         $laporan = Laporan::findOrFail($id);
-        return view('admin.kelola_aset.edit', compact('laporan'));
+
+        return view('admin.kelola_laporan.edit', compact('laporan'));
     }
 
+    // ──────────────────────────────────────────────────────────────
+    //  UPDATE – simpan perubahan laporan
+    // ──────────────────────────────────────────────────────────────
     public function update(Request $request, $id)
     {
         $laporan = Laporan::findOrFail($id);
 
         $request->validate([
-            'jenis_laporan'       => 'required|in:dikembalikan,telat mengembalikan,hilang',
-            'kondisi_barang'      => 'required|in:baik,masih di pinjam,rusak',
-            'tanggal_dipinjam'    => 'nullable|date',
+            'jenis_laporan'        => 'required|in:dikembalikan,telat mengembalikan,hilang',
+            'kondisi_barang'       => 'required|in:baik,masih di pinjam,rusak',
+            'tanggal_dipinjam'     => 'nullable|date',
             'tanggal_dikembalikan' => 'nullable|date',
-            'foto_bukti'          => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'foto_bukti'           => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         $data = $request->only([
@@ -110,9 +121,7 @@ class KelolaLaporanController extends Controller
             'tanggal_dikembalikan',
         ]);
 
-        // Ganti foto jika ada upload baru
         if ($request->hasFile('foto_bukti')) {
-            // Hapus foto lama
             if ($laporan->foto_bukti) {
                 Storage::disk('public')->delete($laporan->foto_bukti);
             }
@@ -122,38 +131,60 @@ class KelolaLaporanController extends Controller
 
         $laporan->update($data);
 
-        return redirect()->route('admin.kelola_laporan')
+        return redirect()->route('admin.kelola_laporan.index')
             ->with('success', 'Laporan berhasil diperbarui.');
     }
 
+    // ──────────────────────────────────────────────────────────────
+    //  DESTROY – soft delete
+    // ──────────────────────────────────────────────────────────────
     public function destroy($id)
     {
         $laporan = Laporan::findOrFail($id);
         $laporan->delete();
 
-        return redirect()->route('admin.kelola_laporan')
-            ->with('success', 'Laporan dipindahkan ke trash.');
+        return redirect()->route('admin.kelola_laporan.index')
+            ->with('success', 'Laporan dipindahkan ke tempat sampah.');
     }
 
-    public function trash()
+    // ──────────────────────────────────────────────────────────────
+    //  TRASH – daftar laporan yang dihapus sementara
+    // ──────────────────────────────────────────────────────────────
+    public function trash(Request $request)
     {
+        $search = $request->get('search');
+
         $laporans = Laporan::onlyTrashed()
             ->with(['peminjam.user', 'peminjam.aset'])
-            ->latest('delete_at')
-            ->paginate(10);
+            ->when($search, function ($q) use ($search) {
+                $q->whereHas('peminjam.user', fn($q2) =>
+                    $q2->where('username', 'like', "%$search%")
+                )->orWhereHas('peminjam.aset', fn($q2) =>
+                    $q2->where('nama_barang', 'like', "%$search%")
+                );
+            })
+            ->latest('deleted_at') // ← fix: was 'delete_at' (typo)
+            ->paginate(10)
+            ->appends($request->query());
 
-        return view('admin.kelola_laporan.trash', compact('laporans'));
+        return view('admin.kelola_laporan.trash', compact('laporans', 'search'));
     }
 
+    // ──────────────────────────────────────────────────────────────
+    //  RESTORE – pulihkan laporan dari sampah
+    // ──────────────────────────────────────────────────────────────
     public function restore($id)
     {
         $laporan = Laporan::onlyTrashed()->findOrFail($id);
         $laporan->restore();
 
         return redirect()->route('admin.kelola_laporan.trash')
-            ->with('success', 'Laporan berhasil dipulihkan');
+            ->with('success', 'Laporan berhasil dipulihkan.');
     }
 
+    // ──────────────────────────────────────────────────────────────
+    //  FORCE DELETE – hapus permanen beserta foto
+    // ──────────────────────────────────────────────────────────────
     public function forceDelete($id)
     {
         $laporan = Laporan::onlyTrashed()->findOrFail($id);
@@ -165,9 +196,12 @@ class KelolaLaporanController extends Controller
         $laporan->forceDelete();
 
         return redirect()->route('admin.kelola_laporan.trash')
-            ->with('sucess', 'Laporan berhasil di hapus permanen.');
+            ->with('success', 'Laporan berhasil dihapus secara permanen.'); // ← fix: was 'sucess'
     }
 
+    // ──────────────────────────────────────────────────────────────
+    //  EXPORT PDF
+    // ──────────────────────────────────────────────────────────────
     public function exportPdf(Request $request)
     {
         $query = Laporan::with(['peminjam.user', 'peminjam.aset', 'admin'])->latest();
@@ -187,6 +221,9 @@ class KelolaLaporanController extends Controller
         return $pdf->download('laporan-' . now()->format('Y-m-d') . '.pdf');
     }
 
+    // ──────────────────────────────────────────────────────────────
+    //  EXPORT EXCEL
+    // ──────────────────────────────────────────────────────────────
     public function exportExcel(Request $request)
     {
         return Excel::download(
