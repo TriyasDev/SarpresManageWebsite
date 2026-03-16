@@ -926,7 +926,7 @@ namespace Illuminate\Support\Facades {
          * @return \Illuminate\Contracts\Container\ContextualBindingBuilder
          * @static
          */        public static function when($concrete)
-        {            //Method inherited from \Illuminate\Container\Container
+        {            //Method inherited from \Illuminate\Container\Container         
                         /** @var \Illuminate\Foundation\Application $instance */
                         return $instance->when($concrete);
         }
@@ -943,7 +943,7 @@ namespace Illuminate\Support\Facades {
          * @return bool
          * @static
          */        public static function has($id)
-        {            //Method inherited from \Illuminate\Container\Container
+        {            //Method inherited from \Illuminate\Container\Container         
                         /** @var \Illuminate\Foundation\Application $instance */
                         return $instance->has($id);
         }
@@ -954,7 +954,7 @@ namespace Illuminate\Support\Facades {
          * @return bool
          * @static
          */        public static function resolved($abstract)
-        {            //Method inherited from \Illuminate\Container\Container
+        {            //Method inherited from \Illuminate\Container\Container         
                         /** @var \Illuminate\Foundation\Application $instance */
                         return $instance->resolved($abstract);
         }
@@ -965,7 +965,7 @@ namespace Illuminate\Support\Facades {
          * @return bool
          * @static
          */        public static function isShared($abstract)
-        {            //Method inherited from \Illuminate\Container\Container
+        {            //Method inherited from \Illuminate\Container\Container         
                         /** @var \Illuminate\Foundation\Application $instance */
                         return $instance->isShared($abstract);
         }
@@ -976,7 +976,7 @@ namespace Illuminate\Support\Facades {
          * @return bool
          * @static
          */        public static function isAlias($name)
-        {            //Method inherited from \Illuminate\Container\Container
+        {            //Method inherited from \Illuminate\Container\Container         
                         /** @var \Illuminate\Foundation\Application $instance */
                         return $instance->isAlias($name);
         }
@@ -990,7 +990,7 @@ namespace Illuminate\Support\Facades {
          * @throws \TypeError
          * @static
          */        public static function bind($abstract, $concrete = null, $shared = false)
-        {            //Method inherited from \Illuminate\Container\Container
+        {            //Method inherited from \Illuminate\Container\Container         
                         /** @var \Illuminate\Foundation\Application $instance */
                         $instance->bind($abstract, $concrete, $shared);
         }
@@ -1001,7 +1001,7 @@ namespace Illuminate\Support\Facades {
          * @return bool
          * @static
          */        public static function hasMethodBinding($method)
-        {            //Method inherited from \Illuminate\Container\Container
+        {            //Method inherited from \Illuminate\Container\Container         
                         /** @var \Illuminate\Foundation\Application $instance */
                         return $instance->hasMethodBinding($method);
         }
@@ -1013,7 +1013,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function bindMethod($method, $callback)
-        {            //Method inherited from \Illuminate\Container\Container
+        {            //Method inherited from \Illuminate\Container\Container         
                         /** @var \Illuminate\Foundation\Application $instance */
                         $instance->bindMethod($method, $callback);
         }
@@ -1025,7 +1025,7 @@ namespace Illuminate\Support\Facades {
          * @return mixed
          * @static
          */        public static function callMethodBinding($method, $instance)
-        {            //Method inherited from \Illuminate\Container\Container
+        {            //Method inherited from \Illuminate\Container\Container         
                         /** @var \Illuminate\Foundation\Application $instance */
                         return $instance->callMethodBinding($method, $instance);
         }
@@ -1038,7 +1038,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function addContextualBinding($concrete, $abstract, $implementation)
-        {            //Method inherited from \Illuminate\Container\Container
+        {            //Method inherited from \Illuminate\Container\Container         
                         /** @var \Illuminate\Foundation\Application $instance */
                         $instance->addContextualBinding($concrete, $abstract, $implementation);
         }
@@ -1051,7 +1051,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function bindIf($abstract, $concrete = null, $shared = false)
-        {            //Method inherited from \Illuminate\Container\Container
+        {            //Method inherited from \Illuminate\Container\Container         
                         /** @var \Illuminate\Foundation\Application $instance */
                         $instance->bindIf($abstract, $concrete, $shared);
         }
@@ -1063,7 +1063,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function singleton($abstract, $concrete = null)
-        {            //Method inherited from \Illuminate\Container\Container
+        {            //Method inherited from \Illuminate\Container\Container         
                         /** @var \Illuminate\Foundation\Application $instance */
                         $instance->singleton($abstract, $concrete);
         }
@@ -1075,7 +1075,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function singletonIf($abstract, $concrete = null)
-        {            //Method inherited from \Illuminate\Container\Container
+        {            //Method inherited from \Illuminate\Container\Container         
                         /** @var \Illuminate\Foundation\Application $instance */
                         $instance->singletonIf($abstract, $concrete);
         }
@@ -1087,7 +1087,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function scoped($abstract, $concrete = null)
-        {            //Method inherited from \Illuminate\Container\Container
+        {            //Method inherited from \Illuminate\Container\Container         
                         /** @var \Illuminate\Foundation\Application $instance */
                         $instance->scoped($abstract, $concrete);
         }
@@ -1099,7 +1099,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function scopedIf($abstract, $concrete = null)
-        {            //Method inherited from \Illuminate\Container\Container
+        {            //Method inherited from \Illuminate\Container\Container         
                         /** @var \Illuminate\Foundation\Application $instance */
                         $instance->scopedIf($abstract, $concrete);
         }
@@ -1112,7 +1112,7 @@ namespace Illuminate\Support\Facades {
          * @throws \InvalidArgumentException
          * @static
          */        public static function extend($abstract, $closure)
-        {            //Method inherited from \Illuminate\Container\Container
+        {            //Method inherited from \Illuminate\Container\Container         
                         /** @var \Illuminate\Foundation\Application $instance */
                         $instance->extend($abstract, $closure);
         }
@@ -1124,7 +1124,7 @@ namespace Illuminate\Support\Facades {
          * @return mixed
          * @static
          */        public static function instance($abstract, $instance)
-        {            //Method inherited from \Illuminate\Container\Container
+        {            //Method inherited from \Illuminate\Container\Container         
                         /** @var \Illuminate\Foundation\Application $instance */
                         return $instance->instance($abstract, $instance);
         }
@@ -1136,7 +1136,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function tag($abstracts, $tags)
-        {            //Method inherited from \Illuminate\Container\Container
+        {            //Method inherited from \Illuminate\Container\Container         
                         /** @var \Illuminate\Foundation\Application $instance */
                         $instance->tag($abstracts, $tags);
         }
@@ -1147,7 +1147,7 @@ namespace Illuminate\Support\Facades {
          * @return iterable
          * @static
          */        public static function tagged($tag)
-        {            //Method inherited from \Illuminate\Container\Container
+        {            //Method inherited from \Illuminate\Container\Container         
                         /** @var \Illuminate\Foundation\Application $instance */
                         return $instance->tagged($tag);
         }
@@ -1160,7 +1160,7 @@ namespace Illuminate\Support\Facades {
          * @throws \LogicException
          * @static
          */        public static function alias($abstract, $alias)
-        {            //Method inherited from \Illuminate\Container\Container
+        {            //Method inherited from \Illuminate\Container\Container         
                         /** @var \Illuminate\Foundation\Application $instance */
                         $instance->alias($abstract, $alias);
         }
@@ -1172,7 +1172,7 @@ namespace Illuminate\Support\Facades {
          * @return mixed
          * @static
          */        public static function rebinding($abstract, $callback)
-        {            //Method inherited from \Illuminate\Container\Container
+        {            //Method inherited from \Illuminate\Container\Container         
                         /** @var \Illuminate\Foundation\Application $instance */
                         return $instance->rebinding($abstract, $callback);
         }
@@ -1185,7 +1185,7 @@ namespace Illuminate\Support\Facades {
          * @return mixed
          * @static
          */        public static function refresh($abstract, $target, $method)
-        {            //Method inherited from \Illuminate\Container\Container
+        {            //Method inherited from \Illuminate\Container\Container         
                         /** @var \Illuminate\Foundation\Application $instance */
                         return $instance->refresh($abstract, $target, $method);
         }
@@ -1197,7 +1197,7 @@ namespace Illuminate\Support\Facades {
          * @return \Closure
          * @static
          */        public static function wrap($callback, $parameters = [])
-        {            //Method inherited from \Illuminate\Container\Container
+        {            //Method inherited from \Illuminate\Container\Container         
                         /** @var \Illuminate\Foundation\Application $instance */
                         return $instance->wrap($callback, $parameters);
         }
@@ -1211,7 +1211,7 @@ namespace Illuminate\Support\Facades {
          * @throws \InvalidArgumentException
          * @static
          */        public static function call($callback, $parameters = [], $defaultMethod = null)
-        {            //Method inherited from \Illuminate\Container\Container
+        {            //Method inherited from \Illuminate\Container\Container         
                         /** @var \Illuminate\Foundation\Application $instance */
                         return $instance->call($callback, $parameters, $defaultMethod);
         }
@@ -1222,7 +1222,7 @@ namespace Illuminate\Support\Facades {
          * @return \Closure
          * @static
          */        public static function factory($abstract)
-        {            //Method inherited from \Illuminate\Container\Container
+        {            //Method inherited from \Illuminate\Container\Container         
                         /** @var \Illuminate\Foundation\Application $instance */
                         return $instance->factory($abstract);
         }
@@ -1235,7 +1235,7 @@ namespace Illuminate\Support\Facades {
          * @throws \Illuminate\Contracts\Container\BindingResolutionException
          * @static
          */        public static function makeWith($abstract, $parameters = [])
-        {            //Method inherited from \Illuminate\Container\Container
+        {            //Method inherited from \Illuminate\Container\Container         
                         /** @var \Illuminate\Foundation\Application $instance */
                         return $instance->makeWith($abstract, $parameters);
         }
@@ -1249,7 +1249,7 @@ namespace Illuminate\Support\Facades {
          * @return mixed Entry.
          * @static
          */        public static function get($id)
-        {            //Method inherited from \Illuminate\Container\Container
+        {            //Method inherited from \Illuminate\Container\Container         
                         /** @var \Illuminate\Foundation\Application $instance */
                         return $instance->get($id);
         }
@@ -1262,7 +1262,7 @@ namespace Illuminate\Support\Facades {
          * @throws \Illuminate\Contracts\Container\CircularDependencyException
          * @static
          */        public static function build($concrete)
-        {            //Method inherited from \Illuminate\Container\Container
+        {            //Method inherited from \Illuminate\Container\Container         
                         /** @var \Illuminate\Foundation\Application $instance */
                         return $instance->build($concrete);
         }
@@ -1274,7 +1274,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function beforeResolving($abstract, $callback = null)
-        {            //Method inherited from \Illuminate\Container\Container
+        {            //Method inherited from \Illuminate\Container\Container         
                         /** @var \Illuminate\Foundation\Application $instance */
                         $instance->beforeResolving($abstract, $callback);
         }
@@ -1286,7 +1286,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function resolving($abstract, $callback = null)
-        {            //Method inherited from \Illuminate\Container\Container
+        {            //Method inherited from \Illuminate\Container\Container         
                         /** @var \Illuminate\Foundation\Application $instance */
                         $instance->resolving($abstract, $callback);
         }
@@ -1298,7 +1298,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function afterResolving($abstract, $callback = null)
-        {            //Method inherited from \Illuminate\Container\Container
+        {            //Method inherited from \Illuminate\Container\Container         
                         /** @var \Illuminate\Foundation\Application $instance */
                         $instance->afterResolving($abstract, $callback);
         }
@@ -1308,7 +1308,7 @@ namespace Illuminate\Support\Facades {
          * @return array
          * @static
          */        public static function getBindings()
-        {            //Method inherited from \Illuminate\Container\Container
+        {            //Method inherited from \Illuminate\Container\Container         
                         /** @var \Illuminate\Foundation\Application $instance */
                         return $instance->getBindings();
         }
@@ -1319,7 +1319,7 @@ namespace Illuminate\Support\Facades {
          * @return string
          * @static
          */        public static function getAlias($abstract)
-        {            //Method inherited from \Illuminate\Container\Container
+        {            //Method inherited from \Illuminate\Container\Container         
                         /** @var \Illuminate\Foundation\Application $instance */
                         return $instance->getAlias($abstract);
         }
@@ -1330,7 +1330,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function forgetExtenders($abstract)
-        {            //Method inherited from \Illuminate\Container\Container
+        {            //Method inherited from \Illuminate\Container\Container         
                         /** @var \Illuminate\Foundation\Application $instance */
                         $instance->forgetExtenders($abstract);
         }
@@ -1341,7 +1341,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function forgetInstance($abstract)
-        {            //Method inherited from \Illuminate\Container\Container
+        {            //Method inherited from \Illuminate\Container\Container         
                         /** @var \Illuminate\Foundation\Application $instance */
                         $instance->forgetInstance($abstract);
         }
@@ -1351,7 +1351,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function forgetInstances()
-        {            //Method inherited from \Illuminate\Container\Container
+        {            //Method inherited from \Illuminate\Container\Container         
                         /** @var \Illuminate\Foundation\Application $instance */
                         $instance->forgetInstances();
         }
@@ -1361,7 +1361,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function forgetScopedInstances()
-        {            //Method inherited from \Illuminate\Container\Container
+        {            //Method inherited from \Illuminate\Container\Container         
                         /** @var \Illuminate\Foundation\Application $instance */
                         $instance->forgetScopedInstances();
         }
@@ -1371,7 +1371,7 @@ namespace Illuminate\Support\Facades {
          * @return static
          * @static
          */        public static function getInstance()
-        {            //Method inherited from \Illuminate\Container\Container
+        {            //Method inherited from \Illuminate\Container\Container         
                         return \Illuminate\Foundation\Application::getInstance();
         }
                     /**
@@ -1381,7 +1381,7 @@ namespace Illuminate\Support\Facades {
          * @return \Illuminate\Contracts\Container\Container|static
          * @static
          */        public static function setInstance($container = null)
-        {            //Method inherited from \Illuminate\Container\Container
+        {            //Method inherited from \Illuminate\Container\Container         
                         return \Illuminate\Foundation\Application::setInstance($container);
         }
                     /**
@@ -1391,7 +1391,7 @@ namespace Illuminate\Support\Facades {
          * @return bool
          * @static
          */        public static function offsetExists($key)
-        {            //Method inherited from \Illuminate\Container\Container
+        {            //Method inherited from \Illuminate\Container\Container         
                         /** @var \Illuminate\Foundation\Application $instance */
                         return $instance->offsetExists($key);
         }
@@ -1402,7 +1402,7 @@ namespace Illuminate\Support\Facades {
          * @return mixed
          * @static
          */        public static function offsetGet($key)
-        {            //Method inherited from \Illuminate\Container\Container
+        {            //Method inherited from \Illuminate\Container\Container         
                         /** @var \Illuminate\Foundation\Application $instance */
                         return $instance->offsetGet($key);
         }
@@ -1414,7 +1414,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function offsetSet($key, $value)
-        {            //Method inherited from \Illuminate\Container\Container
+        {            //Method inherited from \Illuminate\Container\Container         
                         /** @var \Illuminate\Foundation\Application $instance */
                         $instance->offsetSet($key, $value);
         }
@@ -1425,7 +1425,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function offsetUnset($key)
-        {            //Method inherited from \Illuminate\Container\Container
+        {            //Method inherited from \Illuminate\Container\Container         
                         /** @var \Illuminate\Foundation\Application $instance */
                         $instance->offsetUnset($key);
         }
@@ -1482,7 +1482,7 @@ namespace Illuminate\Support\Facades {
          * @return \App\Console\Kernel
          * @static
          */        public static function rerouteSymfonyCommandEvents()
-        {            //Method inherited from \Illuminate\Foundation\Console\Kernel
+        {            //Method inherited from \Illuminate\Foundation\Console\Kernel         
                         /** @var \App\Console\Kernel $instance */
                         return $instance->rerouteSymfonyCommandEvents();
         }
@@ -1494,7 +1494,7 @@ namespace Illuminate\Support\Facades {
          * @return int
          * @static
          */        public static function handle($input, $output = null)
-        {            //Method inherited from \Illuminate\Foundation\Console\Kernel
+        {            //Method inherited from \Illuminate\Foundation\Console\Kernel         
                         /** @var \App\Console\Kernel $instance */
                         return $instance->handle($input, $output);
         }
@@ -1506,7 +1506,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function terminate($input, $status)
-        {            //Method inherited from \Illuminate\Foundation\Console\Kernel
+        {            //Method inherited from \Illuminate\Foundation\Console\Kernel         
                         /** @var \App\Console\Kernel $instance */
                         $instance->terminate($input, $status);
         }
@@ -1518,7 +1518,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function whenCommandLifecycleIsLongerThan($threshold, $handler)
-        {            //Method inherited from \Illuminate\Foundation\Console\Kernel
+        {            //Method inherited from \Illuminate\Foundation\Console\Kernel         
                         /** @var \App\Console\Kernel $instance */
                         $instance->whenCommandLifecycleIsLongerThan($threshold, $handler);
         }
@@ -1528,7 +1528,7 @@ namespace Illuminate\Support\Facades {
          * @return \Illuminate\Support\Carbon|null
          * @static
          */        public static function commandStartedAt()
-        {            //Method inherited from \Illuminate\Foundation\Console\Kernel
+        {            //Method inherited from \Illuminate\Foundation\Console\Kernel         
                         /** @var \App\Console\Kernel $instance */
                         return $instance->commandStartedAt();
         }
@@ -1540,7 +1540,7 @@ namespace Illuminate\Support\Facades {
          * @return \Illuminate\Foundation\Console\ClosureCommand
          * @static
          */        public static function command($signature, $callback)
-        {            //Method inherited from \Illuminate\Foundation\Console\Kernel
+        {            //Method inherited from \Illuminate\Foundation\Console\Kernel         
                         /** @var \App\Console\Kernel $instance */
                         return $instance->command($signature, $callback);
         }
@@ -1551,7 +1551,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function registerCommand($command)
-        {            //Method inherited from \Illuminate\Foundation\Console\Kernel
+        {            //Method inherited from \Illuminate\Foundation\Console\Kernel         
                         /** @var \App\Console\Kernel $instance */
                         $instance->registerCommand($command);
         }
@@ -1565,7 +1565,7 @@ namespace Illuminate\Support\Facades {
          * @throws \Symfony\Component\Console\Exception\CommandNotFoundException
          * @static
          */        public static function call($command, $parameters = [], $outputBuffer = null)
-        {            //Method inherited from \Illuminate\Foundation\Console\Kernel
+        {            //Method inherited from \Illuminate\Foundation\Console\Kernel         
                         /** @var \App\Console\Kernel $instance */
                         return $instance->call($command, $parameters, $outputBuffer);
         }
@@ -1577,7 +1577,7 @@ namespace Illuminate\Support\Facades {
          * @return \Illuminate\Foundation\Bus\PendingDispatch
          * @static
          */        public static function queue($command, $parameters = [])
-        {            //Method inherited from \Illuminate\Foundation\Console\Kernel
+        {            //Method inherited from \Illuminate\Foundation\Console\Kernel         
                         /** @var \App\Console\Kernel $instance */
                         return $instance->queue($command, $parameters);
         }
@@ -1587,7 +1587,7 @@ namespace Illuminate\Support\Facades {
          * @return array
          * @static
          */        public static function all()
-        {            //Method inherited from \Illuminate\Foundation\Console\Kernel
+        {            //Method inherited from \Illuminate\Foundation\Console\Kernel         
                         /** @var \App\Console\Kernel $instance */
                         return $instance->all();
         }
@@ -1597,7 +1597,7 @@ namespace Illuminate\Support\Facades {
          * @return string
          * @static
          */        public static function output()
-        {            //Method inherited from \Illuminate\Foundation\Console\Kernel
+        {            //Method inherited from \Illuminate\Foundation\Console\Kernel         
                         /** @var \App\Console\Kernel $instance */
                         return $instance->output();
         }
@@ -1607,7 +1607,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function bootstrap()
-        {            //Method inherited from \Illuminate\Foundation\Console\Kernel
+        {            //Method inherited from \Illuminate\Foundation\Console\Kernel         
                         /** @var \App\Console\Kernel $instance */
                         $instance->bootstrap();
         }
@@ -1617,7 +1617,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function bootstrapWithoutBootingProviders()
-        {            //Method inherited from \Illuminate\Foundation\Console\Kernel
+        {            //Method inherited from \Illuminate\Foundation\Console\Kernel         
                         /** @var \App\Console\Kernel $instance */
                         $instance->bootstrapWithoutBootingProviders();
         }
@@ -1628,7 +1628,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function setArtisan($artisan)
-        {            //Method inherited from \Illuminate\Foundation\Console\Kernel
+        {            //Method inherited from \Illuminate\Foundation\Console\Kernel         
                         /** @var \App\Console\Kernel $instance */
                         $instance->setArtisan($artisan);
         }
@@ -2615,7 +2615,7 @@ namespace Illuminate\Support\Facades {
          * @return string
          * @static
          */        public static function getCompiledPath($path)
-        {            //Method inherited from \Illuminate\View\Compilers\Compiler
+        {            //Method inherited from \Illuminate\View\Compilers\Compiler         
                         /** @var \Illuminate\View\Compilers\BladeCompiler $instance */
                         return $instance->getCompiledPath($path);
         }
@@ -2627,7 +2627,7 @@ namespace Illuminate\Support\Facades {
          * @throws \ErrorException
          * @static
          */        public static function isExpired($path)
-        {            //Method inherited from \Illuminate\View\Compilers\Compiler
+        {            //Method inherited from \Illuminate\View\Compilers\Compiler         
                         /** @var \Illuminate\View\Compilers\BladeCompiler $instance */
                         return $instance->isExpired($path);
         }
@@ -4918,7 +4918,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function useDefaultQueryGrammar()
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         $instance->useDefaultQueryGrammar();
         }
@@ -4928,7 +4928,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function useDefaultSchemaGrammar()
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         $instance->useDefaultSchemaGrammar();
         }
@@ -4938,7 +4938,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function useDefaultPostProcessor()
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         $instance->useDefaultPostProcessor();
         }
@@ -4950,7 +4950,7 @@ namespace Illuminate\Support\Facades {
          * @return \Illuminate\Database\Query\Builder
          * @static
          */        public static function table($table, $as = null)
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->table($table, $as);
         }
@@ -4960,7 +4960,7 @@ namespace Illuminate\Support\Facades {
          * @return \Illuminate\Database\Query\Builder
          * @static
          */        public static function query()
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->query();
         }
@@ -4973,7 +4973,7 @@ namespace Illuminate\Support\Facades {
          * @return mixed
          * @static
          */        public static function selectOne($query, $bindings = [], $useReadPdo = true)
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->selectOne($query, $bindings, $useReadPdo);
         }
@@ -4987,7 +4987,7 @@ namespace Illuminate\Support\Facades {
          * @throws \Illuminate\Database\MultipleColumnsSelectedException
          * @static
          */        public static function scalar($query, $bindings = [], $useReadPdo = true)
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->scalar($query, $bindings, $useReadPdo);
         }
@@ -4999,7 +4999,7 @@ namespace Illuminate\Support\Facades {
          * @return array
          * @static
          */        public static function selectFromWriteConnection($query, $bindings = [])
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->selectFromWriteConnection($query, $bindings);
         }
@@ -5012,7 +5012,7 @@ namespace Illuminate\Support\Facades {
          * @return array
          * @static
          */        public static function select($query, $bindings = [], $useReadPdo = true)
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->select($query, $bindings, $useReadPdo);
         }
@@ -5025,7 +5025,7 @@ namespace Illuminate\Support\Facades {
          * @return array
          * @static
          */        public static function selectResultSets($query, $bindings = [], $useReadPdo = true)
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->selectResultSets($query, $bindings, $useReadPdo);
         }
@@ -5038,7 +5038,7 @@ namespace Illuminate\Support\Facades {
          * @return \Generator
          * @static
          */        public static function cursor($query, $bindings = [], $useReadPdo = true)
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->cursor($query, $bindings, $useReadPdo);
         }
@@ -5050,7 +5050,7 @@ namespace Illuminate\Support\Facades {
          * @return int
          * @static
          */        public static function update($query, $bindings = [])
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->update($query, $bindings);
         }
@@ -5062,7 +5062,7 @@ namespace Illuminate\Support\Facades {
          * @return int
          * @static
          */        public static function delete($query, $bindings = [])
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->delete($query, $bindings);
         }
@@ -5074,7 +5074,7 @@ namespace Illuminate\Support\Facades {
          * @return bool
          * @static
          */        public static function statement($query, $bindings = [])
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->statement($query, $bindings);
         }
@@ -5086,7 +5086,7 @@ namespace Illuminate\Support\Facades {
          * @return int
          * @static
          */        public static function affectingStatement($query, $bindings = [])
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->affectingStatement($query, $bindings);
         }
@@ -5097,7 +5097,7 @@ namespace Illuminate\Support\Facades {
          * @return bool
          * @static
          */        public static function unprepared($query)
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->unprepared($query);
         }
@@ -5108,7 +5108,7 @@ namespace Illuminate\Support\Facades {
          * @return array
          * @static
          */        public static function pretend($callback)
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->pretend($callback);
         }
@@ -5119,7 +5119,7 @@ namespace Illuminate\Support\Facades {
          * @return mixed
          * @static
          */        public static function withoutPretending($callback)
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->withoutPretending($callback);
         }
@@ -5131,7 +5131,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function bindValues($statement, $bindings)
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         $instance->bindValues($statement, $bindings);
         }
@@ -5142,7 +5142,7 @@ namespace Illuminate\Support\Facades {
          * @return array
          * @static
          */        public static function prepareBindings($bindings)
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->prepareBindings($bindings);
         }
@@ -5155,7 +5155,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function logQuery($query, $bindings, $time = null)
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         $instance->logQuery($query, $bindings, $time);
         }
@@ -5167,7 +5167,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function whenQueryingForLongerThan($threshold, $handler)
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         $instance->whenQueryingForLongerThan($threshold, $handler);
         }
@@ -5177,7 +5177,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function allowQueryDurationHandlersToRunAgain()
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         $instance->allowQueryDurationHandlersToRunAgain();
         }
@@ -5187,7 +5187,7 @@ namespace Illuminate\Support\Facades {
          * @return float
          * @static
          */        public static function totalQueryDuration()
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->totalQueryDuration();
         }
@@ -5197,7 +5197,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function resetTotalQueryDuration()
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         $instance->resetTotalQueryDuration();
         }
@@ -5207,7 +5207,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function reconnectIfMissingConnection()
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         $instance->reconnectIfMissingConnection();
         }
@@ -5218,7 +5218,7 @@ namespace Illuminate\Support\Facades {
          * @return \Illuminate\Database\MySqlConnection
          * @static
          */        public static function beforeStartingTransaction($callback)
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->beforeStartingTransaction($callback);
         }
@@ -5229,7 +5229,7 @@ namespace Illuminate\Support\Facades {
          * @return \Illuminate\Database\MySqlConnection
          * @static
          */        public static function beforeExecuting($callback)
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->beforeExecuting($callback);
         }
@@ -5240,7 +5240,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function listen($callback)
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         $instance->listen($callback);
         }
@@ -5251,7 +5251,7 @@ namespace Illuminate\Support\Facades {
          * @return \Illuminate\Contracts\Database\Query\Expression
          * @static
          */        public static function raw($value)
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->raw($value);
         }
@@ -5263,7 +5263,7 @@ namespace Illuminate\Support\Facades {
          * @return string
          * @static
          */        public static function escape($value, $binary = false)
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->escape($value, $binary);
         }
@@ -5273,7 +5273,7 @@ namespace Illuminate\Support\Facades {
          * @return bool
          * @static
          */        public static function hasModifiedRecords()
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->hasModifiedRecords();
         }
@@ -5284,7 +5284,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function recordsHaveBeenModified($value = true)
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         $instance->recordsHaveBeenModified($value);
         }
@@ -5295,7 +5295,7 @@ namespace Illuminate\Support\Facades {
          * @return \Illuminate\Database\MySqlConnection
          * @static
          */        public static function setRecordModificationState($value)
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->setRecordModificationState($value);
         }
@@ -5305,7 +5305,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function forgetRecordModificationState()
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         $instance->forgetRecordModificationState();
         }
@@ -5316,7 +5316,7 @@ namespace Illuminate\Support\Facades {
          * @return \Illuminate\Database\MySqlConnection
          * @static
          */        public static function useWriteConnectionWhenReading($value = true)
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->useWriteConnectionWhenReading($value);
         }
@@ -5326,7 +5326,7 @@ namespace Illuminate\Support\Facades {
          * @return bool
          * @static
          */        public static function isDoctrineAvailable()
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->isDoctrineAvailable();
         }
@@ -5336,7 +5336,7 @@ namespace Illuminate\Support\Facades {
          * @return bool
          * @static
          */        public static function usingNativeSchemaOperations()
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->usingNativeSchemaOperations();
         }
@@ -5348,7 +5348,7 @@ namespace Illuminate\Support\Facades {
          * @return \Doctrine\DBAL\Schema\Column
          * @static
          */        public static function getDoctrineColumn($table, $column)
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->getDoctrineColumn($table, $column);
         }
@@ -5358,7 +5358,7 @@ namespace Illuminate\Support\Facades {
          * @return \Doctrine\DBAL\Schema\AbstractSchemaManager
          * @static
          */        public static function getDoctrineSchemaManager()
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->getDoctrineSchemaManager();
         }
@@ -5368,7 +5368,7 @@ namespace Illuminate\Support\Facades {
          * @return \Doctrine\DBAL\Connection
          * @static
          */        public static function getDoctrineConnection()
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->getDoctrineConnection();
         }
@@ -5378,7 +5378,7 @@ namespace Illuminate\Support\Facades {
          * @return \PDO
          * @static
          */        public static function getPdo()
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->getPdo();
         }
@@ -5388,7 +5388,7 @@ namespace Illuminate\Support\Facades {
          * @return \PDO|\Closure|null
          * @static
          */        public static function getRawPdo()
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->getRawPdo();
         }
@@ -5398,7 +5398,7 @@ namespace Illuminate\Support\Facades {
          * @return \PDO
          * @static
          */        public static function getReadPdo()
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->getReadPdo();
         }
@@ -5408,7 +5408,7 @@ namespace Illuminate\Support\Facades {
          * @return \PDO|\Closure|null
          * @static
          */        public static function getRawReadPdo()
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->getRawReadPdo();
         }
@@ -5419,7 +5419,7 @@ namespace Illuminate\Support\Facades {
          * @return \Illuminate\Database\MySqlConnection
          * @static
          */        public static function setPdo($pdo)
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->setPdo($pdo);
         }
@@ -5430,7 +5430,7 @@ namespace Illuminate\Support\Facades {
          * @return \Illuminate\Database\MySqlConnection
          * @static
          */        public static function setReadPdo($pdo)
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->setReadPdo($pdo);
         }
@@ -5440,7 +5440,7 @@ namespace Illuminate\Support\Facades {
          * @return string|null
          * @static
          */        public static function getName()
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->getName();
         }
@@ -5450,7 +5450,7 @@ namespace Illuminate\Support\Facades {
          * @return string|null
          * @static
          */        public static function getNameWithReadWriteType()
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->getNameWithReadWriteType();
         }
@@ -5461,7 +5461,7 @@ namespace Illuminate\Support\Facades {
          * @return mixed
          * @static
          */        public static function getConfig($option = null)
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->getConfig($option);
         }
@@ -5471,7 +5471,7 @@ namespace Illuminate\Support\Facades {
          * @return string
          * @static
          */        public static function getDriverName()
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->getDriverName();
         }
@@ -5481,7 +5481,7 @@ namespace Illuminate\Support\Facades {
          * @return \Illuminate\Database\Query\Grammars\Grammar
          * @static
          */        public static function getQueryGrammar()
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->getQueryGrammar();
         }
@@ -5492,7 +5492,7 @@ namespace Illuminate\Support\Facades {
          * @return \Illuminate\Database\MySqlConnection
          * @static
          */        public static function setQueryGrammar($grammar)
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->setQueryGrammar($grammar);
         }
@@ -5502,7 +5502,7 @@ namespace Illuminate\Support\Facades {
          * @return \Illuminate\Database\Schema\Grammars\Grammar
          * @static
          */        public static function getSchemaGrammar()
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->getSchemaGrammar();
         }
@@ -5513,7 +5513,7 @@ namespace Illuminate\Support\Facades {
          * @return \Illuminate\Database\MySqlConnection
          * @static
          */        public static function setSchemaGrammar($grammar)
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->setSchemaGrammar($grammar);
         }
@@ -5523,7 +5523,7 @@ namespace Illuminate\Support\Facades {
          * @return \Illuminate\Database\Query\Processors\Processor
          * @static
          */        public static function getPostProcessor()
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->getPostProcessor();
         }
@@ -5534,7 +5534,7 @@ namespace Illuminate\Support\Facades {
          * @return \Illuminate\Database\MySqlConnection
          * @static
          */        public static function setPostProcessor($processor)
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->setPostProcessor($processor);
         }
@@ -5544,7 +5544,7 @@ namespace Illuminate\Support\Facades {
          * @return \Illuminate\Contracts\Events\Dispatcher
          * @static
          */        public static function getEventDispatcher()
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->getEventDispatcher();
         }
@@ -5555,7 +5555,7 @@ namespace Illuminate\Support\Facades {
          * @return \Illuminate\Database\MySqlConnection
          * @static
          */        public static function setEventDispatcher($events)
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->setEventDispatcher($events);
         }
@@ -5565,7 +5565,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function unsetEventDispatcher()
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         $instance->unsetEventDispatcher();
         }
@@ -5576,7 +5576,7 @@ namespace Illuminate\Support\Facades {
          * @return \Illuminate\Database\MySqlConnection
          * @static
          */        public static function setTransactionManager($manager)
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->setTransactionManager($manager);
         }
@@ -5586,7 +5586,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function unsetTransactionManager()
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         $instance->unsetTransactionManager();
         }
@@ -5596,7 +5596,7 @@ namespace Illuminate\Support\Facades {
          * @return bool
          * @static
          */        public static function pretending()
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->pretending();
         }
@@ -5606,7 +5606,7 @@ namespace Illuminate\Support\Facades {
          * @return array
          * @static
          */        public static function getQueryLog()
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->getQueryLog();
         }
@@ -5616,7 +5616,7 @@ namespace Illuminate\Support\Facades {
          * @return array
          * @static
          */        public static function getRawQueryLog()
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->getRawQueryLog();
         }
@@ -5626,7 +5626,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function flushQueryLog()
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         $instance->flushQueryLog();
         }
@@ -5636,7 +5636,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function enableQueryLog()
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         $instance->enableQueryLog();
         }
@@ -5646,7 +5646,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function disableQueryLog()
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         $instance->disableQueryLog();
         }
@@ -5656,7 +5656,7 @@ namespace Illuminate\Support\Facades {
          * @return bool
          * @static
          */        public static function logging()
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->logging();
         }
@@ -5666,7 +5666,7 @@ namespace Illuminate\Support\Facades {
          * @return string
          * @static
          */        public static function getDatabaseName()
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->getDatabaseName();
         }
@@ -5677,7 +5677,7 @@ namespace Illuminate\Support\Facades {
          * @return \Illuminate\Database\MySqlConnection
          * @static
          */        public static function setDatabaseName($database)
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->setDatabaseName($database);
         }
@@ -5688,7 +5688,7 @@ namespace Illuminate\Support\Facades {
          * @return \Illuminate\Database\MySqlConnection
          * @static
          */        public static function setReadWriteType($readWriteType)
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->setReadWriteType($readWriteType);
         }
@@ -5698,7 +5698,7 @@ namespace Illuminate\Support\Facades {
          * @return string
          * @static
          */        public static function getTablePrefix()
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->getTablePrefix();
         }
@@ -5709,7 +5709,7 @@ namespace Illuminate\Support\Facades {
          * @return \Illuminate\Database\MySqlConnection
          * @static
          */        public static function setTablePrefix($prefix)
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->setTablePrefix($prefix);
         }
@@ -5720,7 +5720,7 @@ namespace Illuminate\Support\Facades {
          * @return \Illuminate\Database\Grammar
          * @static
          */        public static function withTablePrefix($grammar)
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->withTablePrefix($grammar);
         }
@@ -5732,7 +5732,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function resolverFor($driver, $callback)
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         \Illuminate\Database\MySqlConnection::resolverFor($driver, $callback);
         }
                     /**
@@ -5742,7 +5742,7 @@ namespace Illuminate\Support\Facades {
          * @return mixed
          * @static
          */        public static function getResolver($driver)
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         return \Illuminate\Database\MySqlConnection::getResolver($driver);
         }
                     /**
@@ -5754,7 +5754,7 @@ namespace Illuminate\Support\Facades {
          * @throws \Throwable
          * @static
          */        public static function transaction($callback, $attempts = 1)
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->transaction($callback, $attempts);
         }
@@ -5765,7 +5765,7 @@ namespace Illuminate\Support\Facades {
          * @throws \Throwable
          * @static
          */        public static function beginTransaction()
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         $instance->beginTransaction();
         }
@@ -5776,7 +5776,7 @@ namespace Illuminate\Support\Facades {
          * @throws \Throwable
          * @static
          */        public static function commit()
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         $instance->commit();
         }
@@ -5788,7 +5788,7 @@ namespace Illuminate\Support\Facades {
          * @throws \Throwable
          * @static
          */        public static function rollBack($toLevel = null)
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         $instance->rollBack($toLevel);
         }
@@ -5798,7 +5798,7 @@ namespace Illuminate\Support\Facades {
          * @return int
          * @static
          */        public static function transactionLevel()
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->transactionLevel();
         }
@@ -5810,7 +5810,7 @@ namespace Illuminate\Support\Facades {
          * @throws \RuntimeException
          * @static
          */        public static function afterCommit($callback)
-        {            //Method inherited from \Illuminate\Database\Connection
+        {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         $instance->afterCommit($callback);
         }
@@ -7185,7 +7185,7 @@ namespace Illuminate\Support\Facades {
          * @throws \InvalidArgumentException
          * @static
          */        public static function driver($driver = null)
-        {            //Method inherited from \Illuminate\Support\Manager
+        {            //Method inherited from \Illuminate\Support\Manager         
                         /** @var \Illuminate\Hashing\HashManager $instance */
                         return $instance->driver($driver);
         }
@@ -7197,7 +7197,7 @@ namespace Illuminate\Support\Facades {
          * @return \Illuminate\Hashing\HashManager
          * @static
          */        public static function extend($driver, $callback)
-        {            //Method inherited from \Illuminate\Support\Manager
+        {            //Method inherited from \Illuminate\Support\Manager         
                         /** @var \Illuminate\Hashing\HashManager $instance */
                         return $instance->extend($driver, $callback);
         }
@@ -7207,7 +7207,7 @@ namespace Illuminate\Support\Facades {
          * @return array
          * @static
          */        public static function getDrivers()
-        {            //Method inherited from \Illuminate\Support\Manager
+        {            //Method inherited from \Illuminate\Support\Manager         
                         /** @var \Illuminate\Hashing\HashManager $instance */
                         return $instance->getDrivers();
         }
@@ -7217,7 +7217,7 @@ namespace Illuminate\Support\Facades {
          * @return \Illuminate\Contracts\Container\Container
          * @static
          */        public static function getContainer()
-        {            //Method inherited from \Illuminate\Support\Manager
+        {            //Method inherited from \Illuminate\Support\Manager         
                         /** @var \Illuminate\Hashing\HashManager $instance */
                         return $instance->getContainer();
         }
@@ -7228,7 +7228,7 @@ namespace Illuminate\Support\Facades {
          * @return \Illuminate\Hashing\HashManager
          * @static
          */        public static function setContainer($container)
-        {            //Method inherited from \Illuminate\Support\Manager
+        {            //Method inherited from \Illuminate\Support\Manager         
                         /** @var \Illuminate\Hashing\HashManager $instance */
                         return $instance->setContainer($container);
         }
@@ -7238,7 +7238,7 @@ namespace Illuminate\Support\Facades {
          * @return \Illuminate\Hashing\HashManager
          * @static
          */        public static function forgetDrivers()
-        {            //Method inherited from \Illuminate\Support\Manager
+        {            //Method inherited from \Illuminate\Support\Manager         
                         /** @var \Illuminate\Hashing\HashManager $instance */
                         return $instance->forgetDrivers();
         }
@@ -7846,7 +7846,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function setParsedKey($key, $parsed)
-        {            //Method inherited from \Illuminate\Support\NamespacedItemResolver
+        {            //Method inherited from \Illuminate\Support\NamespacedItemResolver         
                         /** @var \Illuminate\Translation\Translator $instance */
                         $instance->setParsedKey($key, $parsed);
         }
@@ -7856,7 +7856,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function flushParsedKeys()
-        {            //Method inherited from \Illuminate\Support\NamespacedItemResolver
+        {            //Method inherited from \Illuminate\Support\NamespacedItemResolver         
                         /** @var \Illuminate\Translation\Translator $instance */
                         $instance->flushParsedKeys();
         }
@@ -8649,7 +8649,7 @@ namespace Illuminate\Support\Facades {
          * @throws \InvalidArgumentException
          * @static
          */        public static function driver($driver = null)
-        {            //Method inherited from \Illuminate\Support\Manager
+        {            //Method inherited from \Illuminate\Support\Manager         
                         /** @var \Illuminate\Notifications\ChannelManager $instance */
                         return $instance->driver($driver);
         }
@@ -8661,7 +8661,7 @@ namespace Illuminate\Support\Facades {
          * @return \Illuminate\Notifications\ChannelManager
          * @static
          */        public static function extend($driver, $callback)
-        {            //Method inherited from \Illuminate\Support\Manager
+        {            //Method inherited from \Illuminate\Support\Manager         
                         /** @var \Illuminate\Notifications\ChannelManager $instance */
                         return $instance->extend($driver, $callback);
         }
@@ -8671,7 +8671,7 @@ namespace Illuminate\Support\Facades {
          * @return array
          * @static
          */        public static function getDrivers()
-        {            //Method inherited from \Illuminate\Support\Manager
+        {            //Method inherited from \Illuminate\Support\Manager         
                         /** @var \Illuminate\Notifications\ChannelManager $instance */
                         return $instance->getDrivers();
         }
@@ -8681,7 +8681,7 @@ namespace Illuminate\Support\Facades {
          * @return \Illuminate\Contracts\Container\Container
          * @static
          */        public static function getContainer()
-        {            //Method inherited from \Illuminate\Support\Manager
+        {            //Method inherited from \Illuminate\Support\Manager         
                         /** @var \Illuminate\Notifications\ChannelManager $instance */
                         return $instance->getContainer();
         }
@@ -8692,7 +8692,7 @@ namespace Illuminate\Support\Facades {
          * @return \Illuminate\Notifications\ChannelManager
          * @static
          */        public static function setContainer($container)
-        {            //Method inherited from \Illuminate\Support\Manager
+        {            //Method inherited from \Illuminate\Support\Manager         
                         /** @var \Illuminate\Notifications\ChannelManager $instance */
                         return $instance->setContainer($container);
         }
@@ -8702,7 +8702,7 @@ namespace Illuminate\Support\Facades {
          * @return \Illuminate\Notifications\ChannelManager
          * @static
          */        public static function forgetDrivers()
-        {            //Method inherited from \Illuminate\Support\Manager
+        {            //Method inherited from \Illuminate\Support\Manager         
                         /** @var \Illuminate\Notifications\ChannelManager $instance */
                         return $instance->forgetDrivers();
         }
@@ -9695,7 +9695,7 @@ namespace Illuminate\Support\Facades {
          * @return mixed
          * @static
          */        public static function getJobTries($job)
-        {            //Method inherited from \Illuminate\Queue\Queue
+        {            //Method inherited from \Illuminate\Queue\Queue         
                         /** @var \Illuminate\Queue\SyncQueue $instance */
                         return $instance->getJobTries($job);
         }
@@ -9706,7 +9706,7 @@ namespace Illuminate\Support\Facades {
          * @return mixed
          * @static
          */        public static function getJobBackoff($job)
-        {            //Method inherited from \Illuminate\Queue\Queue
+        {            //Method inherited from \Illuminate\Queue\Queue         
                         /** @var \Illuminate\Queue\SyncQueue $instance */
                         return $instance->getJobBackoff($job);
         }
@@ -9717,7 +9717,7 @@ namespace Illuminate\Support\Facades {
          * @return mixed
          * @static
          */        public static function getJobExpiration($job)
-        {            //Method inherited from \Illuminate\Queue\Queue
+        {            //Method inherited from \Illuminate\Queue\Queue         
                         /** @var \Illuminate\Queue\SyncQueue $instance */
                         return $instance->getJobExpiration($job);
         }
@@ -9728,7 +9728,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function createPayloadUsing($callback)
-        {            //Method inherited from \Illuminate\Queue\Queue
+        {            //Method inherited from \Illuminate\Queue\Queue         
                         \Illuminate\Queue\SyncQueue::createPayloadUsing($callback);
         }
                     /**
@@ -9737,7 +9737,7 @@ namespace Illuminate\Support\Facades {
          * @return \Illuminate\Container\Container
          * @static
          */        public static function getContainer()
-        {            //Method inherited from \Illuminate\Queue\Queue
+        {            //Method inherited from \Illuminate\Queue\Queue         
                         /** @var \Illuminate\Queue\SyncQueue $instance */
                         return $instance->getContainer();
         }
@@ -9748,7 +9748,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function setContainer($container)
-        {            //Method inherited from \Illuminate\Queue\Queue
+        {            //Method inherited from \Illuminate\Queue\Queue         
                         /** @var \Illuminate\Queue\SyncQueue $instance */
                         $instance->setContainer($container);
         }
@@ -10729,7 +10729,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function initialize($query = [], $request = [], $attributes = [], $cookies = [], $files = [], $server = [], $content = null)
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         $instance->initialize($query, $request, $attributes, $cookies, $files, $server, $content);
         }
@@ -10738,7 +10738,7 @@ namespace Illuminate\Support\Facades {
          *
          * @static
          */        public static function createFromGlobals()
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         return \Illuminate\Http\Request::createFromGlobals();
         }
                     /**
@@ -10757,7 +10757,7 @@ namespace Illuminate\Support\Facades {
          * @throws BadRequestException When the URI is invalid
          * @static
          */        public static function create($uri, $method = 'GET', $parameters = [], $cookies = [], $files = [], $server = [], $content = null)
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         return \Illuminate\Http\Request::create($uri, $method, $parameters, $cookies, $files, $server, $content);
         }
                     /**
@@ -10770,7 +10770,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function setFactory($callable)
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         \Illuminate\Http\Request::setFactory($callable);
         }
                     /**
@@ -10782,7 +10782,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function overrideGlobals()
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         $instance->overrideGlobals();
         }
@@ -10796,7 +10796,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function setTrustedProxies($proxies, $trustedHeaderSet)
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         \Illuminate\Http\Request::setTrustedProxies($proxies, $trustedHeaderSet);
         }
                     /**
@@ -10805,7 +10805,7 @@ namespace Illuminate\Support\Facades {
          * @return string[]
          * @static
          */        public static function getTrustedProxies()
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         return \Illuminate\Http\Request::getTrustedProxies();
         }
                     /**
@@ -10814,7 +10814,7 @@ namespace Illuminate\Support\Facades {
          * @return int A bit field of Request::HEADER_* that defines which headers are trusted from your proxies
          * @static
          */        public static function getTrustedHeaderSet()
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         return \Illuminate\Http\Request::getTrustedHeaderSet();
         }
                     /**
@@ -10826,7 +10826,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function setTrustedHosts($hostPatterns)
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         \Illuminate\Http\Request::setTrustedHosts($hostPatterns);
         }
                     /**
@@ -10835,7 +10835,7 @@ namespace Illuminate\Support\Facades {
          * @return string[]
          * @static
          */        public static function getTrustedHosts()
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         return \Illuminate\Http\Request::getTrustedHosts();
         }
                     /**
@@ -10846,7 +10846,7 @@ namespace Illuminate\Support\Facades {
          *
          * @static
          */        public static function normalizeQueryString($qs)
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         return \Illuminate\Http\Request::normalizeQueryString($qs);
         }
                     /**
@@ -10863,7 +10863,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function enableHttpMethodParameterOverride()
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         \Illuminate\Http\Request::enableHttpMethodParameterOverride();
         }
                     /**
@@ -10871,7 +10871,7 @@ namespace Illuminate\Support\Facades {
          *
          * @static
          */        public static function getHttpMethodParameterOverride()
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         return \Illuminate\Http\Request::getHttpMethodParameterOverride();
         }
                     /**
@@ -10880,7 +10880,7 @@ namespace Illuminate\Support\Facades {
          *
          * @static
          */        public static function hasPreviousSession()
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->hasPreviousSession();
         }
@@ -10888,7 +10888,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function setSession($session)
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         $instance->setSession($session);
         }
@@ -10897,7 +10897,7 @@ namespace Illuminate\Support\Facades {
          * @param callable():  SessionInterface $factory
          * @static
          */        public static function setSessionFactory($factory)
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->setSessionFactory($factory);
         }
@@ -10913,7 +10913,7 @@ namespace Illuminate\Support\Facades {
          * @see getClientIp()
          * @static
          */        public static function getClientIps()
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->getClientIps();
         }
@@ -10934,7 +10934,7 @@ namespace Illuminate\Support\Facades {
          * @see https://wikipedia.org/wiki/X-Forwarded-For
          * @static
          */        public static function getClientIp()
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->getClientIp();
         }
@@ -10943,7 +10943,7 @@ namespace Illuminate\Support\Facades {
          *
          * @static
          */        public static function getScriptName()
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->getScriptName();
         }
@@ -10962,7 +10962,7 @@ namespace Illuminate\Support\Facades {
          * @return string The raw path (i.e. not urldecoded)
          * @static
          */        public static function getPathInfo()
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->getPathInfo();
         }
@@ -10979,7 +10979,7 @@ namespace Illuminate\Support\Facades {
          * @return string The raw path (i.e. not urldecoded)
          * @static
          */        public static function getBasePath()
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->getBasePath();
         }
@@ -10994,7 +10994,7 @@ namespace Illuminate\Support\Facades {
          * @return string The raw URL (i.e. not urldecoded)
          * @static
          */        public static function getBaseUrl()
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->getBaseUrl();
         }
@@ -11003,7 +11003,7 @@ namespace Illuminate\Support\Facades {
          *
          * @static
          */        public static function getScheme()
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->getScheme();
         }
@@ -11018,7 +11018,7 @@ namespace Illuminate\Support\Facades {
          * @return int|string|null Can be a string if fetched from the server bag
          * @static
          */        public static function getPort()
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->getPort();
         }
@@ -11027,7 +11027,7 @@ namespace Illuminate\Support\Facades {
          *
          * @static
          */        public static function getUser()
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->getUser();
         }
@@ -11036,7 +11036,7 @@ namespace Illuminate\Support\Facades {
          *
          * @static
          */        public static function getPassword()
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->getPassword();
         }
@@ -11046,7 +11046,7 @@ namespace Illuminate\Support\Facades {
          * @return string|null A user name if any and, optionally, scheme-specific information about how to gain authorization to access the server
          * @static
          */        public static function getUserInfo()
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->getUserInfo();
         }
@@ -11057,7 +11057,7 @@ namespace Illuminate\Support\Facades {
          *
          * @static
          */        public static function getHttpHost()
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->getHttpHost();
         }
@@ -11067,7 +11067,7 @@ namespace Illuminate\Support\Facades {
          * @return string The raw URI (i.e. not URI decoded)
          * @static
          */        public static function getRequestUri()
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->getRequestUri();
         }
@@ -11079,7 +11079,7 @@ namespace Illuminate\Support\Facades {
          *
          * @static
          */        public static function getSchemeAndHttpHost()
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->getSchemeAndHttpHost();
         }
@@ -11089,7 +11089,7 @@ namespace Illuminate\Support\Facades {
          * @see getQueryString()
          * @static
          */        public static function getUri()
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->getUri();
         }
@@ -11099,7 +11099,7 @@ namespace Illuminate\Support\Facades {
          * @param string $path A path to use instead of the current one
          * @static
          */        public static function getUriForPath($path)
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->getUriForPath($path);
         }
@@ -11120,7 +11120,7 @@ namespace Illuminate\Support\Facades {
          *
          * @static
          */        public static function getRelativeUriForPath($path)
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->getRelativeUriForPath($path);
         }
@@ -11132,7 +11132,7 @@ namespace Illuminate\Support\Facades {
          *
          * @static
          */        public static function getQueryString()
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->getQueryString();
         }
@@ -11146,7 +11146,7 @@ namespace Illuminate\Support\Facades {
          *
          * @static
          */        public static function isSecure()
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->isSecure();
         }
@@ -11161,7 +11161,7 @@ namespace Illuminate\Support\Facades {
          * @throws SuspiciousOperationException when the host name is invalid or not trusted
          * @static
          */        public static function getHost()
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->getHost();
         }
@@ -11171,7 +11171,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function setMethod($method)
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         $instance->setMethod($method);
         }
@@ -11189,7 +11189,7 @@ namespace Illuminate\Support\Facades {
          * @see getRealMethod()
          * @static
          */        public static function getMethod()
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->getMethod();
         }
@@ -11199,7 +11199,7 @@ namespace Illuminate\Support\Facades {
          * @see getMethod()
          * @static
          */        public static function getRealMethod()
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->getRealMethod();
         }
@@ -11208,7 +11208,7 @@ namespace Illuminate\Support\Facades {
          *
          * @static
          */        public static function getMimeType($format)
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->getMimeType($format);
         }
@@ -11218,7 +11218,7 @@ namespace Illuminate\Support\Facades {
          * @return string[]
          * @static
          */        public static function getMimeTypes($format)
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         return \Illuminate\Http\Request::getMimeTypes($format);
         }
                     /**
@@ -11226,7 +11226,7 @@ namespace Illuminate\Support\Facades {
          *
          * @static
          */        public static function getFormat($mimeType)
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->getFormat($mimeType);
         }
@@ -11237,7 +11237,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function setFormat($format, $mimeTypes)
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         $instance->setFormat($format, $mimeTypes);
         }
@@ -11253,7 +11253,7 @@ namespace Illuminate\Support\Facades {
          * @see getPreferredFormat
          * @static
          */        public static function getRequestFormat($default = 'html')
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->getRequestFormat($default);
         }
@@ -11263,7 +11263,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function setRequestFormat($format)
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         $instance->setRequestFormat($format);
         }
@@ -11273,7 +11273,7 @@ namespace Illuminate\Support\Facades {
          * @deprecated since Symfony 6.2, use getContentTypeFormat() instead
          * @static
          */        public static function getContentType()
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->getContentType();
         }
@@ -11283,7 +11283,7 @@ namespace Illuminate\Support\Facades {
          * @see Request::$formats
          * @static
          */        public static function getContentTypeFormat()
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->getContentTypeFormat();
         }
@@ -11293,7 +11293,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function setDefaultLocale($locale)
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         $instance->setDefaultLocale($locale);
         }
@@ -11302,7 +11302,7 @@ namespace Illuminate\Support\Facades {
          *
          * @static
          */        public static function getDefaultLocale()
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->getDefaultLocale();
         }
@@ -11312,7 +11312,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function setLocale($locale)
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         $instance->setLocale($locale);
         }
@@ -11321,7 +11321,7 @@ namespace Illuminate\Support\Facades {
          *
          * @static
          */        public static function getLocale()
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->getLocale();
         }
@@ -11331,7 +11331,7 @@ namespace Illuminate\Support\Facades {
          * @param string $method Uppercase request method (GET, POST etc)
          * @static
          */        public static function isMethod($method)
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->isMethod($method);
         }
@@ -11341,7 +11341,7 @@ namespace Illuminate\Support\Facades {
          * @see https://tools.ietf.org/html/rfc7231#section-4.2.1
          * @static
          */        public static function isMethodSafe()
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->isMethodSafe();
         }
@@ -11350,7 +11350,7 @@ namespace Illuminate\Support\Facades {
          *
          * @static
          */        public static function isMethodIdempotent()
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->isMethodIdempotent();
         }
@@ -11360,7 +11360,7 @@ namespace Illuminate\Support\Facades {
          * @see https://tools.ietf.org/html/rfc7231#section-4.2.3
          * @static
          */        public static function isMethodCacheable()
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->isMethodCacheable();
         }
@@ -11375,7 +11375,7 @@ namespace Illuminate\Support\Facades {
          *
          * @static
          */        public static function getProtocolVersion()
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->getProtocolVersion();
         }
@@ -11387,7 +11387,7 @@ namespace Illuminate\Support\Facades {
          * @psalm-return ($asResource is true ? resource : string)
          * @static
          */        public static function getContent($asResource = false)
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->getContent($asResource);
         }
@@ -11397,7 +11397,7 @@ namespace Illuminate\Support\Facades {
          * @throws JsonException When the body cannot be decoded to an array
          * @static
          */        public static function getPayload()
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->getPayload();
         }
@@ -11406,14 +11406,14 @@ namespace Illuminate\Support\Facades {
          *
          * @static
          */        public static function getETags()
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->getETags();
         }
                     /**
          * @static
          */        public static function isNoCache()
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->isNoCache();
         }
@@ -11427,7 +11427,7 @@ namespace Illuminate\Support\Facades {
          *
          * @static
          */        public static function getPreferredFormat($default = 'html')
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->getPreferredFormat($default);
         }
@@ -11437,7 +11437,7 @@ namespace Illuminate\Support\Facades {
          * @param string[] $locales An array of ordered available locales
          * @static
          */        public static function getPreferredLanguage($locales = null)
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->getPreferredLanguage($locales);
         }
@@ -11447,7 +11447,7 @@ namespace Illuminate\Support\Facades {
          * @return string[]
          * @static
          */        public static function getLanguages()
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->getLanguages();
         }
@@ -11457,7 +11457,7 @@ namespace Illuminate\Support\Facades {
          * @return string[]
          * @static
          */        public static function getCharsets()
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->getCharsets();
         }
@@ -11467,7 +11467,7 @@ namespace Illuminate\Support\Facades {
          * @return string[]
          * @static
          */        public static function getEncodings()
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->getEncodings();
         }
@@ -11477,7 +11477,7 @@ namespace Illuminate\Support\Facades {
          * @return string[]
          * @static
          */        public static function getAcceptableContentTypes()
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->getAcceptableContentTypes();
         }
@@ -11490,7 +11490,7 @@ namespace Illuminate\Support\Facades {
          * @see https://wikipedia.org/wiki/List_of_Ajax_frameworks#JavaScript
          * @static
          */        public static function isXmlHttpRequest()
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->isXmlHttpRequest();
         }
@@ -11500,7 +11500,7 @@ namespace Illuminate\Support\Facades {
          * @see https://tools.ietf.org/html/rfc8674
          * @static
          */        public static function preferSafeContent()
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->preferSafeContent();
         }
@@ -11512,7 +11512,7 @@ namespace Illuminate\Support\Facades {
          *
          * @static
          */        public static function isFromTrustedProxy()
-        {            //Method inherited from \Symfony\Component\HttpFoundation\Request
+        {            //Method inherited from \Symfony\Component\HttpFoundation\Request         
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->isFromTrustedProxy();
         }
@@ -13497,7 +13497,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function defaultStringLength($length)
-        {            //Method inherited from \Illuminate\Database\Schema\Builder
+        {            //Method inherited from \Illuminate\Database\Schema\Builder         
                         \Illuminate\Database\Schema\MySqlBuilder::defaultStringLength($length);
         }
                     /**
@@ -13508,7 +13508,7 @@ namespace Illuminate\Support\Facades {
          * @throws \InvalidArgumentException
          * @static
          */        public static function defaultMorphKeyType($type)
-        {            //Method inherited from \Illuminate\Database\Schema\Builder
+        {            //Method inherited from \Illuminate\Database\Schema\Builder         
                         \Illuminate\Database\Schema\MySqlBuilder::defaultMorphKeyType($type);
         }
                     /**
@@ -13517,7 +13517,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function morphUsingUuids()
-        {            //Method inherited from \Illuminate\Database\Schema\Builder
+        {            //Method inherited from \Illuminate\Database\Schema\Builder         
                         \Illuminate\Database\Schema\MySqlBuilder::morphUsingUuids();
         }
                     /**
@@ -13526,7 +13526,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function morphUsingUlids()
-        {            //Method inherited from \Illuminate\Database\Schema\Builder
+        {            //Method inherited from \Illuminate\Database\Schema\Builder         
                         \Illuminate\Database\Schema\MySqlBuilder::morphUsingUlids();
         }
                     /**
@@ -13536,7 +13536,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function useNativeSchemaOperationsIfPossible($value = true)
-        {            //Method inherited from \Illuminate\Database\Schema\Builder
+        {            //Method inherited from \Illuminate\Database\Schema\Builder         
                         \Illuminate\Database\Schema\MySqlBuilder::useNativeSchemaOperationsIfPossible($value);
         }
                     /**
@@ -13546,7 +13546,7 @@ namespace Illuminate\Support\Facades {
          * @return bool
          * @static
          */        public static function hasTable($table)
-        {            //Method inherited from \Illuminate\Database\Schema\Builder
+        {            //Method inherited from \Illuminate\Database\Schema\Builder         
                         /** @var \Illuminate\Database\Schema\MySqlBuilder $instance */
                         return $instance->hasTable($table);
         }
@@ -13557,7 +13557,7 @@ namespace Illuminate\Support\Facades {
          * @return bool
          * @static
          */        public static function hasView($view)
-        {            //Method inherited from \Illuminate\Database\Schema\Builder
+        {            //Method inherited from \Illuminate\Database\Schema\Builder         
                         /** @var \Illuminate\Database\Schema\MySqlBuilder $instance */
                         return $instance->hasView($view);
         }
@@ -13567,7 +13567,7 @@ namespace Illuminate\Support\Facades {
          * @return array
          * @static
          */        public static function getTableListing()
-        {            //Method inherited from \Illuminate\Database\Schema\Builder
+        {            //Method inherited from \Illuminate\Database\Schema\Builder         
                         /** @var \Illuminate\Database\Schema\MySqlBuilder $instance */
                         return $instance->getTableListing();
         }
@@ -13577,7 +13577,7 @@ namespace Illuminate\Support\Facades {
          * @return array
          * @static
          */        public static function getTypes()
-        {            //Method inherited from \Illuminate\Database\Schema\Builder
+        {            //Method inherited from \Illuminate\Database\Schema\Builder         
                         /** @var \Illuminate\Database\Schema\MySqlBuilder $instance */
                         return $instance->getTypes();
         }
@@ -13589,7 +13589,7 @@ namespace Illuminate\Support\Facades {
          * @return bool
          * @static
          */        public static function hasColumn($table, $column)
-        {            //Method inherited from \Illuminate\Database\Schema\Builder
+        {            //Method inherited from \Illuminate\Database\Schema\Builder         
                         /** @var \Illuminate\Database\Schema\MySqlBuilder $instance */
                         return $instance->hasColumn($table, $column);
         }
@@ -13601,7 +13601,7 @@ namespace Illuminate\Support\Facades {
          * @return bool
          * @static
          */        public static function hasColumns($table, $columns)
-        {            //Method inherited from \Illuminate\Database\Schema\Builder
+        {            //Method inherited from \Illuminate\Database\Schema\Builder         
                         /** @var \Illuminate\Database\Schema\MySqlBuilder $instance */
                         return $instance->hasColumns($table, $columns);
         }
@@ -13614,7 +13614,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function whenTableHasColumn($table, $column, $callback)
-        {            //Method inherited from \Illuminate\Database\Schema\Builder
+        {            //Method inherited from \Illuminate\Database\Schema\Builder         
                         /** @var \Illuminate\Database\Schema\MySqlBuilder $instance */
                         $instance->whenTableHasColumn($table, $column, $callback);
         }
@@ -13627,7 +13627,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function whenTableDoesntHaveColumn($table, $column, $callback)
-        {            //Method inherited from \Illuminate\Database\Schema\Builder
+        {            //Method inherited from \Illuminate\Database\Schema\Builder         
                         /** @var \Illuminate\Database\Schema\MySqlBuilder $instance */
                         $instance->whenTableDoesntHaveColumn($table, $column, $callback);
         }
@@ -13640,7 +13640,7 @@ namespace Illuminate\Support\Facades {
          * @return string
          * @static
          */        public static function getColumnType($table, $column, $fullDefinition = false)
-        {            //Method inherited from \Illuminate\Database\Schema\Builder
+        {            //Method inherited from \Illuminate\Database\Schema\Builder         
                         /** @var \Illuminate\Database\Schema\MySqlBuilder $instance */
                         return $instance->getColumnType($table, $column, $fullDefinition);
         }
@@ -13651,7 +13651,7 @@ namespace Illuminate\Support\Facades {
          * @return array
          * @static
          */        public static function getColumnListing($table)
-        {            //Method inherited from \Illuminate\Database\Schema\Builder
+        {            //Method inherited from \Illuminate\Database\Schema\Builder         
                         /** @var \Illuminate\Database\Schema\MySqlBuilder $instance */
                         return $instance->getColumnListing($table);
         }
@@ -13662,7 +13662,7 @@ namespace Illuminate\Support\Facades {
          * @return array
          * @static
          */        public static function getIndexListing($table)
-        {            //Method inherited from \Illuminate\Database\Schema\Builder
+        {            //Method inherited from \Illuminate\Database\Schema\Builder         
                         /** @var \Illuminate\Database\Schema\MySqlBuilder $instance */
                         return $instance->getIndexListing($table);
         }
@@ -13675,7 +13675,7 @@ namespace Illuminate\Support\Facades {
          * @return bool
          * @static
          */        public static function hasIndex($table, $index, $type = null)
-        {            //Method inherited from \Illuminate\Database\Schema\Builder
+        {            //Method inherited from \Illuminate\Database\Schema\Builder         
                         /** @var \Illuminate\Database\Schema\MySqlBuilder $instance */
                         return $instance->hasIndex($table, $index, $type);
         }
@@ -13687,7 +13687,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function table($table, $callback)
-        {            //Method inherited from \Illuminate\Database\Schema\Builder
+        {            //Method inherited from \Illuminate\Database\Schema\Builder         
                         /** @var \Illuminate\Database\Schema\MySqlBuilder $instance */
                         $instance->table($table, $callback);
         }
@@ -13699,7 +13699,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function create($table, $callback)
-        {            //Method inherited from \Illuminate\Database\Schema\Builder
+        {            //Method inherited from \Illuminate\Database\Schema\Builder         
                         /** @var \Illuminate\Database\Schema\MySqlBuilder $instance */
                         $instance->create($table, $callback);
         }
@@ -13710,7 +13710,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function drop($table)
-        {            //Method inherited from \Illuminate\Database\Schema\Builder
+        {            //Method inherited from \Illuminate\Database\Schema\Builder         
                         /** @var \Illuminate\Database\Schema\MySqlBuilder $instance */
                         $instance->drop($table);
         }
@@ -13721,7 +13721,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function dropIfExists($table)
-        {            //Method inherited from \Illuminate\Database\Schema\Builder
+        {            //Method inherited from \Illuminate\Database\Schema\Builder         
                         /** @var \Illuminate\Database\Schema\MySqlBuilder $instance */
                         $instance->dropIfExists($table);
         }
@@ -13733,7 +13733,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function dropColumns($table, $columns)
-        {            //Method inherited from \Illuminate\Database\Schema\Builder
+        {            //Method inherited from \Illuminate\Database\Schema\Builder         
                         /** @var \Illuminate\Database\Schema\MySqlBuilder $instance */
                         $instance->dropColumns($table, $columns);
         }
@@ -13744,7 +13744,7 @@ namespace Illuminate\Support\Facades {
          * @throws \LogicException
          * @static
          */        public static function dropAllTypes()
-        {            //Method inherited from \Illuminate\Database\Schema\Builder
+        {            //Method inherited from \Illuminate\Database\Schema\Builder         
                         /** @var \Illuminate\Database\Schema\MySqlBuilder $instance */
                         $instance->dropAllTypes();
         }
@@ -13756,7 +13756,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function rename($from, $to)
-        {            //Method inherited from \Illuminate\Database\Schema\Builder
+        {            //Method inherited from \Illuminate\Database\Schema\Builder         
                         /** @var \Illuminate\Database\Schema\MySqlBuilder $instance */
                         $instance->rename($from, $to);
         }
@@ -13766,7 +13766,7 @@ namespace Illuminate\Support\Facades {
          * @return bool
          * @static
          */        public static function enableForeignKeyConstraints()
-        {            //Method inherited from \Illuminate\Database\Schema\Builder
+        {            //Method inherited from \Illuminate\Database\Schema\Builder         
                         /** @var \Illuminate\Database\Schema\MySqlBuilder $instance */
                         return $instance->enableForeignKeyConstraints();
         }
@@ -13776,7 +13776,7 @@ namespace Illuminate\Support\Facades {
          * @return bool
          * @static
          */        public static function disableForeignKeyConstraints()
-        {            //Method inherited from \Illuminate\Database\Schema\Builder
+        {            //Method inherited from \Illuminate\Database\Schema\Builder         
                         /** @var \Illuminate\Database\Schema\MySqlBuilder $instance */
                         return $instance->disableForeignKeyConstraints();
         }
@@ -13787,7 +13787,7 @@ namespace Illuminate\Support\Facades {
          * @return mixed
          * @static
          */        public static function withoutForeignKeyConstraints($callback)
-        {            //Method inherited from \Illuminate\Database\Schema\Builder
+        {            //Method inherited from \Illuminate\Database\Schema\Builder         
                         /** @var \Illuminate\Database\Schema\MySqlBuilder $instance */
                         return $instance->withoutForeignKeyConstraints($callback);
         }
@@ -13797,7 +13797,7 @@ namespace Illuminate\Support\Facades {
          * @return \Illuminate\Database\Connection
          * @static
          */        public static function getConnection()
-        {            //Method inherited from \Illuminate\Database\Schema\Builder
+        {            //Method inherited from \Illuminate\Database\Schema\Builder         
                         /** @var \Illuminate\Database\Schema\MySqlBuilder $instance */
                         return $instance->getConnection();
         }
@@ -13808,7 +13808,7 @@ namespace Illuminate\Support\Facades {
          * @return \Illuminate\Database\Schema\MySqlBuilder
          * @static
          */        public static function setConnection($connection)
-        {            //Method inherited from \Illuminate\Database\Schema\Builder
+        {            //Method inherited from \Illuminate\Database\Schema\Builder         
                         /** @var \Illuminate\Database\Schema\MySqlBuilder $instance */
                         return $instance->setConnection($connection);
         }
@@ -13819,7 +13819,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function blueprintResolver($resolver)
-        {            //Method inherited from \Illuminate\Database\Schema\Builder
+        {            //Method inherited from \Illuminate\Database\Schema\Builder         
                         /** @var \Illuminate\Database\Schema\MySqlBuilder $instance */
                         $instance->blueprintResolver($resolver);
         }
@@ -13831,7 +13831,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function macro($name, $macro)
-        {            //Method inherited from \Illuminate\Database\Schema\Builder
+        {            //Method inherited from \Illuminate\Database\Schema\Builder         
                         \Illuminate\Database\Schema\MySqlBuilder::macro($name, $macro);
         }
                     /**
@@ -13843,7 +13843,7 @@ namespace Illuminate\Support\Facades {
          * @throws \ReflectionException
          * @static
          */        public static function mixin($mixin, $replace = true)
-        {            //Method inherited from \Illuminate\Database\Schema\Builder
+        {            //Method inherited from \Illuminate\Database\Schema\Builder         
                         \Illuminate\Database\Schema\MySqlBuilder::mixin($mixin, $replace);
         }
                     /**
@@ -13853,7 +13853,7 @@ namespace Illuminate\Support\Facades {
          * @return bool
          * @static
          */        public static function hasMacro($name)
-        {            //Method inherited from \Illuminate\Database\Schema\Builder
+        {            //Method inherited from \Illuminate\Database\Schema\Builder         
                         return \Illuminate\Database\Schema\MySqlBuilder::hasMacro($name);
         }
                     /**
@@ -13862,7 +13862,7 @@ namespace Illuminate\Support\Facades {
          * @return void
          * @static
          */        public static function flushMacros()
-        {            //Method inherited from \Illuminate\Database\Schema\Builder
+        {            //Method inherited from \Illuminate\Database\Schema\Builder         
                         \Illuminate\Database\Schema\MySqlBuilder::flushMacros();
         }
             }
@@ -13948,7 +13948,7 @@ namespace Illuminate\Support\Facades {
          * @throws \InvalidArgumentException
          * @static
          */        public static function driver($driver = null)
-        {            //Method inherited from \Illuminate\Support\Manager
+        {            //Method inherited from \Illuminate\Support\Manager         
                         /** @var \Illuminate\Session\SessionManager $instance */
                         return $instance->driver($driver);
         }
@@ -13960,7 +13960,7 @@ namespace Illuminate\Support\Facades {
          * @return \Illuminate\Session\SessionManager
          * @static
          */        public static function extend($driver, $callback)
-        {            //Method inherited from \Illuminate\Support\Manager
+        {            //Method inherited from \Illuminate\Support\Manager         
                         /** @var \Illuminate\Session\SessionManager $instance */
                         return $instance->extend($driver, $callback);
         }
@@ -13970,7 +13970,7 @@ namespace Illuminate\Support\Facades {
          * @return array
          * @static
          */        public static function getDrivers()
-        {            //Method inherited from \Illuminate\Support\Manager
+        {            //Method inherited from \Illuminate\Support\Manager         
                         /** @var \Illuminate\Session\SessionManager $instance */
                         return $instance->getDrivers();
         }
@@ -13980,7 +13980,7 @@ namespace Illuminate\Support\Facades {
          * @return \Illuminate\Contracts\Container\Container
          * @static
          */        public static function getContainer()
-        {            //Method inherited from \Illuminate\Support\Manager
+        {            //Method inherited from \Illuminate\Support\Manager         
                         /** @var \Illuminate\Session\SessionManager $instance */
                         return $instance->getContainer();
         }
@@ -13991,7 +13991,7 @@ namespace Illuminate\Support\Facades {
          * @return \Illuminate\Session\SessionManager
          * @static
          */        public static function setContainer($container)
-        {            //Method inherited from \Illuminate\Support\Manager
+        {            //Method inherited from \Illuminate\Support\Manager         
                         /** @var \Illuminate\Session\SessionManager $instance */
                         return $instance->setContainer($container);
         }
@@ -14001,7 +14001,7 @@ namespace Illuminate\Support\Facades {
          * @return \Illuminate\Session\SessionManager
          * @static
          */        public static function forgetDrivers()
-        {            //Method inherited from \Illuminate\Support\Manager
+        {            //Method inherited from \Illuminate\Support\Manager         
                         /** @var \Illuminate\Session\SessionManager $instance */
                         return $instance->forgetDrivers();
         }
@@ -17129,7 +17129,7 @@ namespace Barryvdh\DomPDF\Facade {
      * @method static BasePDF setPaper(string|float[] $paper, string $orientation = 'portrait')
      * @method static BasePDF setProtocol(string $protocol)
      * @method static BasePDF setTree(\Dompdf\Frame\FrameTree $tree)
-     */        class PDF {
+     */        class Pdf {
                     /**
          * Get the DomPDF instance
          *
@@ -17284,7 +17284,7 @@ namespace Barryvdh\DomPDF\Facade {
      * @method static BasePDF setPaper(string|float[] $paper, string $orientation = 'portrait')
      * @method static BasePDF setProtocol(string $protocol)
      * @method static BasePDF setTree(\Dompdf\Frame\FrameTree $tree)
-     */        class PDF {
+     */        class Pdf {
                     /**
          * Get the DomPDF instance
          *
@@ -21648,7 +21648,7 @@ namespace  {
 
 
 namespace {
-
+    
 
 use Illuminate\Contracts\Support\DeferringDisplayableValue;
 use Illuminate\Contracts\Support\Htmlable;

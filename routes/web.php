@@ -79,19 +79,21 @@ Route::middleware('auth')->group(function () {
         Route::put('/kelola_data_user/{user}/restore', [KelolaDataUserController::class, 'restore'])->name('kelola_data_user.restore');
         Route::delete('/kelola_data_user/{user}/force', [KelolaDataUserController::class, 'forceDelete'])->name('kelola_data_user.force_delete');
 
-        Route::get('/kelola_laporan',                    [KelolaLaporanController::class, 'index'])->name('kelola_laporan.index');
-        Route::get('/kelola_laporan/create',             [KelolaLaporanController::class, 'create'])->name('kelola_laporan.create');
-        Route::post('/kelola_laporan',                   [KelolaLaporanController::class, 'store'])->name('kelola_laporan.store');
-        Route::get('/kelola_laporan/trash',              [KelolaLaporanController::class, 'trash'])->name('kelola_laporan.trash');
-        Route::get('/kelola_laporan/{id}/edit',          [KelolaLaporanController::class, 'edit'])->name('kelola_laporan.edit');
-        Route::put('/kelola_laporan/{id}',               [KelolaLaporanController::class, 'update'])->name('kelola_laporan.update');
-        Route::delete('/kelola_laporan/{id}',            [KelolaLaporanController::class, 'destroy'])->name('kelola_laporan.destroy');
-        Route::patch('/kelola_laporan/{id}/restore',     [KelolaLaporanController::class, 'restore'])->name('kelola_laporan.restore');
-        Route::delete('/kelola_laporan/{id}/force',      [KelolaLaporanController::class, 'forceDelete'])->name('kelola_laporan.force_delete');
-        Route::get('/kelola_laporan/export/pdf',         [KelolaLaporanController::class, 'exportPdf'])->name('kelola_laporan.export_pdf');
-        Route::get('/kelola_laporan/export/excel',       [KelolaLaporanController::class, 'exportExcel'])->name('kelola_laporan.export_excel');
+        Route::get('/kelola_laporan', [KelolaLaporanController::class, 'index'])->name('kelola_laporan.index');
+        Route::get('/kelola_laporan/create', [KelolaLaporanController::class, 'create'])->name('kelola_laporan.create');
+        Route::post('/kelola_laporan', [KelolaLaporanController::class, 'store'])->name('kelola_laporan.store');
+        Route::get('/kelola_laporan/trash', [KelolaLaporanController::class, 'trash'])->name('kelola_laporan.trash');
+        Route::get('/kelola_laporan/{id}/edit', [KelolaLaporanController::class, 'edit'])->name('kelola_laporan.edit');
+        Route::put('/kelola_laporan/{id}', [KelolaLaporanController::class, 'update'])->name('kelola_laporan.update');
+        Route::delete('/kelola_laporan/{id}', [KelolaLaporanController::class, 'destroy'])->name('kelola_laporan.destroy');
+        Route::patch('/kelola_laporan/{id}/restore', [KelolaLaporanController::class, 'restore'])->name('kelola_laporan.restore');
+        Route::delete('/kelola_laporan/{id}/force', [KelolaLaporanController::class, 'forceDelete'])->name('kelola_laporan.force_delete');
+        Route::get('/kelola_laporan/export/pdf', [KelolaLaporanController::class, 'exportPdf'])->name('kelola_laporan.export_pdf');
+        Route::get('/kelola_laporan/export/excel', [KelolaLaporanController::class, 'exportExcel'])->name('kelola_laporan.export_excel');
 
         Route::get('/kelola_pengajuan', [KelolaPengajuanController::class, 'index'])->name('kelola_pengajuan');
+        Route::put('/kelola_pengajuan/{id}/approve', [KelolaPengajuanController::class, 'approve'])->name('kelola_pengajuan.approve');
+        Route::put('/kelola_pengajuan/{id}/reject', [KelolaPengajuanController::class, 'reject'])->name('kelola_pengajuan.reject');
     });
 
     /*
