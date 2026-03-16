@@ -3,69 +3,73 @@
 @section('content')
 
     {{-- HERO SECTION --}}
-    <section class="relative bg-linear-to-br from-slate-50 to-blue-50/50 py-24 lg:py-32 overflow-hidden" id="beranda">
+    <section class="relative w-full min-h-svh flex items-center justify-center py-24 overflow-hidden" id="beranda">
+
+        {{-- Background Image --}}
         <div class="absolute inset-0 z-0">
             <img src="{{ asset('images/assets/universitas0.webp') }}" alt="SMK Budi Bakti"
-                class="w-full h-full object-cover opacity-100" style="object-position: center 70%;">
-            <div class="absolute inset-0 bg-linear-to-br from-slate-50/90 to-blue-50/80"></div>
+                class="w-full h-full object-cover" style="object-position: center 70%;">
+            <div class="absolute inset-0 bg-gradient-to-br from-white/95 via-white/90 to-blue-50/85"></div>
         </div>
 
-        {{-- Subtle Background Elements --}}
-        <div class="absolute top-20 right-10 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl"></div>
-        <div class="absolute bottom-20 left-10 w-64 h-64 bg-blue-400/10 rounded-full blur-3xl"></div>
+        {{-- Decorative Blobs --}}
+        <div class="absolute top-20 right-10 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute bottom-20 left-10 w-64 h-64 bg-blue-400/10 rounded-full blur-3xl pointer-events-none"></div>
 
-        <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        {{-- Content --}}
+        <div class="relative z-10 w-full max-w-3xl mx-auto px-6 sm:px-8 text-center">
 
-                {{-- Left Content --}}
-                <div class="space-y-8 opacity-0 -translate-x-8 animate-[fadeInLeft_0.8s_ease-out_forwards]">
-                    {{-- Main Heading --}}
-                    <div class="space-y-4">
-                        <h1 class="text-4xl lg:text-6xl font-bold text-slate-900 leading-tight">
-                            WebsitePeminjaman
-                            <span class="block text-costume-primary">
-                                KlikAset
-                            </span>
-                        </h1>
-                        <p class="text-lg text-slate-600 leading-relaxed max-w-xl">
-                            Platform digital untuk memudahkan peminjaman monitor, laptop, dan aset sekolah lainnya.
-                        </p>
-                    </div>
+            {{-- Badge --}}
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-blue-50 border border-blue-100 rounded-full mb-6">
+                <span class="w-2 h-2 rounded-full bg-costume-primary animate-pulse shrink-0"></span>
+                <span class="text-xs font-semibold text-costume-primary tracking-wide uppercase">Platform Peminjaman
+                    Aset</span>
+            </div>
 
-                    {{-- CTA Buttons --}}
-                    <div class="flex flex-wrap gap-4">
-                        <a href="#pinjam"
-                            class="group px-8 py-4 bg-costume-primary text-white rounded-xl font-semibold hover:bg-costume-primary/90 transition-all shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 flex items-center gap-2">
-                            Ajukan Peminjaman
-                            <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none"
-                                stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                            </svg>
-                        </a>
-                        <a href="#sarana"
-                            class="px-8 py-4 bg-white text-slate-700 rounded-xl font-semibold hover:border-costume-primary hover:text-costume-primary">
-                            Lihat Katalog
-                        </a>
-                    </div>
+            {{-- Heading --}}
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight mb-4">
+                Website Peminjaman
+                <span class="block text-costume-primary">KlikAset</span>
+            </h1>
 
-                    {{-- Simple Info --}}
-                    <div class="pt-8 space-y-3">
-                        <div class="flex items-center gap-3 text-slate-600">
-                            <x-icon-check-circle class="w-5 h-5 text-costume-primary shrink-0" />
-                            <span class="text-sm">Pengajuan online tanpa antri</span>
-                        </div>
-                        <div class="flex items-center gap-3 text-slate-600">
-                            <x-icon-check-circle class="w-5 h-5 text-costume-primary shrink-0" />
-                            <span class="text-sm">Tracking status real-time</span>
-                        </div>
-                        <div class="flex items-center gap-3 text-slate-600">
-                            <x-icon-check-circle class="w-5 h-5 text-costume-primary shrink-0" />
-                            <span class="text-sm">Riwayat peminjaman tersimpan</span>
-                        </div>
-                    </div>
+            {{-- Subtitle --}}
+            <p class="text-base sm:text-lg text-slate-600 leading-relaxed mb-8 max-w-xl mx-auto">
+                Platform digital untuk memudahkan peminjaman monitor, laptop, dan aset sekolah lainnya.
+            </p>
+
+            {{-- CTA Buttons --}}
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-3 mb-10">
+                <a href="#pinjam"
+                    class="group w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-costume-primary text-white rounded-xl font-semibold text-sm sm:text-base hover:bg-costume-primary/90 transition-all shadow-lg shadow-blue-500/25 hover:shadow-xl active:scale-[0.98]">
+                    Ajukan Peminjaman
+                    <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform shrink-0" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                </a>
+                <a href="#sarana"
+                    class="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3.5 bg-white/80 backdrop-blur-sm text-slate-700 rounded-xl font-semibold text-sm sm:text-base border border-slate-200 hover:border-costume-primary hover:text-costume-primary transition-all shadow-sm active:scale-[0.98]">
+                    Lihat Katalog
+                </a>
+            </div>
+
+            {{-- Feature List --}}
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8">
+                <div class="flex items-center gap-2 text-slate-600">
+                    <x-icon-check-circle class="w-5 h-5 text-costume-primary shrink-0" />
+                    <span class="text-sm">Pengajuan online tanpa antri</span>
+                </div>
+                <div class="flex items-center gap-2 text-slate-600">
+                    <x-icon-check-circle class="w-5 h-5 text-costume-primary shrink-0" />
+                    <span class="text-sm">Tracking status real-time</span>
+                </div>
+                <div class="flex items-center gap-2 text-slate-600">
+                    <x-icon-check-circle class="w-5 h-5 text-costume-primary shrink-0" />
+                    <span class="text-sm">Riwayat peminjaman tersimpan</span>
                 </div>
             </div>
+
         </div>
     </section>
 

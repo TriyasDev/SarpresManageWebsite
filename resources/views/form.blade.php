@@ -156,6 +156,25 @@
     <div class="bg-white/95 backdrop-blur-lg sticky top-0 z-40 border-b border-slate-200 shadow-sm">
         <div class="max-w-screen-xl mx-auto px-5 py-3.5">
 
+            <!-- Top Bar: Back + Breadcrumb -->
+            <div class="flex items-center gap-3 mb-3">
+                <a href="/"
+                    class="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white text-slate-700 rounded-full text-xs font-semibold transition-all duration-200 group">
+                    <svg class="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+                    </svg>
+                    Halaman Utama
+                </a>
+                <div class="flex items-center gap-1.5 text-xs text-slate-400">
+                    <span>KlikAset</span>
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                    <span class="text-slate-600 font-semibold">Pilih Barang</span>
+                </div>
+            </div>
+
             <!-- Search -->
             <div class="relative mb-3">
                 <input type="text" id="searchInput"
@@ -225,7 +244,6 @@
                 <p class="text-slate-400 text-sm">Coba kata kunci atau filter lain</p>
             </div>
         </div>
-        <!-- Pagination -->
         <div class="flex flex-wrap items-center justify-between mt-8 gap-3">
             <p class="text-xs text-slate-500" id="pageInfo">Halaman <strong>1</strong> dari <strong>1</strong></p>
             <div class="flex gap-1.5 items-center flex-wrap" id="pagination"></div>
@@ -237,7 +255,7 @@
         class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[500] flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-250">
         <div class="modal-content bg-white rounded-3xl w-full max-w-[480px] shadow-2xl max-h-[92vh] overflow-y-auto">
 
-            <!-- STEP 1: Detail Barang -->
+            <!-- STEP 1 -->
             <div id="stepDetail">
                 <div class="p-7 pb-0">
                     <div class="flex justify-between items-start mb-4">
@@ -260,7 +278,7 @@
                 </div>
             </div>
 
-            <!-- STEP 2: Form Peminjaman -->
+            <!-- STEP 2 -->
             <div id="stepForm" class="hidden">
                 <div class="p-7">
                     <div class="flex items-center gap-3 mb-5">
@@ -271,8 +289,6 @@
                             <p class="text-xs text-slate-500" id="formSubtitle"></p>
                         </div>
                     </div>
-
-                    <!-- Ringkasan Barang -->
                     <div class="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl mb-5 border border-slate-200">
                         <div class="w-12 h-12 rounded-xl overflow-hidden flex-shrink-0 bg-slate-100">
                             <img id="formItemImg" src="" alt="" class="w-full h-full object-cover">
@@ -282,8 +298,6 @@
                             <p class="text-xs text-slate-500" id="formItemMeta"></p>
                         </div>
                     </div>
-
-                    <!-- Fields -->
                     <div class="flex flex-col gap-3.5">
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-1.5">Nama Lengkap <span
@@ -325,7 +339,6 @@
                                 placeholder="Keperluan peminjaman..."></textarea>
                         </div>
                     </div>
-
                     <div class="flex gap-2.5 mt-5">
                         <button id="formCancel"
                             class="flex-1 py-2.5 rounded-xl border-2 border-slate-200 bg-white font-jakarta text-sm font-bold cursor-pointer transition-all text-slate-700 hover:border-slate-400">Batal</button>
@@ -337,7 +350,7 @@
                 </div>
             </div>
 
-            <!-- STEP 3: Sukses -->
+            <!-- STEP 3 -->
             <div id="stepSuccess" class="hidden p-10 text-center">
                 <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center text-5xl mx-auto mb-5">
                     🎉</div>
@@ -348,7 +361,6 @@
                 <button id="successClose"
                     class="w-full py-2.5 rounded-xl border-none bg-blue-600 hover:bg-blue-700 text-white font-jakarta text-sm font-bold cursor-pointer transition-all">Selesai</button>
             </div>
-
         </div>
     </div>
 
@@ -360,7 +372,6 @@
         class="fixed bottom-5 right-5 w-10 h-10 bg-slate-800 hover:bg-slate-900 text-white border-none rounded-full cursor-pointer flex items-center justify-center shadow-md z-[199] opacity-0 translate-y-2 pointer-events-none transition-all duration-300">↑</button>
 
     <script>
-        /* ===== DATA ===== */
         const PRODUCTS = [
             { id: 1, name: 'Monitor Dell 24"', cat: 'elektronik', desc: 'Monitor Full HD untuk presentasi dan editing.', img: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=600&q=80', avail: 15, maxDay: 7, rating: 4.8, cond: 'Sangat Baik', pop: 95, newest: 7 },
             { id: 2, name: 'Laptop Asus ROG', cat: 'elektronik', desc: 'Laptop performa tinggi untuk rendering dan coding.', img: 'https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=600&q=80', avail: 8, maxDay: 5, rating: 4.9, cond: 'Sangat Baik', pop: 99, newest: 2 },
@@ -379,7 +390,6 @@
         const ITEMS_PER_PAGE = 6;
         let currentPage = 1, activeFilter = 'semua', currentSearch = '', currentSort = 'popular', selectedProd = null;
 
-        /* ===== HELPERS ===== */
         const getAvailDot = n => n >= 10 ? 'bg-green-500' : n >= 5 ? 'bg-orange-500' : 'bg-red-500';
         const getAvailTxt = n => n >= 5 ? `${n} Tersedia` : `${n} Tersisa!`;
         const fmtDate = d => new Date(d).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
@@ -398,7 +408,6 @@
             return list;
         }
 
-        /* ===== CARD ===== */
         function createCard(p, delay) {
             const dot = getAvailDot(p.avail);
             const lbl = catLabel[p.cat] || p.cat;
@@ -441,20 +450,16 @@
 </div>`;
         }
 
-        /* ===== RENDER ===== */
         function render() {
             const list = filtered();
             const pages = Math.max(1, Math.ceil(list.length / ITEMS_PER_PAGE));
             if (currentPage > pages) currentPage = 1;
             const slice = list.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
-
             const grid = document.getElementById('productGrid');
             const empty = document.getElementById('emptyState');
             grid.querySelectorAll('.card').forEach(c => c.remove());
-
             if (!slice.length) { empty.style.display = 'block'; }
             else { empty.style.display = 'none'; slice.forEach((p, i) => grid.insertAdjacentHTML('beforeend', createCard(p, i * 55))); }
-
             document.getElementById('shownCount').textContent = slice.length;
             document.getElementById('pageInfo').innerHTML = `Halaman <strong>${currentPage}</strong> dari <strong>${pages}</strong>`;
             renderPagination(currentPage, pages);
@@ -479,7 +484,6 @@
             pg.appendChild(mk('→', cur === total, () => { currentPage++; render(); scrollTo({ top: 0, behavior: 'smooth' }); }));
         }
 
-        /* ===== EVENTS: SEARCH / FILTER / SORT ===== */
         let st;
         document.getElementById('searchInput').addEventListener('input', function () {
             currentSearch = this.value;
@@ -499,7 +503,6 @@
             currentSort = this.value; currentPage = 1; render();
         });
 
-        /* ===== MODAL ===== */
         function handlePinjam(e, id) {
             e.stopPropagation();
             const p = PRODUCTS.find(x => x.id === id); if (!p) return;
@@ -563,39 +566,23 @@
             const tglP = document.getElementById('fTglPinjam').value;
             const tglK = document.getElementById('fTglKembali').value;
             const kep = document.getElementById('fKeperluan').value.trim();
-
             if (!nama || !kelas || !nipd || !hp || !tglP || !tglK) { showToast('⚠️ Lengkapi semua field yang wajib diisi!'); return; }
             if (tglK < tglP) { showToast('⚠️ Tanggal kembali tidak boleh sebelum tanggal pinjam!'); return; }
-
-            // =====================================================
-            // KIRIM DATA KE ADMIN — simpan di localStorage
-            // =====================================================
             const submission = {
-                id: Date.now(),
-                nama, kelas, nipd, hp,
-                keperluan: kep || '-',
-                tglPinjam: tglP,
-                tglKembali: tglK,
-                barang: selectedProd.name,
-                barangImg: selectedProd.img,
-                status: 'pending',
-                createdAt: new Date().toISOString(),
+                id: Date.now(), nama, kelas, nipd, hp, keperluan: kep || '-',
+                tglPinjam: tglP, tglKembali: tglK, barang: selectedProd.name,
+                barangImg: selectedProd.img, status: 'pending', createdAt: new Date().toISOString(),
             };
             const existing = JSON.parse(localStorage.getItem('klikaset_submissions') || '[]');
             existing.unshift(submission);
             localStorage.setItem('klikaset_submissions', JSON.stringify(existing));
-            // =====================================================
-
-            document.getElementById('successMsg').textContent =
-                `${selectedProd.name} oleh ${nama} · ${fmtDate(tglP)} s/d ${fmtDate(tglK)}`;
-
+            document.getElementById('successMsg').textContent = `${selectedProd.name} oleh ${nama} · ${fmtDate(tglP)} s/d ${fmtDate(tglK)}`;
             ['fNama', 'fKelas', 'fNipd', 'fHp', 'fTglPinjam', 'fTglKembali', 'fKeperluan'].forEach(id => {
                 const el = document.getElementById(id); if (el) el.value = '';
             });
             showStep('success');
         };
 
-        /* ===== CARD CLICK (open detail) ===== */
         document.getElementById('productGrid').addEventListener('click', function (e) {
             const card = e.target.closest('.card');
             if (!card || e.target.closest('.pinjam-btn')) return;
@@ -603,7 +590,6 @@
             if (p) { selectedProd = p; openDetail(p); }
         });
 
-        /* ===== TOAST ===== */
         function showToast(msg, dur = 2800) {
             const wrap = document.getElementById('toastContainer');
             const t = document.createElement('div');
@@ -612,7 +598,6 @@
             setTimeout(() => { t.classList.add('out'); setTimeout(() => t.remove(), 280); }, dur);
         }
 
-        /* ===== BACK TO TOP ===== */
         const btt = document.getElementById('backToTop');
         window.addEventListener('scroll', () => {
             btt.style.opacity = window.pageYOffset > 280 ? '1' : '0';
