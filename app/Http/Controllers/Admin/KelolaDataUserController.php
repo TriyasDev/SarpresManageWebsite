@@ -65,7 +65,7 @@ class KelolaDataUserController extends Controller
             'jenis_kelamin' => $request->jenis_kelamin,
             'rank'          => 'Reliant',
             'role'          => 'peminjam',
-            'point'         => 0,
+            'point'         => 50,
         ]);
 
         return redirect()->route('admin.kelola_data_user.index')
@@ -124,7 +124,7 @@ class KelolaDataUserController extends Controller
     {
         abort_if($user->role !== 'peminjam', 403);
 
-        $user->delete(); // soft delete
+        $user->delete();
 
         return redirect()->route('admin.kelola_data_user.index')
             ->with('success', 'User berhasil dipindahkan ke tempat sampah.');

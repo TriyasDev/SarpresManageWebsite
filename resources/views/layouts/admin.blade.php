@@ -7,6 +7,7 @@
     <title>@yield('title', 'KlikAset - Admin')</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    @stack('styles')
 </head>
 
 <body class="bg-gray-50/50 font-sans antialiased">
@@ -25,11 +26,19 @@
         @include('partials.sidebar')
 
         <!-- Main Content Wrapper -->
-        <div class="flex-1 lg:pl-64">
-            <main class="w-full max-w-[1400px] mx-auto px-4 sm:px-5 lg:px-8 xl:px-10 py-5 lg:py-6 pt-16 lg:pt-6">
+        {{--
+            FIX ZOOM-OUT SEPARATION:
+            Hapus max-w-[1400px] dan mx-auto dari <main>.
+            Dulu konten di-center sehingga saat zoom out jauh
+            konten "mengambang" ke tengah dan terpisah dari sidebar.
+            Sekarang konten selalu mulai dari tepi kiri + padding sidebar.
+        --}}
+        <div class="flex-1 lg:pl-64 min-w-0">
+            <main class="w-full px-4 sm:px-5 lg:px-8 xl:px-10 py-5 pt-16 lg:pt-6 lg:py-6">
                 @yield('content')
             </main>
         </div>
+
     </div>
 
     <!-- Overlay -->
@@ -37,7 +46,6 @@
 
     @stack('scripts')
 
-    {{-- Script harus di paling bawah setelah semua elemen ada --}}
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const sidebar = document.getElementById('sidebar');
@@ -72,7 +80,6 @@
 
             overlay.addEventListener('click', closeSidebar);
 
-            // Tutup otomatis saat resize ke desktop
             window.addEventListener('resize', function () {
                 if (window.innerWidth >= 1024) {
                     closeSidebar();

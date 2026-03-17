@@ -14,7 +14,7 @@ use App\Http\Controllers\User\UserDashboardController;
 use App\Http\Controllers\User\FormController;
 use App\Http\Controllers\User\RankController;
 
-Route::redirect('/', '/login');
+Route::get('/', [HomeController::class, 'index'])->name('index');
 
 /*
 |--------------------------------------------------------------------------
