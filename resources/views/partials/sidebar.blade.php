@@ -1,80 +1,91 @@
-<!DOCTYPE html>
-<html lang="id">
+<aside id="sidebar" class="fixed inset-y-0 left-0 transform -translate-x-full lg:translate-x-0 transition-transform duration-300
+           ease-in-out z-40 w-64 bg-costume-primary flex flex-col h-screen overflow-y-auto">
+    <button id="closeSidebarBtn"
+        class="lg:hidden absolute top-4 right-4 text-white hover:bg-blue-700 p-2 rounded-[30px] transition-colors duration-200"
+        aria-label="Close Sidebar">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+    </button>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'KlikAset - Admin')</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    @stack('styles')
-</head>
-
-<body class="bg-gray-50/50 font-sans antialiased">
-    <div class="flex min-h-screen">
-
-        <!-- Mobile Hamburger Button -->
-        <button id="mobileMenuBtn"
-            class="lg:hidden fixed top-4 left-4 z-50 bg-blue-600 text-white p-2.5 rounded-[30px] shadow-lg hover:bg-blue-700 transition-all duration-200"
-            aria-label="Toggle Menu">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-            </svg>
-        </button>
-
-        <!-- Sidebar -->
-        @include('partials.sidebar')
-
-        <!-- Main Content -->
-        <div class="flex-1 lg:pl-64 min-w-0">
-            <main class="w-full px-4 sm:px-5 lg:px-8 xl:px-10 py-5 pt-16 lg:pt-6 lg:py-6">
-                @yield('content')
-            </main>
+    <div class="flex items-center gap-3 mb-15 px-6 pt-6">
+        <div class="w-13 h-13 rounded-full flex items-center justify-center overflow-hidden shrink-0">
+            <x-icon-logo-klikaset />
         </div>
-
+        <h1 class="text-white text-lg font-bold tracking-tight">KlikAset</h1>
     </div>
 
-    <!-- Overlay -->
-    <div id="overlay" class="fixed inset-0 bg-black/50 z-30 lg:hidden hidden"></div>
+    <div class="mx-4 mb-6">
+        <div class="bg-linear-to-r rounded-[30px] p-3.5 shadow-sm">
+            <div class="flex items-center gap-2.5">
+                <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center shrink-0">
+                    <span class="text-costume-primary font-bold text-sm">
+                        {{ substr(Auth::user()->name ?? 'A', 0, 1) }}
+                    </span>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-white text-xs opacity-80">Halo,</p>
+                    <p class="text-white font-bold text-sm truncate">{{ Auth::user()->name ?? 'Admin 01' }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    @stack('scripts')
+    <nav class="flex-1 space-y-1.5 px-4 overflow-y-auto">
+        <a href="{{ route('dashboard') }}"
+            class="group flex items-center gap-3 px-4 py-2.5 rounded-[30px] text-white font-bold text-[0.96rem] transition-all duration-200 @if(request()->is('dashboard')) bg-costume-second @else hover:bg-costume-second @endif">
+            <x-icon-chart class="w-10 h-10 shrink-0 text-white" />
+            <span class="relative inline-block">
+                Dashboard
+                <span class="absolute left-0 bottom-[-4px] @if(request()->is('dashboard')) w-12 @else w-0 @endif h-[3px] bg-white rounded-full transition-all duration-300 ease-in-out group-hover:w-12"></span>
+            </span>
+        </a>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const sidebar        = document.getElementById('sidebar');
-            const mobileMenuBtn  = document.getElementById('mobileMenuBtn');
-            const closeSidebarBtn= document.getElementById('closeSidebarBtn');
-            const overlay        = document.getElementById('overlay');
+        <a href="{{ route('assets.index') }}" class="group flex items-center gap-3 px-4 py-2.5 rounded-[30px] text-white font-bold text-[0.96rem] transition-all duration-200 @if(request()->is('assets.index')) bg-costume-second @else hover:bg-costume-second @endif">
+            <x-icon-album class="w-10 h-10 shrink-0 text-white"/>
+            <span class="relative inline-block">
+                Kelola Aset
+                <span class="absolute left-0 bottom-[-4px] @if(request()->is('assets.index')) w-12 @else w-0 @endif h-[3px] bg-white rounded-full transition-all duration-300 ease-in-out group-hover:w-12"></span>
+            </span>
+        </a>
 
-            if (!sidebar || !mobileMenuBtn) return;
+        <a href="{{ route('approvals.index') }}"
+            class="group flex items-center gap-3 px-4 py-2.5 rounded-[30px] text-white font-bold text-[0.96rem] transition-all duration-200 @if(request()->is('admin/kelola_pengajuan*')) bg-costume-second @else hover:bg-costume-second @endif">
+            <x-icon-inbox-unread class="w-10 h-10 shrink-0 text-white" />
+            <span class="relative inline-block">
+                Kelola Pengajuan
+                <span class="absolute left-0 bottom-[-4px] @if(request()->is('admin/kelola_pengajuan*')) w-12 @else w-0 @endif h-[3px] bg-white rounded-full transition-all duration-300 ease-in-out group-hover:w-12"></span>
+            </span>
+        </a>
 
-            function openSidebar() {
-                sidebar.classList.remove('-translate-x-full');
-                sidebar.classList.add('translate-x-0');
-                overlay.classList.remove('hidden');
-                document.body.style.overflow = 'hidden';
-                // Sembunyikan hamburger agar tidak menimpa sidebar
-                mobileMenuBtn.classList.add('hidden');
-            }
+        <a href="{{ route('reports.index') }}" class="group flex items-center gap-3 px-4 py-2.5 rounded-[30px] text-white font-bold text-[0.96rem] transition-all duration-200 @if(request()->is('admin/kelola_laporan*')) bg-costume-second @else hover:bg-costume-second @endif">
+            <x-icon-notebook class="w-10 h-10 shrink-0 text-white"/>
+            <span class="relative inline-block">
+                Kelola Laporan
+                <span class="absolute left-0 bottom-[-4px] @if(request()->is('admin/kelola_laporan*')) w-12 @else w-0 @endif h-[3px] bg-white rounded-full transition-all duration-300 ease-in-out group-hover:w-12"></span>
+            </span>
+        </a>
 
-            function closeSidebar() {
-                sidebar.classList.remove('translate-x-0');
-                sidebar.classList.add('-translate-x-full');
-                overlay.classList.add('hidden');
-                document.body.style.overflow = '';
-                // Tampilkan kembali hamburger
-                mobileMenuBtn.classList.remove('hidden');
-            }
+        <a href="{{ route('users.index') }}"
+            class="group flex items-center gap-3 px-4 py-2.5 rounded-[30px] text-white font-bold text-[0.96rem] transition-all duration-200 @if(request()->is('admin/kelola_data_user*')) bg-costume-second @else hover:bg-costume-second @endif">
+            <x-icon-shield-user class="w-10 h-10 shrink-0 text-white" />
+            <span class="relative inline-block">
+                Kelola Data User
+                <span class="absolute left-0 bottom-[-4px] @if(request()->is('admin/kelola_data_user*')) w-12 @else w-0 @endif h-[3px] bg-white rounded-full transition-all duration-300 group-hover:w-12"></span>
+            </span>
+        </a>
+    </nav>
 
-            mobileMenuBtn.addEventListener('click', openSidebar);
-            closeSidebarBtn?.addEventListener('click', closeSidebar);
-            overlay.addEventListener('click', closeSidebar);
-
-            window.addEventListener('resize', function () {
-                if (window.innerWidth >= 1024) closeSidebar();
-            });
-        });
-    </script>
-</body>
-
-</html>
+<div class="px-4 pb-6 mt-auto pt-4">
+    <form method="POST" action="{{ route('auth.logout') }}">
+        @csrf
+        <button type="submit" class="group flex items-center gap-3 px-4 py-2.5 text-white font-bold rounded-[30px] transition-all duration-200 hover:bg-red-500 text-[0.96rem] w-full text-left">
+            <x-icon-logout-3 class="w-10 h-10 shrink-0 text-white"/>
+            <span class="relative inline-block">
+                Logout
+                <span class="absolute left-0 bottom-[-4px] w-0 h-[3px] bg-white rounded-full transition-all duration-300 group-hover:w-12"></span>
+            </span>
+        </button>
+    </form>
+</div>
+</aside>

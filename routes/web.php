@@ -14,19 +14,26 @@ use App\Http\Controllers\User\UserDashboardController;
 use App\Http\Controllers\User\FormController;
 use App\Http\Controllers\User\RankController;
 
+/*
+|--------------------------------------------------------------------------
+| Public Routes
+|--------------------------------------------------------------------------
+*/
 Route::get('/', [HomeController::class, 'index'])->name('index');
 
 /*
 |--------------------------------------------------------------------------
-| Guest Routes
+| Guest Routes (Authentication)
 |--------------------------------------------------------------------------
 */
 Route::middleware('guest')->group(function () {
+    // Login
     Route::get('/login', [AuthController::class, 'showLogin'])->name('auth.login');
     Route::post('/login', [AuthController::class, 'login']);
 
-    Route::get('/lupa-password', [AuthController::class, 'showForgotPassword'])->name('auth.lupa_password');
-    Route::post('/lupa-password', [AuthController::class, 'sendResetCode'])->name('auth.send_reset_code');
+    // Password Reset
+    Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('auth.lupa_password');
+    Route::post('/forgot-password', [AuthController::class, 'sendResetCode'])->name('auth.send_reset_code');
 
     Route::get('/verify-code', [AuthController::class, 'showVerifyCode'])->name('auth.verify_code');
     Route::post('/verify-code', [AuthController::class, 'verifyCode'])->name('auth.verify_code_submit');
@@ -46,73 +53,99 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
 
     /*
-    |----------------------------------------------------------------------
-    | Admin Routes
-    |----------------------------------------------------------------------
+    |--------------------------------------------------------------------------
+    | Admin Dashboard Routes - PROFESSIONAL URLs
+    |--------------------------------------------------------------------------
+    | Path: /dashboard, /assets, /users, /reports, /approvals
+    | Instead of: /admin/dashboard, /admin/kelola_aset, etc.
     */
-    Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
+    Route::middleware('role:admin')->group(function () {
+
+        // Dashboard
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-        Route::get('/kelola_aset',                   [KelolaAsetController::class, 'index'])->name('kelola_aset.index');
-        Route::get('/kelola_aset/create',            [KelolaAsetController::class, 'create'])->name('kelola_aset.create');
-        Route::post('/kelola_aset',                  [KelolaAsetController::class, 'store'])->name('kelola_aset.store');
-        Route::get('/kelola_aset/trash',             [KelolaAsetController::class, 'trash'])->name('kelola_aset.trash');
-        Route::get('/kelola_aset/{barang}/edit',     [KelolaAsetController::class, 'edit'])->name('kelola_aset.edit');
-        Route::put('/kelola_aset/{barang}',          [KelolaAsetController::class, 'update'])->name('kelola_aset.update');
-        Route::delete('/kelola_aset/{barang}',       [KelolaAsetController::class, 'destroy'])->name('kelola_aset.destroy');
-        Route::put('/kelola_aset/{id}/restore',      [KelolaAsetController::class, 'restore'])->name('kelola_aset.restore');
-        Route::delete('/kelola_aset/{id}/force',     [KelolaAsetController::class, 'forceDelete'])->name('kelola_aset.force_delete');
+        // Asset Management - Clean URLs
+        Route::prefix('assets')->name('assets.')->group(function () {
+            Route::get('/',                  [KelolaAsetController::class, 'index'])->name('index');
+            Route::get('/create',            [KelolaAsetController::class, 'create'])->name('create');
+            Route::post('/',                 [KelolaAsetController::class, 'store'])->name('store');
+            Route::get('/trash',             [KelolaAsetController::class, 'trash'])->name('trash');
+            Route::get('/{barang}/edit',     [KelolaAsetController::class, 'edit'])->name('edit');
+            Route::put('/{barang}',          [KelolaAsetController::class, 'update'])->name('update');
+            Route::delete('/{barang}',       [KelolaAsetController::class, 'destroy'])->name('destroy');
+            Route::put('/{id}/restore',      [KelolaAsetController::class, 'restore'])->name('restore');
+            Route::delete('/{id}/force',     [KelolaAsetController::class, 'forceDelete'])->name('force_delete');
+        });
 
-        Route::get('/kelola_data_user',                  [KelolaDataUserController::class, 'index'])->name('kelola_data_user.index');
-        Route::get('/kelola_data_user/create',           [KelolaDataUserController::class, 'create'])->name('kelola_data_user.create');
-        Route::post('/kelola_data_user',                 [KelolaDataUserController::class, 'store'])->name('kelola_data_user.store');
-        Route::get('/kelola_data_user/trash',            [KelolaDataUserController::class, 'trash'])->name('kelola_data_user.trash');
-        Route::get('/kelola_data_user/{user}/edit',      [KelolaDataUserController::class, 'edit'])->name('kelola_data_user.edit');
-        Route::put('/kelola_data_user/{user}',           [KelolaDataUserController::class, 'update'])->name('kelola_data_user.update');
-        Route::delete('/kelola_data_user/{user}',        [KelolaDataUserController::class, 'destroy'])->name('kelola_data_user.destroy');
-        Route::put('/kelola_data_user/{user}/restore',   [KelolaDataUserController::class, 'restore'])->name('kelola_data_user.restore');
-        Route::delete('/kelola_data_user/{user}/force',  [KelolaDataUserController::class, 'forceDelete'])->name('kelola_data_user.force_delete');
+        // User Management
+        Route::prefix('users')->name('users.')->group(function () {
+            Route::get('/',                  [KelolaDataUserController::class, 'index'])->name('index');
+            Route::get('/create',            [KelolaDataUserController::class, 'create'])->name('create');
+            Route::post('/',                 [KelolaDataUserController::class, 'store'])->name('store');
+            Route::get('/trash',             [KelolaDataUserController::class, 'trash'])->name('trash');
+            Route::get('/{user}/edit',       [KelolaDataUserController::class, 'edit'])->name('edit');
+            Route::put('/{user}',            [KelolaDataUserController::class, 'update'])->name('update');
+            Route::delete('/{user}',         [KelolaDataUserController::class, 'destroy'])->name('destroy');
+            Route::put('/{user}/restore',    [KelolaDataUserController::class, 'restore'])->name('restore');
+            Route::delete('/{user}/force',   [KelolaDataUserController::class, 'forceDelete'])->name('force_delete');
+        });
 
-        Route::get('/kelola_laporan',                [KelolaLaporanController::class, 'index'])->name('kelola_laporan.index');
-        Route::get('/kelola_laporan/create',         [KelolaLaporanController::class, 'create'])->name('kelola_laporan.create');
-        Route::post('/kelola_laporan',               [KelolaLaporanController::class, 'store'])->name('kelola_laporan.store');
-        Route::get('/kelola_laporan/trash',          [KelolaLaporanController::class, 'trash'])->name('kelola_laporan.trash');
-        Route::get('/kelola_laporan/{id}/edit',      [KelolaLaporanController::class, 'edit'])->name('kelola_laporan.edit');
-        Route::put('/kelola_laporan/{id}',           [KelolaLaporanController::class, 'update'])->name('kelola_laporan.update');
-        Route::delete('/kelola_laporan/{id}',        [KelolaLaporanController::class, 'destroy'])->name('kelola_laporan.destroy');
-        Route::patch('/kelola_laporan/{id}/restore', [KelolaLaporanController::class, 'restore'])->name('kelola_laporan.restore');
-        Route::delete('/kelola_laporan/{id}/force',  [KelolaLaporanController::class, 'forceDelete'])->name('kelola_laporan.force_delete');
-        Route::get('/kelola_laporan/export/pdf',     [KelolaLaporanController::class, 'exportPdf'])->name('kelola_laporan.export_pdf');
-        Route::get('/kelola_laporan/export/excel',   [KelolaLaporanController::class, 'exportExcel'])->name('kelola_laporan.export_excel');
+        // Reports Management
+        Route::prefix('reports')->name('reports.')->group(function () {
+            Route::get('/',                  [KelolaLaporanController::class, 'index'])->name('index');
+            Route::get('/create',            [KelolaLaporanController::class, 'create'])->name('create');
+            Route::post('/',                 [KelolaLaporanController::class, 'store'])->name('store');
+            Route::get('/trash',             [KelolaLaporanController::class, 'trash'])->name('trash');
+            Route::get('/{id}/edit',         [KelolaLaporanController::class, 'edit'])->name('edit');
+            Route::put('/{id}',              [KelolaLaporanController::class, 'update'])->name('update');
+            Route::delete('/{id}',           [KelolaLaporanController::class, 'destroy'])->name('destroy');
+            Route::patch('/{id}/restore',    [KelolaLaporanController::class, 'restore'])->name('restore');
+            Route::delete('/{id}/force',     [KelolaLaporanController::class, 'forceDelete'])->name('force_delete');
+            Route::get('/export/pdf',        [KelolaLaporanController::class, 'exportPdf'])->name('export_pdf');
+            Route::get('/export/excel',      [KelolaLaporanController::class, 'exportExcel'])->name('export_excel');
+        });
 
-        Route::get('/kelola_pengajuan',              [KelolaPengajuanController::class, 'index'])->name('kelola_pengajuan');
-        Route::put('/kelola_pengajuan/{id}/approve', [KelolaPengajuanController::class, 'approve'])->name('kelola_pengajuan.approve');
-        Route::put('/kelola_pengajuan/{id}/reject',  [KelolaPengajuanController::class, 'reject'])->name('kelola_pengajuan.reject');
+        // Approval Management
+        Route::prefix('approvals')->name('approvals.')->group(function () {
+            Route::get('/',                  [KelolaPengajuanController::class, 'index'])->name('index');
+            Route::put('/{id}/approve',      [KelolaPengajuanController::class, 'approve'])->name('approve');
+            Route::put('/{id}/reject',       [KelolaPengajuanController::class, 'reject'])->name('reject');
+        });
     });
 
     /*
-    |----------------------------------------------------------------------
-    | Peminjam Routes
-    |----------------------------------------------------------------------
+    |--------------------------------------------------------------------------
+    | User Routes - PROFESSIONAL URLs
+    |--------------------------------------------------------------------------
+    | Path: /home, /my-dashboard, /borrow, /rankings
+    | Instead of: /peminjam/home, /peminjam/form, etc.
     */
-    Route::middleware('role:peminjam')->prefix('peminjam')->name('peminjam.')->group(function () {
-        Route::get('/home',           [HomeController::class,          'index'])->name('home');
-        Route::get('/user-dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
-        Route::get('/form',           [FormController::class,          'index'])->name('form');
-        Route::get('/rank',           [RankController::class,          'index'])->name('rank');
+    Route::middleware('role:peminjam')->group(function () {
+
+        // Home
+        Route::get('/home', [HomeController::class, 'index'])->name('home');
+
+        // User Dashboard
+        Route::get('/my-dashboard', [UserDashboardController::class, 'index'])->name('my.dashboard');
+
+        // Borrowing Form
+        Route::get('/borrow', [FormController::class, 'index'])->name('borrow');
+
+        // Rankings
+        Route::get('/rankings', [RankController::class, 'index'])->name('rankings');
     });
 
     /*
-    |----------------------------------------------------------------------
-    | User Dashboard Routes
-    |----------------------------------------------------------------------
+    |--------------------------------------------------------------------------
+    | Shared User Profile Routes
+    |--------------------------------------------------------------------------
+    | Available for all authenticated users
     */
-    Route::prefix('user')->name('user.')->group(function () {
-        Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
-        Route::get('/riwayat',   [UserDashboardController::class, 'riwayat'])->name('riwayat');
+    Route::prefix('account')->name('account.')->group(function () {
         Route::get('/profile',   [UserDashboardController::class, 'profile'])->name('profile');
-        Route::get('/pinjaman',  [UserDashboardController::class, 'pinjaman'])->name('pinjaman');
-        Route::get('/sarpras',   [UserDashboardController::class, 'sarpras'])->name('sarpras');
+        Route::get('/history',   [UserDashboardController::class, 'riwayat'])->name('history');
+        Route::get('/loans',     [UserDashboardController::class, 'pinjaman'])->name('loans');
+        Route::get('/facilities', [UserDashboardController::class, 'sarpras'])->name('facilities');
         Route::get('/rank',      [UserDashboardController::class, 'rank'])->name('rank');
     });
 });

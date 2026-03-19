@@ -19,7 +19,7 @@
         </div>
         <div class="flex items-center gap-2">
             {{-- Tombol Tempat Sampah --}}
-            <a href="{{ route('admin.kelola_aset.trash') }}"
+            <a href="{{ route('assets.trash') }}"
                class="relative flex items-center gap-2 px-4 py-2.5 border-2 border-gray-300 text-gray-600 text-sm font-semibold rounded-[30px] hover:bg-gray-50 transition">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
@@ -33,7 +33,7 @@
             </a>
 
             {{-- Tombol Tambah Aset --}}
-            <a href="{{ route('admin.kelola_aset.create') }}"
+            <a href="{{ route('assets.create') }}"
                class="flex items-center gap-2 px-5 py-2.5 bg-costume-primary text-white text-sm font-semibold rounded-[30px] hover:bg-blue-700 transition shadow-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
@@ -109,11 +109,11 @@
 
                 {{-- Aksi --}}
                 <div class="flex gap-2 mt-4">
-                    <a href="{{ route('admin.kelola_aset.edit', $barang->id_barang) }}"
+                    <a href="{{ route('assets.edit', $barang->id_barang) }}"
                         class="flex-1 py-2 text-xs font-semibold bg-costume-primary text-white rounded-[30px] hover:bg-blue-700 transition text-center">
                         Edit
                     </a>
-                    <form method="POST" action="{{ route('admin.kelola_aset.destroy', $barang->id_barang) }}"
+                    <form method="POST" action="{{ route('assets.destroy', $barang->id_barang) }}"
                         onsubmit="return confirm('Pindahkan aset \'{{ addslashes($barang->nama_barang) }}\' ke tempat sampah?')" class="flex-1">
                         @csrf
                         @method('DELETE')
@@ -131,7 +131,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10"/>
             </svg>
             <p class="text-base font-medium">Belum ada aset</p>
-            <a href="{{ route('admin.kelola_aset.create') }}"
+            <a href="{{ route('assets.create') }}"
                class="mt-4 px-5 py-2 bg-costume-primary text-white text-sm font-semibold rounded-[30px] hover:bg-blue-700 transition">
                 Tambah Aset Pertama
             </a>

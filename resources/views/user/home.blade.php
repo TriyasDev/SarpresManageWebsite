@@ -159,13 +159,13 @@
 
             {{-- Category Tabs --}}
             <div class="flex flex-wrap justify-center gap-3 mb-12 opacity-0 translate-y-5 [&.visible]:opacity-100 [&.visible]:translate-y-0 transition-all duration-700" data-animate>
-                <a href="{{ route('peminjam.home') }}"
+                <a href="{{ route('home') }}"
                     class="px-6 py-2.5 rounded-full font-medium text-sm transition-all
                            {{ $activeKategori === '' ? 'bg-costume-primary text-white shadow-md shadow-blue-500/25' : 'bg-white text-slate-700 border border-slate-200 hover:border-costume-primary hover:text-costume-primary' }}">
                     Semua
                 </a>
                 @foreach($kategoriList as $kat)
-                <a href="{{ route('peminjam.home', ['kategori' => $kat]) }}"
+                <a href="{{ route('home', ['kategori' => $kat]) }}"
                     class="px-6 py-2.5 rounded-full font-medium text-sm transition-all
                            {{ $activeKategori === $kat ? 'bg-costume-primary text-white shadow-md shadow-blue-500/25' : 'bg-white text-slate-700 border border-slate-200 hover:border-costume-primary hover:text-costume-primary' }}">
                     {{ $kat }}
@@ -312,7 +312,7 @@
                                 </div>
                             </div>
 
-                            <a href="{{ route('peminjam.form') }}"
+                            <a href="{{ route('borrow') }}"
                                 class="block w-full py-3.5 bg-costume-primary text-white text-center rounded-xl font-semibold hover:bg-costume-primary/90 transition-all shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 group">
                                 <span class="flex items-center justify-center gap-2">
                                     Pinjam Sekarang
@@ -332,7 +332,7 @@
         </div>
 
         <div class="flex items-center justify-center gap-2">
-            <a href="{{ route('peminjam.form') }}"
+            <a href="{{ route('borrow') }}"
                 class="inline-flex items-center gap-2 px-10 py-3.5 bg-costume-primary text-white rounded-xl font-semibold hover:bg-costume-primary/90 transition-all shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 group">
                 Lihat Lainnya
                 <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -1,9 +1,174 @@
 @import "tailwindcss";
 
+/* Source paths untuk Tailwind v4 */
 @source "../../vendor/laravel/framework/src/illuminate/Pagination/resources/view/*.blade.php";
 @source "../views/**/*.blade.php";
 
+/* Custom Theme - KlikAset Brand Colors */
 @theme {
-    --color-costume-primary: #3C77D5;
-    --color-costume-second: #649FFF;
+    /* Primary Colors */
+    --color-costume-primary: #2563eb;
+    --color-costume-second: #3b82f6;
+
+    /* Alias untuk compatibility */
+    --color-blue-600: #2563eb;
+    --color-blue-500: #3b82f6;
+    --color-blue-700: #1d4ed8;
+
+    /* Gray Scale */
+    --color-slate-50: #f8fafc;
+    --color-slate-100: #f1f5f9;
+    --color-slate-200: #e2e8f0;
+    --color-slate-300: #cbd5e1;
+    --color-slate-400: #94a3b8;
+    --color-slate-500: #64748b;
+    --color-slate-600: #475569;
+    --color-slate-700: #334155;
+    --color-slate-800: #1e293b;
+    --color-slate-900: #0f172a;
+
+    /* Semantic Colors */
+    --color-success: #10b981;
+    --color-warning: #f59e0b;
+    --color-danger: #ef4444;
+    --color-info: #3b82f6;
+}
+
+/* Custom Utilities */
+@layer utilities {
+    /* Gradient backgrounds */
+    .bg-linear-to-r {
+        background: linear-gradient(135deg, var(--color-costume-primary) 0%, var(--color-costume-second) 100%);
+    }
+
+    .bg-linear-to-t {
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, transparent 100%);
+    }
+
+    /* Text gradient */
+    .text-gradient {
+        background: linear-gradient(135deg, var(--color-costume-primary), var(--color-costume-second));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    /* Custom scrollbar */
+    .scrollbar-thin {
+        scrollbar-width: thin;
+        scrollbar-color: var(--color-costume-second) transparent;
+    }
+
+    .scrollbar-thin::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .scrollbar-thin::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .scrollbar-thin::-webkit-scrollbar-thumb {
+        background-color: var(--color-costume-second);
+        border-radius: 3px;
+    }
+}
+
+/* Base styles */
+@layer base {
+    /* Smooth font rendering */
+    * {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Better focus indicators */
+    :focus-visible {
+        outline: 2px solid var(--color-costume-primary);
+        outline-offset: 2px;
+    }
+
+    /* Disable focus outline for mouse users */
+    :focus:not(:focus-visible) {
+        outline: none;
+    }
+}
+
+/* Components - Simplified for Tailwind v4 */
+@layer components {
+    /* Hardware acceleration for animations */
+    .animate-smooth {
+        will-change: transform;
+        transform: translateZ(0);
+    }
+
+    /* Optimized card component */
+    .card {
+        background-color: white;
+        border-radius: 0.75rem;
+        box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        border: 1px solid var(--color-slate-200);
+        padding: 1.5rem;
+    }
+
+    /* Button base - without nested @apply */
+    .btn {
+        padding: 0.5rem 1rem;
+        border-radius: 0.75rem;
+        font-weight: 500;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+    }
+
+    .btn:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px white, 0 0 0 4px var(--color-costume-primary);
+    }
+
+    .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .btn-primary {
+        background-color: var(--color-costume-primary);
+        color: white;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+        background-color: var(--color-blue-700);
+    }
+
+    .btn-secondary {
+        background-color: var(--color-slate-100);
+        color: var(--color-slate-700);
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+        background-color: var(--color-slate-200);
+    }
+
+    .btn-danger {
+        background-color: var(--color-danger);
+        color: white;
+    }
+
+    .btn-danger:hover:not(:disabled) {
+        background-color: #dc2626;
+    }
+}
+
+/* Print styles */
+@media print {
+    @page {
+        margin: 2cm;
+    }
+
+    body {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+    }
+
+    .no-print {
+        display: none !important;
+    }
 }

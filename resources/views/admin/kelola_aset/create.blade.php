@@ -5,7 +5,7 @@
 
     {{-- Breadcrumb / Back --}}
     <div class="flex items-center gap-3 mb-6">
-        <a href="{{ route('admin.kelola_aset.index') }}"
+        <a href="{{ route('assets.index') }}"
            class="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-800 transition">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
@@ -16,7 +16,7 @@
         <span class="text-sm font-semibold text-gray-700">Tambah Aset Baru</span>
     </div>
 
-    <form method="POST" action="{{ route('admin.kelola_aset.store') }}" enctype="multipart/form-data">
+    <form method="POST" action="{{ route('assets.store') }}" enctype="multipart/form-data">
     @csrf
     <div class="bg-white rounded-[30px] shadow-sm border border-gray-100 p-6 lg:p-10">
         <h2 class="text-lg lg:text-xl font-bold text-gray-800 mb-6">Data Aset Baru</h2>
@@ -121,7 +121,7 @@
 
                 {{-- Tombol Aksi --}}
                 <div class="flex gap-3 mt-auto">
-                    <a href="{{ route('admin.kelola_aset.index') }}"
+                    <a href="{{ route('assets.index') }}"
                        class="flex-1 px-5 py-3 border-2 border-gray-300 rounded-[30px] text-sm font-semibold text-gray-600 hover:bg-gray-50 transition text-center">
                         Batal
                     </a>

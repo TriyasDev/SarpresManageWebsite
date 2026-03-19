@@ -14,7 +14,7 @@
     {{-- Header --}}
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
         <div class="flex items-center gap-3">
-            <a href="{{ route('admin.kelola_aset.index') }}"
+            <a href="{{ route('assets.index') }}"
                class="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-800 transition">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
@@ -39,7 +39,7 @@
 
     {{-- Search --}}
     <div class="bg-white rounded-[30px] border border-gray-100 shadow-sm p-5 mb-6">
-        <form action="{{ route('admin.kelola_aset.trash') }}" method="GET">
+        <form action="{{ route('assets.trash') }}" method="GET">
             <div class="relative">
                 <input type="text" name="search" value="{{ $search ?? '' }}"
                     placeholder="Cari nama aset..."
@@ -82,7 +82,7 @@
                 {{-- Aksi --}}
                 <div class="flex gap-2 mt-4">
                     {{-- Pulihkan --}}
-                    <form method="POST" action="{{ route('admin.kelola_aset.restore', $barang->id_barang) }}" class="flex-1">
+                    <form method="POST" action="{{ route('assets.restore', $barang->id_barang) }}" class="flex-1">
                         @csrf
                         @method('PUT')
                         <button type="submit"
@@ -92,7 +92,7 @@
                     </form>
 
                     {{-- Hapus Permanen --}}
-                    <form method="POST" action="{{ route('admin.kelola_aset.force_delete', $barang->id_barang) }}"
+                    <form method="POST" action="{{ route('assets.force_delete', $barang->id_barang) }}"
                           onsubmit="return confirm('Hapus permanen \'{{ addslashes($barang->nama_barang) }}\'? Foto juga akan dihapus dan tidak bisa dikembalikan!')"
                           class="flex-1">
                         @csrf

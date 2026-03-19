@@ -19,7 +19,7 @@ class KelolaDataUserController extends Controller
         $users = User::where('role', 'peminjam')
             ->when($search, function ($query) use ($search) {
                 $query->where('username', 'like', "%{$search}%")
-                      ->orWhere('nipd', 'like', "%{$search}%");
+                    ->orWhere('nipd', 'like', "%{$search}%");
             })
             ->latest()
             ->paginate(10)
@@ -68,7 +68,7 @@ class KelolaDataUserController extends Controller
             'point'         => 50,
         ]);
 
-        return redirect()->route('admin.kelola_data_user.index')
+        return redirect()->route('users.index')
             ->with('success', 'User berhasil ditambahkan!');
     }
 
@@ -113,7 +113,7 @@ class KelolaDataUserController extends Controller
                 : $user->password,
         ]);
 
-        return redirect()->route('admin.kelola_data_user.index')
+        return redirect()->route('users.index')
             ->with('success', 'Data user berhasil diperbarui!');
     }
 
@@ -126,7 +126,7 @@ class KelolaDataUserController extends Controller
 
         $user->delete();
 
-        return redirect()->route('admin.kelola_data_user.index')
+        return redirect()->route('users.index')
             ->with('success', 'User berhasil dipindahkan ke tempat sampah.');
     }
 
@@ -141,7 +141,7 @@ class KelolaDataUserController extends Controller
             ->where('role', 'peminjam')
             ->when($search, function ($query) use ($search) {
                 $query->where('username', 'like', "%{$search}%")
-                      ->orWhere('nipd', 'like', "%{$search}%");
+                    ->orWhere('nipd', 'like', "%{$search}%");
             })
             ->latest('deleted_at')
             ->paginate(10)
@@ -158,7 +158,7 @@ class KelolaDataUserController extends Controller
         $user = User::onlyTrashed()->where('role', 'peminjam')->findOrFail($id);
         $user->restore();
 
-        return redirect()->route('admin.kelola_data_user.trash')
+        return redirect()->route('users..trash')
             ->with('success', 'User berhasil dipulihkan.');
     }
 
@@ -170,7 +170,7 @@ class KelolaDataUserController extends Controller
         $user = User::onlyTrashed()->where('role', 'peminjam')->findOrFail($id);
         $user->forceDelete();
 
-        return redirect()->route('admin.kelola_data_user.trash')
+        return redirect()->route('users..trash')
             ->with('success', 'User berhasil dihapus secara permanen.');
     }
 }

@@ -14,7 +14,7 @@
     {{-- Header --}}
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
         <div class="flex items-center gap-3">
-            <a href="{{ route('admin.kelola_data_user.index') }}"
+            <a href="{{ route('users.index') }}"
                class="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-800 transition">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
@@ -39,7 +39,7 @@
 
     {{-- Search Bar --}}
     <div class="bg-white rounded-[30px] shadow-sm border border-gray-100 p-5 mb-6">
-        <form action="{{ route('admin.kelola_data_user.trash') }}" method="GET">
+        <form action="{{ route('users..trash') }}" method="GET">
             <div class="relative">
                 <input type="text" name="search" value="{{ $search ?? '' }}"
                     placeholder="Cari nama user atau NIPD..."
@@ -91,7 +91,7 @@
                             <td class="p-4">
                                 <div class="flex gap-2 justify-center">
                                     {{-- Tombol Pulihkan --}}
-                                    <form action="{{ route('admin.kelola_data_user.restore', $user->id_user) }}" method="POST">
+                                    <form action="{{ route('users..restore', $user->id_user) }}" method="POST">
                                         @csrf
                                         @method('PUT')
                                         <button type="submit"
@@ -101,7 +101,7 @@
                                     </form>
 
                                     {{-- Tombol Hapus Permanen --}}
-                                    <form action="{{ route('admin.kelola_data_user.force_delete', $user->id_user) }}" method="POST"
+                                    <form action="{{ route('users..force_delete', $user->id_user) }}" method="POST"
                                           onsubmit="return confirm('Hapus permanen user \'{{ addslashes($user->username) }}\'? Data tidak dapat dikembalikan!')">
                                         @csrf
                                         @method('DELETE')

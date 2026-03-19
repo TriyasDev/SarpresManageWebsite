@@ -54,7 +54,7 @@
         </div>
 
         {{-- Search + Filter --}}
-        <form method="GET" action="{{ route('admin.kelola_pengajuan') }}" id="filterForm">
+        <form method="GET" action="{{ route('approvals.index') }}" id="filterForm">
             <div class="flex flex-col lg:flex-row gap-4">
 
                 {{-- Search --}}

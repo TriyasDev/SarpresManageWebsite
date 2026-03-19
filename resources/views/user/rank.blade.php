@@ -386,7 +386,7 @@
             <nav class="flex flex-col gap-1 flex-1">
                 <p class="text-blue-300 text-[10px] font-semibold uppercase tracking-widest px-3 mb-1">Menu</p>
 
-                <a href="{{ route('user.dashboard') }}" class="nav-link">
+                <a href="{{route('dashboard') }}" class="nav-link">
                     <span class="nav-indicator"></span>
                     <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -395,7 +395,7 @@
                     Dashboard
                 </a>
 
-                <a href="{{ route('user.riwayat') }}" class="nav-link">
+                <a href="{{ route('account.history') }}" class="nav-link">
                     <span class="nav-indicator"></span>
                     <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -452,7 +452,7 @@
                     </button>
                     <span class="text-white font-bold text-sm">Peringkat</span>
                 </div>
-                <a href="{{ route('user.profile') }}"
+                <a href="{{ route('account.profile') }}"
                     class="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center text-white font-bold text-sm">
                     {{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 1)) }}
                 </a>
@@ -461,13 +461,13 @@
             {{-- Desktop Topbar --}}
             <header class="hidden md:flex items-center justify-between bg-white border-b border-slate-100 px-6 py-3.5">
                 <div class="flex items-center gap-2 text-xs text-gray-400">
-                    <a href="{{ route('user.dashboard') }}" class="hover:text-blue-600 transition-colors">Dashboard</a>
+                    <a href="{{route('dashboard') }}" class="hover:text-blue-600 transition-colors">Dashboard</a>
                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
                     </svg>
                     <span class="text-gray-700 font-semibold">Peringkat</span>
                 </div>
-                <a href="{{ route('user.profile') }}"
+                <a href="{{ route('account.profile') }}"
                     class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-sm shadow-md">
                     {{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 1)) }}
                 </a>

@@ -395,7 +395,7 @@
             <nav class="flex flex-col gap-1 flex-1">
                 <p class="text-blue-300 text-[10px] font-semibold uppercase tracking-widest px-3 mb-1">Menu</p>
 
-                <a href="{{ route('user.dashboard') }}" class="nav-link">
+                <a href="{{route('dashboard') }}" class="nav-link">
                     <span class="nav-indicator"></span>
                     <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -403,7 +403,7 @@
                     </svg>
                     Dashboard
                 </a>
-                <a href="{{ route('user.riwayat') }}" class="nav-link active">
+                <a href="{{ route('account.history') }}" class="nav-link active">
                     <span class="nav-indicator"></span>
                     <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -465,7 +465,7 @@
             {{-- Desktop Topbar --}}
             <header class="hidden md:flex items-center justify-between bg-white border-b border-slate-100 px-6 py-3.5">
                 <div class="flex items-center gap-2 text-xs text-gray-400">
-                    <a href="{{ route('user.dashboard') }}" class="hover:text-blue-600 transition-colors">Dashboard</a>
+                    <a href="{{route('dashboard') }}" class="hover:text-blue-600 transition-colors">Dashboard</a>
                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
                     </svg>

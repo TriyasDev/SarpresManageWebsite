@@ -14,7 +14,7 @@
 {{-- Header --}}
 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
     <div class="flex items-center gap-3">
-        <a href="{{ route('admin.kelola_laporan.index') }}"
+        <a href="{{ route('reports.index') }}"
            class="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-800 transition">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
@@ -42,7 +42,7 @@
 
 {{-- Search --}}
 <div class="bg-white rounded-[30px] shadow-sm border border-gray-100 p-5 mb-6">
-    <form action="{{ route('admin.kelola_laporan.trash') }}" method="GET">
+    <form action="{{ route('reports.trash') }}" method="GET">
         <div class="relative">
             <input type="text" name="search" value="{{ $search ?? '' }}"
                 placeholder="Cari peminjam / barang..."
@@ -106,7 +106,7 @@
                         <div class="flex justify-center items-center gap-2">
 
                             {{-- Pulihkan --}}
-                            <form action="{{ route('admin.kelola_laporan.restore', $laporan->id_laporan) }}" method="POST">
+                            <form action="{{ route('reports.restore', $laporan->id_laporan) }}" method="POST">
                                 @csrf
                                 @method('PATCH')
                                 <button type="submit"
@@ -116,7 +116,7 @@
                             </form>
 
                             {{-- Hapus Permanen --}}
-                            <form action="{{ route('admin.kelola_laporan.force_delete', $laporan->id_laporan) }}" method="POST"
+                            <form action="{{ route('reports.force_delete', $laporan->id_laporan) }}" method="POST"
                                   onsubmit="return confirm('Hapus PERMANEN laporan ini? Foto bukti juga akan dihapus dan tidak bisa dikembalikan!')">
                                 @csrf
                                 @method('DELETE')

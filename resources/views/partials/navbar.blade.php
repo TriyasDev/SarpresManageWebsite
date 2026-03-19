@@ -80,7 +80,7 @@
                             </div>
 
                             {{-- Menu Items --}}
-                            <a href="{{ route('user.dashboard') }}"
+                            <a href="{{route('dashboard') }}"
                                 class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-costume-primary transition-colors group">
                                 <svg class="w-4 h-4 text-gray-400 group-hover:text-costume-primary transition-colors"
                                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -155,7 +155,7 @@
                         </div>
                     </div>
 
-                    <a href="{{ route('user.dashboard') }}"
+                    <a href="{{route('dashboard') }}"
                         class="block w-full text-center px-5 py-2 rounded-[30px] border-2 border-costume-primary text-costume-primary text-sm font-medium hover:bg-costume-primary hover:text-white transition-all">
                         Dashboard
                     </a>

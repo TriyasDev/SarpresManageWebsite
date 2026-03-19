@@ -20,6 +20,9 @@ use Carbon\Carbon;
 
 class AuthController extends Controller
 {
+    /**
+     * Show login form
+     */
     public function showLogin()
     {
         if (Auth::check()) {
@@ -28,67 +31,74 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
+    /**
+     * Handle login request - OPTIMIZED
+     */
     public function login(LoginRequest $request)
     {
-        $throttleKey = Str::lower($request->input('email')) . '|' . $request->ip();
+        // Simplified rate limiting
+        $throttleKey = $request->ip() . '|login';
 
         if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
             $seconds = RateLimiter::availableIn($throttleKey);
             return back()
                 ->withInput($request->only('email'))
-                ->withErrors(['email' => AuthMessages::rateLimitLogin($seconds)]);
+                ->withErrors(['email' => "Terlalu banyak percobaan login. Silakan coba lagi dalam {$seconds} detik."]);
         }
 
-        $credentials = $request->validated();
-        $email = $credentials['email'];
-        $password = $credentials['password'];
-        $remember = $credentials['remember'] ?? false;
+        $credentials = $request->only('email', 'password');
+        $remember = $request->boolean('remember');
 
-        $user = User::where('email', $email)->first();
-
-        if (!$user) {
+        // Single attempt to login
+        if (!Auth::attempt($credentials, $remember)) {
             RateLimiter::hit($throttleKey, 60);
+
             return back()
                 ->withInput($request->only('email'))
-                ->withErrors(['email' => AuthMessages::emailNotRegistered()]);
+                ->withErrors(['email' => 'Email atau password salah.']);
         }
 
-        if (!Hash::check($password, $user->password)) {
-            RateLimiter::hit($throttleKey, 60);
-            return back()
-                ->withInput($request->only('email'))
-                ->withErrors(['password' => AuthMessages::wrongPassword()]);
-        }
-
-        Auth::login($user, $remember);
+        // Clear rate limit on success
         RateLimiter::clear($throttleKey);
+
+        // Regenerate session
         $request->session()->regenerate();
 
+        // Redirect based on role
         return $this->redirectToDashboard();
     }
 
+    /**
+     * Redirect to appropriate dashboard based on user role
+     */
     protected function redirectToDashboard()
     {
         $user = Auth::user();
 
-        if ($user->isAdmin()) {
+        // Admin redirect
+        if ($user->role === 'admin' || method_exists($user, 'isAdmin') && $user->isAdmin()) {
             return redirect()
-                ->route('admin.dashboard')
-                ->with('success', AuthMessages::welcomeBack($user->username));
+                ->intended(route('dashboard'))
+                ->with('success', "Selamat datang kembali, {$user->username}!");
         }
 
-        if ($user->isPeminjam()) {
+        // Regular user redirect
+        if ($user->role === 'peminjam' || method_exists($user, 'isPeminjam') && $user->isPeminjam()) {
             return redirect()
-                ->route('peminjam.home')
-                ->with('success', AuthMessages::welcomeUser($user->username));
+                ->intended(route('home'))
+                ->with('success', "Selamat datang, {$user->username}!");
         }
 
+        // Invalid role - logout
         Auth::logout();
         return redirect()
             ->route('auth.login')
-            ->withErrors(['email' => AuthMessages::invalidRole()]);
+            ->withErrors(['email' => 'Role pengguna tidak valid.']);
     }
 
+    /**
+     * Handle logout
+     */
     public function logout(Request $request)
     {
         Auth::logout();
@@ -97,78 +107,90 @@ class AuthController extends Controller
 
         return redirect()
             ->route('auth.login')
-            ->with('success', AuthMessages::logoutSuccess());
+            ->with('success', 'Anda telah berhasil keluar.');
     }
 
+    /**
+     * Show forgot password form
+     */
     public function showForgotPassword()
     {
         return view('auth.lupa-password');
     }
 
+    /**
+     * Send reset code via email - OPTIMIZED
+     */
     public function sendResetCode(ForgotPasswordRequest $request)
     {
         $email = strtolower(trim($request->email));
-        $rateLimitKey = 'reset-password:' . $email;
+        $rateLimitKey = 'reset:' . $email;
 
+        // Rate limit: 1 request per 2 hours
         if (RateLimiter::tooManyAttempts($rateLimitKey, 1)) {
-            $availableIn = RateLimiter::availableIn($rateLimitKey);
-            $hours = floor($availableIn / 3600);
-            $minutes = floor(($availableIn % 3600) / 60);
-
+            $minutes = ceil(RateLimiter::availableIn($rateLimitKey) / 60);
             return back()
-                ->withInput($request->only('email'))
-                ->withErrors(['email' => AuthMessages::rateLimitResetPassword($hours, $minutes)]);
+                ->withInput()
+                ->withErrors(['email' => "Kode reset sudah dikirim. Silakan coba lagi dalam {$minutes} menit."]);
         }
 
+        // Check if user exists
         $user = User::where('email', $email)->first();
-
         if (!$user) {
             return back()
-                ->withInput($request->only('email'))
-                ->withErrors(['email' => AuthMessages::emailNotFound($email)]);
+                ->withInput()
+                ->withErrors(['email' => 'Email tidak terdaftar.']);
         }
 
+        // Generate 6-digit code
         $code = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
 
-        DB::table('password_resets')->where('email', $email)->delete();
-        DB::table('password_resets')->insert([
-            'email' => $email,
-            'code' => $code,
-            'expires_at' => Carbon::now()->addMinutes(15),
-            'created_at' => Carbon::now(),
-        ]);
+        // Delete old codes and insert new one (optimized single query)
+        DB::table('password_resets')->updateOrInsert(
+            ['email' => $email],
+            [
+                'code' => $code,
+                'expires_at' => Carbon::now()->addMinutes(15),
+                'created_at' => Carbon::now(),
+            ]
+        );
 
+        // Send email
         try {
             Mail::to($email)->send(new ResetPasswordMail($code, $user->username));
-            RateLimiter::hit($rateLimitKey, 7200);
+            RateLimiter::hit($rateLimitKey, 7200); // 2 hours
+
             session(['reset_email' => $email]);
 
             return redirect()
                 ->route('auth.verify_code')
-                ->with('success', AuthMessages::codeSent($email));
+                ->with('success', "Kode verifikasi telah dikirim ke {$email}");
 
         } catch (\Exception $e) {
-            \Log::error('Failed to send reset password email', [
-                'email' => $email,
-                'error' => $e->getMessage()
-            ]);
+            \Log::error('Email send failed', ['email' => $email, 'error' => $e->getMessage()]);
 
             return back()
-                ->withInput($request->only('email'))
-                ->withErrors(['email' => AuthMessages::emailSendFailed()]);
+                ->withInput()
+                ->withErrors(['email' => 'Gagal mengirim email. Silakan coba lagi.']);
         }
     }
 
+    /**
+     * Show verify code form
+     */
     public function showVerifyCode()
     {
         if (!session('reset_email')) {
             return redirect()
                 ->route('auth.lupa_password')
-                ->withErrors(['email' => AuthMessages::sessionExpired()]);
+                ->withErrors(['email' => 'Sesi telah berakhir. Silakan mulai dari awal.']);
         }
         return view('auth.verify-code');
     }
 
+    /**
+     * Verify reset code
+     */
     public function verifyCode(VerifyCodeRequest $request)
     {
         $email = session('reset_email');
@@ -176,22 +198,23 @@ class AuthController extends Controller
         if (!$email) {
             return redirect()
                 ->route('auth.lupa_password')
-                ->withErrors(['email' => AuthMessages::sessionExpired()]);
+                ->withErrors(['email' => 'Sesi telah berakhir.']);
         }
 
+        // Check code validity
         $resetData = DB::table('password_resets')
             ->where('email', $email)
             ->where('code', $request->code)
             ->first();
 
         if (!$resetData) {
-            return back()->withErrors(['code' => AuthMessages::invalidCode($request->code)]);
+            return back()->withErrors(['code' => 'Kode verifikasi salah.']);
         }
 
         if (Carbon::parse($resetData->expires_at)->isPast()) {
             DB::table('password_resets')->where('email', $email)->delete();
             return back()
-                ->withErrors(['code' => AuthMessages::codeExpired()])
+                ->withErrors(['code' => 'Kode telah kadaluarsa.'])
                 ->with('expired', true);
         }
 
@@ -199,19 +222,25 @@ class AuthController extends Controller
 
         return redirect()
             ->route('auth.reset_password')
-            ->with('success', AuthMessages::codeVerified());
+            ->with('success', 'Kode berhasil diverifikasi.');
     }
 
+    /**
+     * Show reset password form
+     */
     public function showResetPassword()
     {
         if (!session('reset_email') || !session('verified_code')) {
             return redirect()
                 ->route('auth.lupa_password')
-                ->withErrors(['email' => AuthMessages::sessionExpiredNotVerified()]);
+                ->withErrors(['email' => 'Sesi tidak valid. Silakan mulai dari awal.']);
         }
         return view('auth.reset-password');
     }
 
+    /**
+     * Reset password - OPTIMIZED
+     */
     public function resetPassword(ResetPasswordRequest $request)
     {
         $email = session('reset_email');
@@ -220,9 +249,10 @@ class AuthController extends Controller
         if (!$email || !$code) {
             return redirect()
                 ->route('auth.lupa_password')
-                ->withErrors(['email' => AuthMessages::sessionExpired()]);
+                ->withErrors(['email' => 'Sesi telah berakhir.']);
         }
 
+        // Verify code one more time
         $resetData = DB::table('password_resets')
             ->where('email', $email)
             ->where('code', $code)
@@ -234,28 +264,31 @@ class AuthController extends Controller
 
             return redirect()
                 ->route('auth.lupa_password')
-                ->withErrors(['email' => AuthMessages::resetCodeExpired()]);
+                ->withErrors(['email' => 'Kode reset telah kadaluarsa.']);
         }
 
+        // Update password
         $user = User::where('email', $email)->first();
-
         if (!$user) {
             return redirect()
                 ->route('auth.lupa_password')
-                ->withErrors(['email' => AuthMessages::userNotFound()]);
+                ->withErrors(['email' => 'Pengguna tidak ditemukan.']);
         }
 
-        $user->password = Hash::make($request->password);
-        $user->save();
+        $user->update(['password' => Hash::make($request->password)]);
 
+        // Clean up
         DB::table('password_resets')->where('email', $email)->delete();
         session()->forget(['reset_email', 'verified_code']);
 
         return redirect()
             ->route('auth.login')
-            ->with('success', AuthMessages::passwordResetSuccess());
+            ->with('success', 'Password berhasil diubah. Silakan login.');
     }
 
+    /**
+     * Resend verification code
+     */
     public function resendCode()
     {
         $email = session('reset_email');
@@ -263,48 +296,43 @@ class AuthController extends Controller
         if (!$email) {
             return redirect()
                 ->route('auth.lupa_password')
-                ->withErrors(['email' => AuthMessages::sessionExpired()]);
+                ->withErrors(['email' => 'Sesi telah berakhir.']);
         }
 
-        $rateLimitKey = 'resend-code:' . $email;
+        $rateLimitKey = 'resend:' . $email;
 
+        // Rate limit: 3 attempts per 5 minutes
         if (RateLimiter::tooManyAttempts($rateLimitKey, 3)) {
             $seconds = RateLimiter::availableIn($rateLimitKey);
-            $minutes = ceil($seconds / 60);
-
-            return back()->withErrors(['code' => AuthMessages::rateLimitResendCode($minutes)]);
+            return back()->withErrors(['code' => "Terlalu banyak percobaan. Coba lagi dalam {$seconds} detik."]);
         }
 
         $user = User::where('email', $email)->first();
-
         if (!$user) {
             return redirect()
                 ->route('auth.lupa_password')
-                ->withErrors(['email' => AuthMessages::userNotFound()]);
+                ->withErrors(['email' => 'Pengguna tidak ditemukan.']);
         }
 
         $code = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
 
-        DB::table('password_resets')->where('email', $email)->delete();
-        DB::table('password_resets')->insert([
-            'email' => $email,
-            'code' => $code,
-            'expires_at' => Carbon::now()->addMinutes(15),
-            'created_at' => Carbon::now(),
-        ]);
+        DB::table('password_resets')->updateOrInsert(
+            ['email' => $email],
+            [
+                'code' => $code,
+                'expires_at' => Carbon::now()->addMinutes(15),
+                'created_at' => Carbon::now(),
+            ]
+        );
 
         try {
             Mail::to($email)->send(new ResetPasswordMail($code, $user->username));
-            RateLimiter::hit($rateLimitKey, 300);
+            RateLimiter::hit($rateLimitKey, 300); // 5 minutes
 
-            return back()->with('success', AuthMessages::codeResent());
+            return back()->with('success', 'Kode baru telah dikirim.');
         } catch (\Exception $e) {
-            \Log::error('Failed to resend code', [
-                'email' => $email,
-                'error' => $e->getMessage()
-            ]);
-
-            return back()->withErrors(['code' => AuthMessages::codeResendFailed()]);
+            \Log::error('Resend code failed', ['email' => $email, 'error' => $e->getMessage()]);
+            return back()->withErrors(['code' => 'Gagal mengirim kode. Silakan coba lagi.']);
         }
     }
 }

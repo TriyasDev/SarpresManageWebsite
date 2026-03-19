@@ -20,7 +20,7 @@
     <div class="flex items-center gap-2 flex-wrap">
 
         {{-- Tombol Tempat Sampah --}}
-        <a href="{{ route('admin.kelola_laporan.trash') }}"
+        <a href="{{ route('reports.trash') }}"
            class="relative flex items-center gap-2 px-4 py-2.5 border-2 border-gray-300 text-gray-600 text-sm font-semibold rounded-[30px] hover:bg-gray-50 transition">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
@@ -34,7 +34,7 @@
         </a>
 
         {{-- Export Excel --}}
-        <a href="{{ route('admin.kelola_laporan.export_excel', request()->query()) }}"
+        <a href="{{ route('reports.export_excel', request()->query()) }}"
            class="flex items-center gap-2 px-4 py-2.5 border-2 border-green-200 rounded-[30px] bg-green-50 text-green-700 text-sm font-semibold hover:bg-green-100 transition">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
@@ -43,7 +43,7 @@
         </a>
 
         {{-- Export PDF --}}
-        <a href="{{ route('admin.kelola_laporan.export_pdf', request()->query()) }}"
+        <a href="{{ route('reports.export_pdf', request()->query()) }}"
            class="flex items-center gap-2 px-4 py-2.5 border-2 border-blue-200 rounded-[30px] bg-blue-50 text-blue-700 text-sm font-semibold hover:bg-blue-100 transition">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
@@ -52,7 +52,7 @@
         </a>
 
         {{-- Tombol Tambah Laporan --}}
-        <a href="{{ route('admin.kelola_laporan.create') }}"
+        <a href="{{ route('reports.create') }}"
            class="flex items-center gap-2 px-5 py-2.5 bg-costume-primary text-white text-sm font-semibold rounded-[30px] hover:bg-blue-700 transition shadow-sm">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
@@ -63,7 +63,7 @@
 </div>
 
 {{-- Filter & Pencarian --}}
-<form method="GET" action="{{ route('admin.kelola_laporan.index') }}" id="filterForm">
+<form method="GET" action="{{ route('reports.index') }}" id="filterForm">
     <div class="bg-white rounded-[30px] shadow-sm border border-gray-100 p-5 mb-6">
         <div class="flex flex-col lg:flex-row gap-4">
 
@@ -226,7 +226,7 @@
                     <td class="p-4">
                         <div class="flex justify-center items-center gap-2">
                             {{-- Edit --}}
-                            <a href="{{ route('admin.kelola_laporan.edit', $laporan->id_laporan) }}"
+                            <a href="{{ route('reports.edit', $laporan->id_laporan) }}"
                                class="w-8 h-8 flex items-center justify-center rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 transition"
                                title="Edit">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -234,7 +234,7 @@
                                 </svg>
                             </a>
                             {{-- Hapus (soft delete) --}}
-                            <form action="{{ route('admin.kelola_laporan.destroy', $laporan->id_laporan) }}" method="POST"
+                            <form action="{{ route('reports.destroy', $laporan->id_laporan) }}" method="POST"
                                   onsubmit="return confirm('Pindahkan laporan ini ke tempat sampah?')">
                                 @csrf
                                 @method('DELETE')

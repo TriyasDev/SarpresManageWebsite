@@ -4,7 +4,7 @@
 
 {{-- Breadcrumb / Back --}}
 <div class="flex items-center gap-3 mb-6">
-    <a href="{{ route('admin.kelola_laporan.index') }}"
+    <a href="{{ route('reports.index') }}"
        class="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-800 transition">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
@@ -25,7 +25,7 @@
     </div>
 @endif
 
-<form action="{{ route('admin.kelola_laporan.store') }}" method="POST" enctype="multipart/form-data">
+<form action="{{ route('reports.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
     <div class="bg-white rounded-[30px] shadow-sm border border-gray-100 p-6 lg:p-10">
         <h2 class="text-lg lg:text-xl font-bold text-gray-800 mb-6">Data Laporan Baru</h2>
@@ -126,7 +126,7 @@
 
                 {{-- Tombol Aksi --}}
                 <div class="flex gap-3 mt-auto">
-                    <a href="{{ route('admin.kelola_laporan.index') }}"
+                    <a href="{{ route('reports.index') }}"
                        class="flex-1 text-center border-2 border-gray-300 text-gray-700 px-5 py-3 rounded-[30px] font-semibold text-sm hover:bg-gray-50 transition">
                         Batal
                     </a>

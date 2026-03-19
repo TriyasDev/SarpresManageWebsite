@@ -57,7 +57,7 @@ class KelolaAsetController extends Controller
             'foto'            => $fotoPath,
         ]);
 
-        return redirect()->route('admin.kelola_aset.index')
+        return redirect()->route('assets.index')
             ->with('success', 'Aset berhasil ditambahkan.');
     }
 
@@ -101,7 +101,7 @@ class KelolaAsetController extends Controller
             'foto'            => $fotoPath,
         ]);
 
-        return redirect()->route('admin.kelola_aset.index')
+        return redirect()->route('assets.index')
             ->with('success', 'Aset berhasil diperbarui.');
     }
 
@@ -112,7 +112,7 @@ class KelolaAsetController extends Controller
     {
         $barang->delete(); // soft delete — foto tetap ada di storage
 
-        return redirect()->route('admin.kelola_aset.index')
+        return redirect()->route('assets.index')
             ->with('success', 'Aset dipindahkan ke tempat sampah.');
     }
 
@@ -140,7 +140,7 @@ class KelolaAsetController extends Controller
         $barang = Barang::onlyTrashed()->findOrFail($id);
         $barang->restore();
 
-        return redirect()->route('admin.kelola_aset.trash')
+        return redirect()->route('assets.trash')
             ->with('success', 'Aset berhasil dipulihkan.');
     }
 
@@ -157,7 +157,7 @@ class KelolaAsetController extends Controller
 
         $barang->forceDelete();
 
-        return redirect()->route('admin.kelola_aset.trash')
+        return redirect()->route('assets.trash')
             ->with('success', 'Aset berhasil dihapus secara permanen.');
     }
 }

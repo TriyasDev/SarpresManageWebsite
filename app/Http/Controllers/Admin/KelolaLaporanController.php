@@ -24,9 +24,13 @@ class KelolaLaporanController extends Controller
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
-                $q->whereHas('peminjam.user', fn($q2) =>
+                $q->whereHas(
+                    'peminjam.user',
+                    fn($q2) =>
                     $q2->where('username', 'like', "%$search%")
-                )->orWhereHas('peminjam.aset', fn($q2) =>
+                )->orWhereHas(
+                    'peminjam.aset',
+                    fn($q2) =>
                     $q2->where('nama_barang', 'like', "%$search%")
                 );
             });
@@ -85,7 +89,7 @@ class KelolaLaporanController extends Controller
 
         Laporan::create($data);
 
-        return redirect()->route('admin.kelola_laporan.index')
+        return redirect()->route('reports.index')
             ->with('success', 'Laporan berhasil ditambahkan.');
     }
 
@@ -131,7 +135,7 @@ class KelolaLaporanController extends Controller
 
         $laporan->update($data);
 
-        return redirect()->route('admin.kelola_laporan.index')
+        return redirect()->route('reports.index')
             ->with('success', 'Laporan berhasil diperbarui.');
     }
 
@@ -143,7 +147,7 @@ class KelolaLaporanController extends Controller
         $laporan = Laporan::findOrFail($id);
         $laporan->delete();
 
-        return redirect()->route('admin.kelola_laporan.index')
+        return redirect()->route('reports.index')
             ->with('success', 'Laporan dipindahkan ke tempat sampah.');
     }
 
@@ -157,9 +161,13 @@ class KelolaLaporanController extends Controller
         $laporans = Laporan::onlyTrashed()
             ->with(['peminjam.user', 'peminjam.aset'])
             ->when($search, function ($q) use ($search) {
-                $q->whereHas('peminjam.user', fn($q2) =>
+                $q->whereHas(
+                    'peminjam.user',
+                    fn($q2) =>
                     $q2->where('username', 'like', "%$search%")
-                )->orWhereHas('peminjam.aset', fn($q2) =>
+                )->orWhereHas(
+                    'peminjam.aset',
+                    fn($q2) =>
                     $q2->where('nama_barang', 'like', "%$search%")
                 );
             })
@@ -178,7 +186,7 @@ class KelolaLaporanController extends Controller
         $laporan = Laporan::onlyTrashed()->findOrFail($id);
         $laporan->restore();
 
-        return redirect()->route('admin.kelola_laporan.trash')
+        return redirect()->route('reports.trash')
             ->with('success', 'Laporan berhasil dipulihkan.');
     }
 
@@ -195,7 +203,7 @@ class KelolaLaporanController extends Controller
 
         $laporan->forceDelete();
 
-        return redirect()->route('admin.kelola_laporan.trash')
+        return redirect()->route('reports.trash')
             ->with('success', 'Laporan berhasil dihapus secara permanen.'); // ← fix: was 'sucess'
     }
 

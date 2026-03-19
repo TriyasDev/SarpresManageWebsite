@@ -23,10 +23,14 @@ class KelolaPengajuanController extends Controller
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
-                $q->whereHas('user', fn($q2) =>
+                $q->whereHas(
+                    'user',
+                    fn($q2) =>
                     $q2->where('username', 'like', "%$search%")
-                       ->orWhere('nipd', 'like', "%$search%")
-                )->orWhereHas('details.barang', fn($q2) =>
+                        ->orWhere('nipd', 'like', "%$search%")
+                )->orWhereHas(
+                    'details.barang',
+                    fn($q2) =>
                     $q2->where('nama_barang', 'like', "%$search%")
                 );
             });
@@ -70,7 +74,7 @@ class KelolaPengajuanController extends Controller
             'id_admin'       => Auth::id(),
         ]);
 
-        return redirect()->route('admin.kelola_pengajuan')
+        return redirect()->route('approvals.index')
             ->with('success', "Pengajuan dari {$pengajuan->user?->username} berhasil disetujui.");
     }
 
@@ -91,7 +95,7 @@ class KelolaPengajuanController extends Controller
             'id_admin' => Auth::id(),
         ]);
 
-        return redirect()->route('admin.kelola_pengajuan')
+        return redirect()->route('approvals.index')
             ->with('success', "Pengajuan dari {$pengajuan->user?->username} berhasil ditolak.");
     }
 }

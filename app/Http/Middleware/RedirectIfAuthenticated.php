@@ -2,7 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use App\Providers\RouteServiceProvider;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -23,12 +22,14 @@ class RedirectIfAuthenticated
             if (Auth::guard($guard)->check()) {
                 $user = Auth::guard($guard)->user();
 
-                if ($user->isAdmin()) {
-                    return redirect()->route('admin.dashboard');
+                // Redirect admin to /dashboard
+                if ($user->role === 'admin' || (method_exists($user, 'isAdmin') && $user->isAdmin())) {
+                    return redirect()->route('dashboard');
                 }
 
-                if ($user->isPeminjam()) {
-                    return redirect()->route('peminjam.dashboard');
+                // Redirect regular user to /home
+                if ($user->role === 'peminjam' || (method_exists($user, 'isPeminjam') && $user->isPeminjam())) {
+                    return redirect()->route('home');
                 }
 
                 // Fallback

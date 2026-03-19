@@ -24,7 +24,7 @@
         </div>
         <div class="flex items-center gap-2">
             {{-- Tombol Tempat Sampah --}}
-            <a href="{{ route('admin.kelola_data_user.trash') }}"
+            <a href="{{ route('users.trash') }}"
                class="relative flex items-center gap-2 px-4 py-2.5 border-2 border-gray-300 text-gray-600 text-sm font-semibold rounded-[30px] hover:bg-gray-50 transition">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
@@ -38,7 +38,7 @@
             </a>
 
             {{-- Tombol Tambah User --}}
-            <a href="{{ route('admin.kelola_data_user.create') }}"
+            <a href="{{ route('users.create') }}"
                class="flex items-center gap-2 px-5 py-2.5 bg-costume-primary text-white text-sm font-semibold rounded-[30px] hover:bg-blue-700 transition shadow-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
@@ -50,7 +50,7 @@
 
     {{-- Search Bar --}}
     <div class="bg-white rounded-[30px] shadow-sm border border-gray-100 p-5 mb-6">
-        <form action="{{ route('admin.kelola_data_user.index') }}" method="GET">
+        <form action="{{ route('users.index') }}" method="GET">
             <div class="relative">
                 <input type="text" name="search" value="{{ $search ?? '' }}"
                     placeholder="Cari nama user atau NIPD..."
@@ -104,13 +104,13 @@
                             <td class="p-4">
                                 <div class="flex gap-2 justify-center">
                                     {{-- Tombol Edit --}}
-                                    <a href="{{ route('admin.kelola_data_user.edit', $user->id_user) }}"
+                                    <a href="{{ route('users.edit', $user->id_user) }}"
                                        class="px-4 py-1.5 bg-yellow-100 text-yellow-700 text-xs font-semibold rounded-[30px] border border-yellow-200 hover:bg-yellow-200 transition whitespace-nowrap">
                                         Edit
                                     </a>
 
                                     {{-- Tombol Hapus (Soft Delete) --}}
-                                    <form action="{{ route('admin.kelola_data_user.destroy', $user->id_user) }}" method="POST"
+                                    <form action="{{ route('users.destroy', $user->id_user) }}" method="POST"
                                           onsubmit="return confirm('Pindahkan user \'{{ addslashes($user->username) }}\' ke tempat sampah?')">
                                         @csrf
                                         @method('DELETE')
