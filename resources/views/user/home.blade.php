@@ -312,7 +312,7 @@
                                 </div>
                             </div>
 
-                            <a href="{{ route('borrow') }}"
+                            <a href="{{ route('borrow', ['barang' => $item->id_barang]) }}"
                                 class="block w-full py-3.5 bg-costume-primary text-white text-center rounded-xl font-semibold hover:bg-costume-primary/90 transition-all shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 group">
                                 <span class="flex items-center justify-center gap-2">
                                     Pinjam Sekarang

@@ -5,23 +5,46 @@
 <div class="max-w-7xl mx-auto min-h-screen flex items-center justify-center p-4">
 
     <!-- Main Container -->
-    <div class="bg-white rounded-3xl shadow-2xl overflow-hidden w-full max-w-6xl min-h-[600px] lg:h-[700px] flex border border-slate-200">
+    <div class="bg-white rounded-[30px] shadow-2xl overflow-hidden w-full max-w-6xl min-h-[700px] flex border border-slate-200">
 
-        <!-- Left Side - Simplified Image Slider -->
-        <div class="hidden lg:flex lg:w-1/2 relative overflow-hidden rounded-l-3xl bg-gradient-to-br from-blue-600 to-blue-800">
+        <!-- Left Side - Optimized Image Slider (Keep original look!) -->
+        <div class="hidden lg:flex lg:w-1/2 relative overflow-hidden rounded-l-[30px] bg-slate-100">
 
-            <!-- Single Background Image - Lazy Load -->
-            <div class="absolute inset-0 w-full h-full">
-                <img
-                    src="{{ asset('images/assets/universitas0.webp') }}"
-                    alt="KlikAset"
-                    class="w-full h-full object-cover opacity-20"
-                    loading="lazy"
-                    style="object-position: center 60%;">
-                <div class="absolute inset-0 bg-gradient-to-t from-blue-900/80 to-transparent"></div>
+            <!-- Image Slider Container -->
+            <div id="imageSlider" class="absolute inset-0 w-full h-full">
+
+                <!-- Slide 1 - Load immediately -->
+                <div class="slider-item active absolute inset-0 w-full h-full">
+                    <img src="{{ asset('images/assets/universitas0.webp') }}"
+                         alt="KlikAset"
+                         class="w-full h-full object-cover"
+                         style="object-position: center 60%;"
+                         loading="eager">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                </div>
+
+                <!-- Slide 2 - Lazy load -->
+                <div class="slider-item absolute inset-0 w-full h-full translate-x-full">
+                    <img src="{{ asset('images/assets/universitas1.webp') }}"
+                         alt="KlikAset"
+                         class="w-full h-full object-cover"
+                         style="object-position: center 50%;"
+                         loading="lazy">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                </div>
+
+                <!-- Slide 3 - Lazy load -->
+                <div class="slider-item absolute inset-0 w-full h-full translate-x-full">
+                    <img src="{{ asset('images/assets/universitas2.webp') }}"
+                         alt="KlikAset"
+                         class="w-full h-full object-cover"
+                         style="object-position: center 100%;"
+                         loading="lazy">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                </div>
             </div>
 
-            <!-- Content Overlay -->
+            <!-- Text Overlay -->
             <div class="absolute bottom-12 left-8 right-8 z-10 text-white">
                 <h1 class="text-4xl font-bold mb-3 leading-tight">
                     KlikA<span class="text-blue-300">set.</span>
@@ -29,10 +52,17 @@
                 <p class="text-white/90 text-lg leading-relaxed max-w-sm">
                     Mempermudah pendataan dan peminjaman aset sekolah
                 </p>
+
+                <!-- Dots Indicator -->
+                <div class="flex gap-2 mt-6">
+                    <div class="dot w-8 h-1 bg-white rounded-full transition-all duration-300"></div>
+                    <div class="dot w-1 h-1 bg-white/40 rounded-full transition-all duration-300"></div>
+                    <div class="dot w-1 h-1 bg-white/40 rounded-full transition-all duration-300"></div>
+                </div>
             </div>
         </div>
 
-        <!-- Right Side - Login Form -->
+        <!-- Right Side - Form Login -->
         <div class="w-full lg:w-1/2 bg-white flex flex-col justify-center p-8 lg:p-12 relative">
 
             <!-- Back Button -->
@@ -40,21 +70,21 @@
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                 </svg>
-                Kembali
+                Kembali ke beranda
             </a>
 
             <div class="max-w-md mx-auto w-full">
 
                 <!-- Title -->
                 <div class="mb-8">
-                    <h2 class="text-slate-900 text-3xl font-bold mb-2">Masuk ke Akun</h2>
+                    <h2 class="text-slate-900 text-3xl font-bold mb-2">Login ke akun anda</h2>
                     <p class="text-slate-600 text-sm">
                         Belum punya akun?
-                        <a href="#" class="text-blue-600 hover:text-blue-700 font-semibold">Hubungi Admin</a>
+                        <a href="#" class="text-blue-600 hover:text-blue-700 font-semibold transition-colors">Hubungi Admin</a>
                     </p>
                 </div>
 
-                <!-- Alert Error -->
+                <!-- Alert Messages -->
                 @if(session('error'))
                 <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-sm">
                     <p class="text-red-700">{{ session('error') }}</p>
@@ -130,7 +160,7 @@
                             <span class="ml-2 text-sm text-slate-600">Ingat saya</span>
                         </label>
 
-                        <a href="{{ route('auth.lupa_password') }}" class="text-sm text-blue-600 hover:text-blue-700 font-medium">
+                        <a href="{{ route('auth.lupa_password') }}" class="text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors">
                             Lupa password?
                         </a>
                     </div>
@@ -161,12 +191,56 @@
 
 </div>
 
+<!-- Optimized JavaScript -->
 <script>
-// Optimized JavaScript - Minimal & Fast
 (function() {
     'use strict';
 
-    // Password Toggle
+    // ============================================
+    // IMAGE SLIDER - OPTIMIZED
+    // ============================================
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slider-item');
+    const dots = document.querySelectorAll('.dot');
+    const totalSlides = slides.length;
+
+    // Simple slide transition
+    function showSlide(index) {
+        slides.forEach((slide, i) => {
+            slide.classList.remove('translate-x-0', 'translate-x-full', '-translate-x-full');
+
+            if (i < index) {
+                slide.classList.add('-translate-x-full');
+            } else if (i === index) {
+                slide.classList.add('translate-x-0');
+            } else {
+                slide.classList.add('translate-x-full');
+            }
+        });
+
+        // Update dots
+        dots.forEach((dot, i) => {
+            if (i === index) {
+                dot.classList.remove('w-1', 'bg-white/40');
+                dot.classList.add('w-8', 'bg-white');
+            } else {
+                dot.classList.remove('w-8', 'bg-white');
+                dot.classList.add('w-1', 'bg-white/40');
+            }
+        });
+    }
+
+    function nextSlide() {
+        currentSlide = (currentSlide + 1) % totalSlides;
+        showSlide(currentSlide);
+    }
+
+    // Auto-slide every 5 seconds
+    setInterval(nextSlide, 5000);
+
+    // ============================================
+    // PASSWORD TOGGLE
+    // ============================================
     const togglePassword = document.getElementById('togglePassword');
     const passwordInput = document.getElementById('password');
     const eyeIcon = document.getElementById('eyeIcon');
@@ -184,7 +258,9 @@
         });
     }
 
-    // Form Submit Handler with Loading State
+    // ============================================
+    // FORM SUBMIT LOADING STATE
+    // ============================================
     const loginForm = document.getElementById('loginForm');
     const submitBtn = document.getElementById('submitBtn');
     const btnText = document.getElementById('btnText');
@@ -200,5 +276,19 @@
 
 })();
 </script>
+
+<!-- Minimal CSS for smooth animations -->
+<style>
+/* Slider smooth transition */
+.slider-item {
+    transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Font smoothing */
+* {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+</style>
 
 @endsection

@@ -7,8 +7,8 @@
 /* Custom Theme - KlikAset Brand Colors */
 @theme {
     /* Primary Colors */
-    --color-costume-primary: #2563eb;
-    --color-costume-second: #3b82f6;
+    --color-costume-primary: #3c77d5;
+    --color-costume-second: #649fff;
 
     /* Alias untuk compatibility */
     --color-blue-600: #2563eb;
@@ -38,16 +38,28 @@
 @layer utilities {
     /* Gradient backgrounds */
     .bg-linear-to-r {
-        background: linear-gradient(135deg, var(--color-costume-primary) 0%, var(--color-costume-second) 100%);
+        background: linear-gradient(
+            135deg,
+            var(--color-costume-primary) 0%,
+            var(--color-costume-second) 100%
+        );
     }
 
     .bg-linear-to-t {
-        background: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, transparent 100%);
+        background: linear-gradient(
+            to top,
+            rgba(0, 0, 0, 0.6) 0%,
+            transparent 100%
+        );
     }
 
     /* Text gradient */
     .text-gradient {
-        background: linear-gradient(135deg, var(--color-costume-primary), var(--color-costume-second));
+        background: linear-gradient(
+            135deg,
+            var(--color-costume-primary),
+            var(--color-costume-second)
+        );
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
@@ -121,7 +133,9 @@
 
     .btn:focus {
         outline: none;
-        box-shadow: 0 0 0 2px white, 0 0 0 4px var(--color-costume-primary);
+        box-shadow:
+            0 0 0 2px white,
+            0 0 0 4px var(--color-costume-primary);
     }
 
     .btn:disabled {

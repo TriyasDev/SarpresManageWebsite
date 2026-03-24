@@ -19,6 +19,7 @@ use App\Http\Controllers\User\RankController;
 | Public Routes
 |--------------------------------------------------------------------------
 */
+
 Route::get('/', [HomeController::class, 'index'])->name('index');
 
 /*
@@ -121,17 +122,10 @@ Route::middleware('auth')->group(function () {
     | Instead of: /peminjam/home, /peminjam/form, etc.
     */
     Route::middleware('role:peminjam')->group(function () {
-
-        // Home
         Route::get('/home', [HomeController::class, 'index'])->name('home');
-
-        // User Dashboard
         Route::get('/my-dashboard', [UserDashboardController::class, 'index'])->name('my.dashboard');
-
-        // Borrowing Form
-        Route::get('/borrow', [FormController::class, 'index'])->name('borrow');
-
-        // Rankings
+        Route::get('/borrow/{barang?}', [FormController::class, 'index'])->name('borrow');
+        Route::post('/borrow', [FormController::class, 'store'])->name('borrow.store');
         Route::get('/rankings', [RankController::class, 'index'])->name('rankings');
     });
 
