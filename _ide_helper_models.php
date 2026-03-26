@@ -21,8 +21,8 @@ namespace App\Models{
  * @property string $kondisi
  * @property int $jumlah_total
  * @property int $jumlah_tersedia
- * @property string $deskripsi
- * @property string $foto
+ * @property string|null $deskripsi
+ * @property string|null $foto
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
@@ -59,7 +59,7 @@ namespace App\Models{
  * @property int $id_peminjaman
  * @property int $id_barang
  * @property int $jumlah
- * @property string $kondisi_pinjam
+ * @property string|null $kondisi_pinjam
  * @property string|null $kondisi_kembali
  * @property string|null $keterangan
  * @property-read \App\Models\Barang $barang
@@ -86,7 +86,7 @@ namespace App\Models{
  * @property string $kondisi_barang
  * @property \Illuminate\Support\Carbon|null $tanggal_dipinjam
  * @property \Illuminate\Support\Carbon|null $tanggal_dikembalikan
- * @property string $foto_bukti
+ * @property string|null $foto_bukti
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
@@ -95,7 +95,7 @@ namespace App\Models{
  * @property-read string $badge_kondisi
  * @property-read string $label_jenis
  * @property-read string $label_kondisi
- * @property-read \App\Models\Peminjaman $peminjam
+ * @property-read \App\Models\Pengajuan $peminjam
  * @method static \Illuminate\Database\Eloquent\Builder|Laporan newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Laporan newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Laporan onlyTrashed()
@@ -113,7 +113,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Laporan whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Laporan withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Laporan withoutTrashed()
- * @mixin \Eloquent
  */
 	class Laporan extends \Eloquent {}
 }
@@ -133,22 +132,30 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $tanggal_kembali
  * @property \Illuminate\Support\Carbon|null $tanggal_kembali_aktual
  * @property string $status
+ * @property string|null $approved_at
+ * @property string|null $rejected_at
  * @property string|null $catatan
  * @property int|null $disetujui_oleh
- * @property int $point
+ * @property string|null $return_condition
+ * @property int $is_late
+ * @property int $point_earned
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\User|null $admin
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\DetailPeminjaman> $detailPeminjaman
  * @property-read int|null $detail_peminjaman_count
  * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder|Peminjaman whereApprovedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Peminjaman whereCatatan($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Peminjaman whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Peminjaman whereDisetujuiOleh($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Peminjaman whereIdAdmin($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Peminjaman whereIdPeminjaman($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Peminjaman whereIdUser($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Peminjaman wherePoint($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Peminjaman whereIsLate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Peminjaman wherePointEarned($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Peminjaman whereRejectedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Peminjaman whereReturnCondition($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Peminjaman whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Peminjaman whereTanggalKembali($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Peminjaman whereTanggalKembaliAktual($value)
@@ -162,9 +169,54 @@ namespace App\Models{
 /**
  * App\Models\Pengajuan
  *
+ * @property int $id_peminjaman
+ * @property int $id_user
+ * @property int|null $id_admin
+ * @property \Illuminate\Support\Carbon $tanggal_pinjam
+ * @property \Illuminate\Support\Carbon|null $tanggal_kembali
+ * @property \Illuminate\Support\Carbon|null $tanggal_kembali_aktual
+ * @property string $status
+ * @property string|null $approved_at
+ * @property string|null $rejected_at
+ * @property string|null $catatan
+ * @property int|null $disetujui_oleh
+ * @property string|null $return_condition
+ * @property int $is_late
+ * @property int $point_earned
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\User|null $admin
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\DetailPeminjaman> $details
+ * @property-read int|null $details_count
+ * @property-read \App\Models\DetailPeminjaman|null $firstDetail
+ * @property-read string $badge_status
+ * @property-read string $icon_status
+ * @property-read bool $is_pending
+ * @property-read string $label_status
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder|Pengajuan bulanIni()
+ * @method static \Illuminate\Database\Eloquent\Builder|Pengajuan disetujui()
+ * @method static \Illuminate\Database\Eloquent\Builder|Pengajuan ditolak()
+ * @method static \Illuminate\Database\Eloquent\Builder|Pengajuan menunggu()
  * @method static \Illuminate\Database\Eloquent\Builder|Pengajuan newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Pengajuan newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Pengajuan query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Pengajuan whereApprovedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Pengajuan whereCatatan($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Pengajuan whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Pengajuan whereDisetujuiOleh($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Pengajuan whereIdAdmin($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Pengajuan whereIdPeminjaman($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Pengajuan whereIdUser($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Pengajuan whereIsLate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Pengajuan wherePointEarned($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Pengajuan whereRejectedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Pengajuan whereReturnCondition($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Pengajuan whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Pengajuan whereTanggalKembali($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Pengajuan whereTanggalKembaliAktual($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Pengajuan whereTanggalPinjam($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Pengajuan whereUpdatedAt($value)
  */
 	class Pengajuan extends \Eloquent {}
 }
@@ -175,16 +227,19 @@ namespace App\Models{
  *
  * @property int $id_user
  * @property string $username
+ * @property string $email
+ * @property string $password
+ * @property string $no_telpon
+ * @property string $role
+ * @property string|null $nama
+ * @property string|null $kelas
  * @property string|null $nipd
  * @property string|null $alamat
  * @property \Illuminate\Support\Carbon|null $tanggal_lahir
  * @property string|null $jenis_kelamin
- * @property string $password
- * @property string $email
- * @property string $no_telpon
- * @property string $role
- * @property string|null $rank
- * @property int|null $point
+ * @property int $points
+ * @property string|null $tier
+ * @property int $is_banned
  * @property string|null $remember_token
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -201,15 +256,18 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|User whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereIdUser($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereIsBanned($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereJenisKelamin($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereKelas($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereNama($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereNipd($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereNoTelpon($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User wherePassword($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User wherePoint($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereRank($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User wherePoints($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereRole($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereTanggalLahir($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereTier($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUsername($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User withTrashed()

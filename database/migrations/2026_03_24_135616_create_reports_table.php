@@ -4,10 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
-    /**
-     * Run the migrations.
-     */
+return new class extends Migration
+{
     public function up(): void
     {
         Schema::create('tb_laporan', function (Blueprint $table) {
@@ -20,18 +18,19 @@ return new class extends Migration {
 
             $table->timestamp('tanggal_dipinjam')->nullable();
             $table->timestamp('tanggal_dikembalikan')->nullable();
-            $table->string('foto_bukti', 255);
+            $table->string('foto_bukti', 255)->nullable();
 
             $table->timestamps();
+            $table->softDeletes();
 
-            $table->foreign('id_admin')->references('id_user')->on('tb_user');
-            $table->foreign('id_peminjaman')->references('id_peminjaman')->on('tb_peminjaman');
+            $table->foreign('id_admin')->references('id_user')->on('tb_user')->onDelete('cascade');
+            $table->foreign('id_peminjaman')->references('id_peminjaman')->on('tb_peminjaman')->onDelete('cascade');
+
+            $table->index('id_peminjaman');
+            $table->index('id_admin');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('tb_laporan');
