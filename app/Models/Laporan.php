@@ -9,7 +9,7 @@ class Laporan extends Model
 {
     use SoftDeletes;
 
-    protected $table      = 'tb_laporan';
+    protected $table = 'tb_laporan';
     protected $primaryKey = 'id_laporan';
 
     protected $fillable = [
@@ -23,72 +23,58 @@ class Laporan extends Model
     ];
 
     protected $casts = [
-        'tanggal_dipinjam'     => 'datetime',
+        'tanggal_dipinjam' => 'datetime',
         'tanggal_dikembalikan' => 'datetime',
-        'deleted_at'           => 'datetime',
+        'deleted_at' => 'datetime',
     ];
 
-    // ──────────────────────────────────────────────────────────────
-    //  Relationships
-    // ──────────────────────────────────────────────────────────────
-
-    /** Pengajuan/Peminjaman yang terkait laporan ini */
-    public function peminjam()
+    public function peminjaman()
     {
-        return $this->belongsTo(Pengajuan::class, 'id_peminjaman', 'id_peminjaman');
+        return $this->belongsTo(Peminjaman::class, 'id_peminjaman', 'id_peminjaman');
     }
 
-    /** Admin yang mencatat laporan */
     public function admin()
     {
         return $this->belongsTo(User::class, 'id_admin', 'id_user');
     }
 
-    // ──────────────────────────────────────────────────────────────
-    //  Accessors – Jenis Laporan
-    // ──────────────────────────────────────────────────────────────
-
-    public function getLabelJenisAttribute(): string
+    public function getLabelJenisAttribute()
     {
         return match ($this->jenis_laporan) {
-            'dikembalikan'        => 'Dikembalikan',
+            'dikembalikan' => 'Dikembalikan',
             'telat mengembalikan' => 'Telat Mengembalikan',
-            'hilang'              => 'Hilang',
-            default               => ucfirst($this->jenis_laporan ?? '-'),
+            'hilang' => 'Hilang',
+            default => ucfirst($this->jenis_laporan ?? '-'),
         };
     }
 
-    public function getBadgeJenisAttribute(): string
+    public function getBadgeJenisAttribute()
     {
         return match ($this->jenis_laporan) {
-            'dikembalikan'        => 'bg-green-100 text-green-700 border-green-200',
-            'telat mengembalikan' => 'bg-yellow-100 text-yellow-700 border-yellow-200',
-            'hilang'              => 'bg-red-100 text-red-700 border-red-200',
-            default               => 'bg-gray-100 text-gray-600 border-gray-200',
+            'dikembalikan' => 'bg-green-100 text-green-800',
+            'telat mengembalikan' => 'bg-yellow-100 text-yellow-800',
+            'hilang' => 'bg-red-100 text-red-800',
+            default => 'bg-gray-100 text-gray-800',
         };
     }
 
-    // ──────────────────────────────────────────────────────────────
-    //  Accessors – Kondisi Barang
-    // ──────────────────────────────────────────────────────────────
-
-    public function getLabelKondisiAttribute(): string
+    public function getLabelKondisiAttribute()
     {
         return match ($this->kondisi_barang) {
-            'baik'            => 'Baik',
-            'masih di pinjam' => 'Masih Di Pinjam',
-            'rusak'           => 'Rusak',
-            default           => ucfirst($this->kondisi_barang ?? '-'),
+            'baik' => 'Baik',
+            'masih di pinjam' => 'Masih Dipinjam',
+            'rusak' => 'Rusak',
+            default => ucfirst($this->kondisi_barang ?? '-'),
         };
     }
 
-    public function getBadgeKondisiAttribute(): string
+    public function getBadgeKondisiAttribute()
     {
         return match ($this->kondisi_barang) {
-            'baik'            => 'bg-green-100 text-green-700 border-green-200',
-            'masih di pinjam' => 'bg-blue-100 text-blue-700 border-blue-200',
-            'rusak'           => 'bg-red-100 text-red-700 border-red-200',
-            default           => 'bg-gray-100 text-gray-600 border-gray-200',
+            'baik' => 'bg-green-100 text-green-800',
+            'masih di pinjam' => 'bg-blue-100 text-blue-800',
+            'rusak' => 'bg-red-100 text-red-800',
+            default => 'bg-gray-100 text-gray-800',
         };
     }
 }

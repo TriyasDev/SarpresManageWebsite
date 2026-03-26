@@ -9,10 +9,8 @@ class Barang extends Model
 {
     use SoftDeletes;
 
-    protected $table      = 'tb_barang';
+    protected $table = 'tb_barang';
     protected $primaryKey = 'id_barang';
-    public $incrementing  = true;
-    protected $keyType    = 'int';
 
     protected $fillable = [
         'nama_barang',
@@ -25,8 +23,31 @@ class Barang extends Model
     ];
 
     protected $casts = [
-        'jumlah_total'    => 'integer',
+        'jumlah_total' => 'integer',
         'jumlah_tersedia' => 'integer',
-        'deleted_at'      => 'datetime',
+        'deleted_at' => 'datetime',
     ];
+
+    public function detailPeminjamans()
+    {
+        return $this->hasMany(DetailPeminjaman::class, 'id_barang', 'id_barang');
+    }
+
+    public function isElectronic()
+    {
+        $electronicCategories = ['elektronik', 'multimedia'];
+        return in_array(strtolower($this->kategori), $electronicCategories);
+    }
+
+    public function decrementStock($jumlah)
+    {
+        $this->jumlah_tersedia -= $jumlah;
+        $this->save();
+    }
+
+    public function incrementStock($jumlah)
+    {
+        $this->jumlah_tersedia += $jumlah;
+        $this->save();
+    }
 }
