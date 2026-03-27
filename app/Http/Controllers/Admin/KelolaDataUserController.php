@@ -9,120 +9,153 @@ use Illuminate\Support\Facades\Hash;
 
 class KelolaDataUserController extends Controller
 {
-    // ──────────────────────────────────────────────────────────────
-    //  INDEX – daftar user aktif
-    // ──────────────────────────────────────────────────────────────
     public function index(Request $request)
     {
         $search = $request->get('search');
+        $role = $request->get('role');
 
-        $users = User::where('role', 'peminjam')
+        $users = User::when(auth()->user()->role === 'admin', function ($query) {
+            $query->where('role', 'peminjam');
+        })
             ->when($search, function ($query) use ($search) {
                 $query->where('username', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
                     ->orWhere('nipd', 'like', "%{$search}%");
+            })
+            ->when($role && in_array($role, ['admin', 'peminjam']), function ($query) use ($role) {
+                $query->where('role', $role);
             })
             ->latest()
             ->paginate(10)
             ->appends($request->query());
 
-        $trashedCount = User::onlyTrashed()->where('role', 'peminjam')->count();
+        $trashedCount = User::onlyTrashed()
+            ->when(auth()->user()->role === 'admin', function ($query) {
+                $query->where('role', 'peminjam');
+            })
+            ->count();
 
         return view('admin.kelola_data_user.index', compact('users', 'search', 'trashedCount'));
     }
 
-    // ──────────────────────────────────────────────────────────────
-    //  CREATE – form tambah user baru
-    // ──────────────────────────────────────────────────────────────
     public function create()
     {
         return view('admin.kelola_data_user.create');
     }
 
-    // ──────────────────────────────────────────────────────────────
-    //  STORE – simpan user baru
-    // ──────────────────────────────────────────────────────────────
     public function store(Request $request)
     {
-        $request->validate([
-            'username'      => 'required|string|max:255',
-            'email'         => 'required|email|unique:tb_user,email',
-            'password'      => 'required|min:8',
-            'no_telpon'     => 'nullable|string|max:20',
-            'nipd'          => 'required|string|unique:tb_user,nipd',
-            'alamat'        => 'required|string',
-            'tanggal_lahir' => 'required|date',
-            'jenis_kelamin' => 'required|in:laki-laki,perempuan',
-        ]);
+        $rules = [
+            'username' => 'required|string|max:255|unique:tb_user,username',
+            'email' => 'required|email|unique:tb_user,email',
+            'password' => 'required|min:8',
+            'no_telpon' => 'nullable|string|max:20',
+            'role' => 'required|in:peminjam,admin',
+        ];
 
-        User::create([
-            'username'      => $request->username,
-            'email'         => $request->email,
-            'password'      => Hash::make($request->password),
-            'no_telpon'     => $request->no_telpon,
-            'nipd'          => $request->nipd,
-            'alamat'        => $request->alamat,
-            'tanggal_lahir' => $request->tanggal_lahir,
-            'jenis_kelamin' => $request->jenis_kelamin,
-            'rank'          => 'Reliant',
-            'role'          => 'peminjam',
-            'point'         => 50,
-        ]);
+        if ($request->role === 'peminjam') {
+            $rules['nipd'] = 'required|string|unique:tb_user,nipd';
+            $rules['kelas'] = 'required|string';
+            $rules['alamat'] = 'required|string';
+            $rules['tanggal_lahir'] = 'required|date';
+            $rules['jenis_kelamin'] = 'required|in:laki-laki,perempuan';
+        }
+
+        $request->validate($rules);
+
+        $data = [
+            'username' => $request->username,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'no_telpon' => $request->no_telpon,
+            'role' => $request->role,
+            'points' => 50,
+            'is_banned' => false,
+        ];
+
+        if ($request->role === 'peminjam') {
+            $data['nipd'] = $request->nipd;
+            $data['kelas'] = $request->kelas;
+            $data['alamat'] = $request->alamat;
+            $data['tanggal_lahir'] = $request->tanggal_lahir;
+            $data['jenis_kelamin'] = $request->jenis_kelamin;
+        }
+
+        User::create($data);
 
         return redirect()->route('users.index')
             ->with('success', 'User berhasil ditambahkan!');
     }
 
-    // ──────────────────────────────────────────────────────────────
-    //  EDIT – form edit user
-    // ──────────────────────────────────────────────────────────────
     public function edit(User $user)
     {
-        abort_if($user->role !== 'peminjam', 403);
+        if (auth()->user()->role === 'admin' && $user->role !== 'peminjam') {
+            abort(403);
+        }
 
         return view('admin.kelola_data_user.edit', compact('user'));
     }
 
-    // ──────────────────────────────────────────────────────────────
-    //  UPDATE – simpan perubahan user
-    // ──────────────────────────────────────────────────────────────
     public function update(Request $request, User $user)
     {
-        abort_if($user->role !== 'peminjam', 403);
+        if (auth()->user()->role === 'admin' && $user->role !== 'peminjam') {
+            abort(403);
+        }
 
-        $request->validate([
-            'username'      => 'required|string|max:255',
-            'email'         => 'required|email|unique:tb_user,email,' . $user->id_user . ',id_user',
-            'no_telpon'     => 'nullable|string|max:20',
-            'nipd'          => 'required|string|unique:tb_user,nipd,' . $user->id_user . ',id_user',
-            'alamat'        => 'required|string',
-            'tanggal_lahir' => 'required|date',
-            'jenis_kelamin' => 'required|in:laki-laki,perempuan',
-            'password'      => 'nullable|min:8',
-        ]);
+        $rules = [
+            'username' => 'required|string|max:255|unique:tb_user,username,' . $user->id_user . ',id_user',
+            'email' => 'required|email|unique:tb_user,email,' . $user->id_user . ',id_user',
+            'no_telpon' => 'nullable|string|max:20',
+            'role' => auth()->user()->role === 'super-admin' ? 'required|in:peminjam,admin' : 'prohibited',
+        ];
 
-        $user->update([
-            'username'      => $request->username,
-            'email'         => $request->email,
-            'no_telpon'     => $request->no_telpon,
-            'nipd'          => $request->nipd,
-            'alamat'        => $request->alamat,
-            'tanggal_lahir' => $request->tanggal_lahir,
-            'jenis_kelamin' => $request->jenis_kelamin,
-            'password'      => $request->filled('password')
-                ? Hash::make($request->password)
-                : $user->password,
-        ]);
+        if ($user->role === 'peminjam') {
+            $rules['nipd'] = 'required|string|unique:tb_user,nipd,' . $user->id_user . ',id_user';
+            $rules['kelas'] = 'required|string';
+            $rules['alamat'] = 'required|string';
+            $rules['tanggal_lahir'] = 'required|date';
+            $rules['jenis_kelamin'] = 'required|in:laki-laki,perempuan';
+        }
+
+        if ($request->filled('password')) {
+            $rules['password'] = 'min:8';
+        }
+
+        $request->validate($rules);
+
+        $data = [
+            'username' => $request->username,
+            'email' => $request->email,
+            'no_telpon' => $request->no_telpon,
+        ];
+
+        if (auth()->user()->role === 'super-admin' && $request->has('role')) {
+            $data['role'] = $request->role;
+        }
+
+        if ($user->role === 'peminjam') {
+            $data['nipd'] = $request->nipd;
+            $data['kelas'] = $request->kelas;
+            $data['alamat'] = $request->alamat;
+            $data['tanggal_lahir'] = $request->tanggal_lahir;
+            $data['jenis_kelamin'] = $request->jenis_kelamin;
+        }
+
+        if ($request->filled('password')) {
+            $data['password'] = Hash::make($request->password);
+        }
+
+        $user->update($data);
 
         return redirect()->route('users.index')
             ->with('success', 'Data user berhasil diperbarui!');
     }
 
-    // ──────────────────────────────────────────────────────────────
-    //  DESTROY – soft delete
-    // ──────────────────────────────────────────────────────────────
     public function destroy(User $user)
     {
-        abort_if($user->role !== 'peminjam', 403);
+        if (auth()->user()->role === 'admin' && $user->role !== 'peminjam') {
+            abort(403);
+        }
 
         $user->delete();
 
@@ -130,17 +163,17 @@ class KelolaDataUserController extends Controller
             ->with('success', 'User berhasil dipindahkan ke tempat sampah.');
     }
 
-    // ──────────────────────────────────────────────────────────────
-    //  TRASH – daftar user yang dihapus (soft deleted)
-    // ──────────────────────────────────────────────────────────────
     public function trash(Request $request)
     {
         $search = $request->get('search');
 
         $trashedUsers = User::onlyTrashed()
-            ->where('role', 'peminjam')
+            ->when(auth()->user()->role === 'admin', function ($query) {
+                $query->where('role', 'peminjam');
+            })
             ->when($search, function ($query) use ($search) {
                 $query->where('username', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
                     ->orWhere('nipd', 'like', "%{$search}%");
             })
             ->latest('deleted_at')
@@ -150,27 +183,31 @@ class KelolaDataUserController extends Controller
         return view('admin.kelola_data_user.trash', compact('trashedUsers', 'search'));
     }
 
-    // ──────────────────────────────────────────────────────────────
-    //  RESTORE – kembalikan user dari sampah
-    // ──────────────────────────────────────────────────────────────
     public function restore($id)
     {
-        $user = User::onlyTrashed()->where('role', 'peminjam')->findOrFail($id);
+        $user = User::onlyTrashed()->findOrFail($id);
+
+        if (auth()->user()->role === 'admin' && $user->role !== 'peminjam') {
+            abort(403);
+        }
+
         $user->restore();
 
-        return redirect()->route('users..trash')
+        return redirect()->route('users.trash')
             ->with('success', 'User berhasil dipulihkan.');
     }
 
-    // ──────────────────────────────────────────────────────────────
-    //  FORCE DELETE – hapus permanen
-    // ──────────────────────────────────────────────────────────────
     public function forceDelete($id)
     {
-        $user = User::onlyTrashed()->where('role', 'peminjam')->findOrFail($id);
+        $user = User::onlyTrashed()->findOrFail($id);
+
+        if (auth()->user()->role === 'admin' && $user->role !== 'peminjam') {
+            abort(403);
+        }
+
         $user->forceDelete();
 
-        return redirect()->route('users..trash')
+        return redirect()->route('users.trash')
             ->with('success', 'User berhasil dihapus secara permanen.');
     }
 }

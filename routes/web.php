@@ -53,19 +53,9 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
 
-    /*
-    |--------------------------------------------------------------------------
-    | Admin Dashboard Routes - PROFESSIONAL URLs
-    |--------------------------------------------------------------------------
-    | Path: /dashboard, /assets, /users, /reports, /approvals
-    | Instead of: /admin/dashboard, /admin/kelola_aset, etc.
-    */
-    Route::middleware('role:admin')->group(function () {
-
-        // Dashboard
+    Route::middleware('role:admin,super-admin')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-        // Asset Management - Clean URLs
         Route::prefix('assets')->name('assets.')->group(function () {
             Route::get('/',                  [KelolaAsetController::class, 'index'])->name('index');
             Route::get('/create',            [KelolaAsetController::class, 'create'])->name('create');
@@ -78,7 +68,6 @@ Route::middleware('auth')->group(function () {
             Route::delete('/{id}/force',     [KelolaAsetController::class, 'forceDelete'])->name('force_delete');
         });
 
-        // User Management
         Route::prefix('users')->name('users.')->group(function () {
             Route::get('/',                  [KelolaDataUserController::class, 'index'])->name('index');
             Route::get('/create',            [KelolaDataUserController::class, 'create'])->name('create');
@@ -91,7 +80,6 @@ Route::middleware('auth')->group(function () {
             Route::delete('/{user}/force',   [KelolaDataUserController::class, 'forceDelete'])->name('force_delete');
         });
 
-        // Reports Management
         Route::prefix('reports')->name('reports.')->group(function () {
             Route::get('/',                  [KelolaLaporanController::class, 'index'])->name('index');
             Route::get('/create',            [KelolaLaporanController::class, 'create'])->name('create');
@@ -106,7 +94,6 @@ Route::middleware('auth')->group(function () {
             Route::get('/export/excel',      [KelolaLaporanController::class, 'exportExcel'])->name('export_excel');
         });
 
-        // Approval Management
         Route::prefix('approvals')->name('approvals.')->group(function () {
             Route::get('/',                  [KelolaPengajuanController::class, 'index'])->name('index');
             Route::put('/{id}/approve',      [KelolaPengajuanController::class, 'approve'])->name('approve');
@@ -114,13 +101,6 @@ Route::middleware('auth')->group(function () {
         });
     });
 
-    /*
-    |--------------------------------------------------------------------------
-    | User Routes - PROFESSIONAL URLs
-    |--------------------------------------------------------------------------
-    | Path: /home, /my-dashboard, /borrow, /rankings
-    | Instead of: /peminjam/home, /peminjam/form, etc.
-    */
     Route::middleware('role:peminjam')->group(function () {
         Route::get('/home', [HomeController::class, 'index'])->name('home');
         Route::get('/my-dashboard', [UserDashboardController::class, 'index'])->name('my.dashboard');
@@ -129,12 +109,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/rankings', [RankController::class, 'index'])->name('rankings');
     });
 
-    /*
-    |--------------------------------------------------------------------------
-    | Shared User Profile Routes
-    |--------------------------------------------------------------------------
-    | Available for all authenticated users
-    */
     Route::prefix('account')->name('account.')->group(function () {
         Route::get('/profile',   [UserDashboardController::class, 'profile'])->name('profile');
         Route::get('/history',   [UserDashboardController::class, 'riwayat'])->name('history');

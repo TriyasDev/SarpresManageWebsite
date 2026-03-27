@@ -14,7 +14,7 @@ return new class extends Migration
             $table->string('email', 100)->unique();
             $table->string('password');
             $table->string('no_telpon', 20);
-            $table->enum('role', ['admin', 'peminjam'])->default('peminjam');
+            $table->enum('role', ['super-admin', 'admin', 'peminjam'])->default('peminjam');
 
             $table->string('nama')->nullable();
             $table->string('kelas')->nullable();
@@ -23,7 +23,7 @@ return new class extends Migration
             $table->date('tanggal_lahir')->nullable();
             $table->enum('jenis_kelamin', ['laki-laki', 'perempuan'])->nullable();
 
-            $table->integer('points')->default(50);
+            $table->integer('points')->nullable();
             $table->enum('tier', ['Paragon', 'Exemplar', 'Sentinel', 'Steward', 'Reliant', 'Negligent'])->nullable();
             $table->boolean('is_banned')->default(false);
 

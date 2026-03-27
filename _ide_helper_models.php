@@ -26,6 +26,8 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\DetailPeminjaman> $detailPeminjamans
+ * @property-read int|null $detail_peminjamans_count
  * @method static \Illuminate\Database\Eloquent\Builder|Barang newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Barang newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Barang onlyTrashed()
@@ -51,10 +53,6 @@ namespace App\Models{
 /**
  * App\Models\DetailPeminjaman
  *
- * @method static \Illuminate\Database\Eloquent\Builder|DetailPeminjaman newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|DetailPeminjaman newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|DetailPeminjaman query()
- * @mixin \Eloquent
  * @property int $id_detail
  * @property int $id_peminjaman
  * @property int $id_barang
@@ -64,6 +62,9 @@ namespace App\Models{
  * @property string|null $keterangan
  * @property-read \App\Models\Barang $barang
  * @property-read \App\Models\Peminjaman $peminjaman
+ * @method static \Illuminate\Database\Eloquent\Builder|DetailPeminjaman newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|DetailPeminjaman newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|DetailPeminjaman query()
  * @method static \Illuminate\Database\Eloquent\Builder|DetailPeminjaman whereIdBarang($value)
  * @method static \Illuminate\Database\Eloquent\Builder|DetailPeminjaman whereIdDetail($value)
  * @method static \Illuminate\Database\Eloquent\Builder|DetailPeminjaman whereIdPeminjaman($value)
@@ -91,11 +92,11 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \App\Models\User $admin
- * @property-read string $badge_jenis
- * @property-read string $badge_kondisi
- * @property-read string $label_jenis
- * @property-read string $label_kondisi
- * @property-read \App\Models\Pengajuan $peminjam
+ * @property-read mixed $badge_jenis
+ * @property-read mixed $badge_kondisi
+ * @property-read mixed $label_jenis
+ * @property-read mixed $label_kondisi
+ * @property-read \App\Models\Peminjaman $peminjaman
  * @method static \Illuminate\Database\Eloquent\Builder|Laporan newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Laporan newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Laporan onlyTrashed()
@@ -121,10 +122,6 @@ namespace App\Models{
 /**
  * App\Models\Peminjaman
  *
- * @method static \Illuminate\Database\Eloquent\Builder|Peminjaman newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Peminjaman newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Peminjaman query()
- * @mixin \Eloquent
  * @property int $id_peminjaman
  * @property int $id_user
  * @property int|null $id_admin
@@ -132,19 +129,35 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $tanggal_kembali
  * @property \Illuminate\Support\Carbon|null $tanggal_kembali_aktual
  * @property string $status
- * @property string|null $approved_at
- * @property string|null $rejected_at
+ * @property \Illuminate\Support\Carbon|null $approved_at
+ * @property \Illuminate\Support\Carbon|null $rejected_at
  * @property string|null $catatan
  * @property int|null $disetujui_oleh
  * @property string|null $return_condition
- * @property int $is_late
+ * @property bool $is_late
  * @property int $point_earned
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\User|null $admin
+ * @property-read \App\Models\User|null $approver
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\DetailPeminjaman> $detailPeminjaman
  * @property-read int|null $detail_peminjaman_count
+ * @property-read mixed $badge_return_condition
+ * @property-read mixed $badge_status
+ * @property-read mixed $label_return_condition
+ * @property-read mixed $label_status
+ * @property-read \App\Models\Laporan|null $laporan
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PointLog> $pointLogs
+ * @property-read int|null $point_logs_count
  * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder|Peminjaman dikembalikan()
+ * @method static \Illuminate\Database\Eloquent\Builder|Peminjaman dipinjam()
+ * @method static \Illuminate\Database\Eloquent\Builder|Peminjaman disetujui()
+ * @method static \Illuminate\Database\Eloquent\Builder|Peminjaman ditolak()
+ * @method static \Illuminate\Database\Eloquent\Builder|Peminjaman menunggu()
+ * @method static \Illuminate\Database\Eloquent\Builder|Peminjaman newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Peminjaman newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Peminjaman query()
  * @method static \Illuminate\Database\Eloquent\Builder|Peminjaman whereApprovedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Peminjaman whereCatatan($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Peminjaman whereCreatedAt($value)
@@ -167,58 +180,32 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * App\Models\Pengajuan
+ * App\Models\PointLog
  *
- * @property int $id_peminjaman
+ * @property int $id_log
  * @property int $id_user
- * @property int|null $id_admin
- * @property \Illuminate\Support\Carbon $tanggal_pinjam
- * @property \Illuminate\Support\Carbon|null $tanggal_kembali
- * @property \Illuminate\Support\Carbon|null $tanggal_kembali_aktual
- * @property string $status
- * @property string|null $approved_at
- * @property string|null $rejected_at
- * @property string|null $catatan
- * @property int|null $disetujui_oleh
- * @property string|null $return_condition
- * @property int $is_late
- * @property int $point_earned
+ * @property int|null $id_peminjaman
+ * @property int $change
+ * @property string $reason
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\User|null $admin
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\DetailPeminjaman> $details
- * @property-read int|null $details_count
- * @property-read \App\Models\DetailPeminjaman|null $firstDetail
- * @property-read string $badge_status
- * @property-read string $icon_status
- * @property-read bool $is_pending
- * @property-read string $label_status
+ * @property-read mixed $change_color
+ * @property-read mixed $change_label
+ * @property-read mixed $reason_label
+ * @property-read \App\Models\Peminjaman|null $peminjaman
  * @property-read \App\Models\User $user
- * @method static \Illuminate\Database\Eloquent\Builder|Pengajuan bulanIni()
- * @method static \Illuminate\Database\Eloquent\Builder|Pengajuan disetujui()
- * @method static \Illuminate\Database\Eloquent\Builder|Pengajuan ditolak()
- * @method static \Illuminate\Database\Eloquent\Builder|Pengajuan menunggu()
- * @method static \Illuminate\Database\Eloquent\Builder|Pengajuan newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Pengajuan newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Pengajuan query()
- * @method static \Illuminate\Database\Eloquent\Builder|Pengajuan whereApprovedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Pengajuan whereCatatan($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Pengajuan whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Pengajuan whereDisetujuiOleh($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Pengajuan whereIdAdmin($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Pengajuan whereIdPeminjaman($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Pengajuan whereIdUser($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Pengajuan whereIsLate($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Pengajuan wherePointEarned($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Pengajuan whereRejectedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Pengajuan whereReturnCondition($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Pengajuan whereStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Pengajuan whereTanggalKembali($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Pengajuan whereTanggalKembaliAktual($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Pengajuan whereTanggalPinjam($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Pengajuan whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PointLog newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PointLog newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PointLog query()
+ * @method static \Illuminate\Database\Eloquent\Builder|PointLog whereChange($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PointLog whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PointLog whereIdLog($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PointLog whereIdPeminjaman($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PointLog whereIdUser($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PointLog whereReason($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PointLog whereUpdatedAt($value)
  */
-	class Pengajuan extends \Eloquent {}
+	class PointLog extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -237,15 +224,25 @@ namespace App\Models{
  * @property string|null $alamat
  * @property \Illuminate\Support\Carbon|null $tanggal_lahir
  * @property string|null $jenis_kelamin
- * @property int $points
+ * @property int|null $points
  * @property string|null $tier
- * @property int $is_banned
+ * @property bool $is_banned
  * @property string|null $remember_token
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Peminjaman> $approvedPeminjamans
+ * @property-read int|null $approved_peminjamans_count
+ * @property-read mixed $max_days
+ * @property-read mixed $max_electronics
+ * @property-read mixed $max_items
+ * @property-read mixed $tier_label
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Peminjaman> $peminjamans
+ * @property-read int|null $peminjamans_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PointLog> $pointLogs
+ * @property-read int|null $point_logs_count
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|User newQuery()

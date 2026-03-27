@@ -1,29 +1,21 @@
+{{-- resources/views/admin/kelola_data_user/index.blade.php --}}
 @extends('layouts.admin')
-
-@section('title', 'Kelola Data User - KlikAset')
+@section('title', 'Kelola User - KlikAset')
 
 @section('content')
-
-    {{-- Alert --}}
     @if(session('success'))
-        <div class="mb-4 px-5 py-3 bg-green-100 text-green-700 rounded-[30px] border border-green-200 text-sm">
-            {{ session('success') }}
-        </div>
-    @endif
-    @if(session('error'))
-        <div class="mb-4 px-5 py-3 bg-red-100 text-red-700 rounded-[30px] border border-red-200 text-sm">
-            {{ session('error') }}
+        <div id="flashMsg" class="mb-5 px-5 py-3 bg-green-100 text-green-700 border border-green-200 rounded-[30px] text-sm font-medium flex items-center justify-between">
+            <span>{{ session('success') }}</span>
+            <button onclick="document.getElementById('flashMsg').remove()" class="ml-4 text-green-500 hover:text-green-700 text-lg leading-none">&times;</button>
         </div>
     @endif
 
-    {{-- Header & Tombol Aksi --}}
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
         <div>
-            <h1 class="text-xl font-bold text-gray-800">Kelola Data User</h1>
-            <p class="text-sm text-gray-500 mt-0.5">Manajemen akun peminjam sarpras sekolah</p>
+            <h1 class="text-xl font-bold text-gray-800">Kelola User</h1>
+            <p class="text-sm text-gray-500 mt-0.5">Manajemen akun peminjam dan admin</p>
         </div>
         <div class="flex items-center gap-2">
-            {{-- Tombol Tempat Sampah --}}
             <a href="{{ route('users.trash') }}"
                class="relative flex items-center gap-2 px-4 py-2.5 border-2 border-gray-300 text-gray-600 text-sm font-semibold rounded-[30px] hover:bg-gray-50 transition">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -37,7 +29,6 @@
                 @endif
             </a>
 
-            {{-- Tombol Tambah User --}}
             <a href="{{ route('users.create') }}"
                class="flex items-center gap-2 px-5 py-2.5 bg-costume-primary text-white text-sm font-semibold rounded-[30px] hover:bg-blue-700 transition shadow-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -48,100 +39,86 @@
         </div>
     </div>
 
-    {{-- Search Bar --}}
-    <div class="bg-white rounded-[30px] shadow-sm border border-gray-100 p-5 mb-6">
-        <form action="{{ route('users.index') }}" method="GET">
-            <div class="relative">
-                <input type="text" name="search" value="{{ $search ?? '' }}"
-                    placeholder="Cari nama user atau NIPD..."
-                    class="w-full px-5 py-3 pr-12 border-2 border-gray-300 rounded-[30px] outline-none focus:ring-2 focus:ring-costume-second focus:border-transparent text-sm transition" />
-                <button type="submit" class="absolute right-5 top-1/2 -translate-y-1/2">
-                    <x-icon-magnifer class="w-5 h-5 text-gray-400" />
-                </button>
+    <div class="bg-white rounded-[30px] border border-gray-100 shadow-sm p-5 mb-6">
+        <form method="GET" action="{{ route('users.index') }}" class="flex flex-col lg:flex-row gap-4">
+            <div class="flex-1 relative">
+                <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Cari username, email, atau NIPD..."
+                    class="w-full px-5 py-3 pr-12 border-2 border-gray-300 rounded-[30px] outline-none focus:ring-2 focus:ring-costume-second focus:border-transparent text-sm transition"/>
+                <x-icon-magnifer class="w-5 h-5 absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"/>
+            </div>
+            @if(auth()->user()->role === 'super-admin')
+            <div class="lg:w-48">
+                <select name="role" class="w-full px-5 py-3 border-2 border-gray-300 rounded-[30px] outline-none focus:ring-2 focus:ring-costume-second focus:border-transparent appearance-none bg-white cursor-pointer text-sm transition">
+                    <option value="">Semua Role</option>
+                    <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Admin</option>
+                    <option value="peminjam" {{ request('role') == 'peminjam' ? 'selected' : '' }}>Peminjam</option>
+                </select>
+            </div>
+            @endif
+            <div>
+                <button type="submit" class="px-6 py-3 bg-costume-primary text-white rounded-[30px] text-sm font-semibold hover:bg-blue-700 transition">Filter</button>
             </div>
         </form>
     </div>
 
-    {{-- Tabel Data User --}}
-    <div class="bg-white rounded-[30px] shadow-sm border border-gray-100 overflow-hidden">
-        <div class="overflow-x-auto">
-            <table class="w-full">
-                <thead>
-                    <tr class="border-b border-gray-100 bg-gray-50/80">
-                        <th class="p-4 text-center font-semibold text-xs lg:text-sm text-gray-700 whitespace-nowrap">No</th>
-                        <th class="p-4 text-center font-semibold text-xs lg:text-sm text-gray-700 whitespace-nowrap">Nama Lengkap</th>
-                        <th class="p-4 text-center font-semibold text-xs lg:text-sm text-gray-700 whitespace-nowrap">NIPD</th>
-                        <th class="p-4 text-center font-semibold text-xs lg:text-sm text-gray-700 whitespace-nowrap">Alamat</th>
-                        <th class="p-4 text-center font-semibold text-xs lg:text-sm text-gray-700 whitespace-nowrap">Tanggal Lahir</th>
-                        <th class="p-4 text-center font-semibold text-xs lg:text-sm text-gray-700 whitespace-nowrap">Rank</th>
-                        <th class="p-4 text-center font-semibold text-xs lg:text-sm text-gray-700 whitespace-nowrap">Jenis Kelamin</th>
-                        <th class="p-4 text-center font-semibold text-xs lg:text-sm text-gray-700 whitespace-nowrap">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($users as $index => $user)
-                        <tr class="border-b border-gray-100 hover:bg-gray-50/50 transition">
-                            <td class="p-4 text-center text-sm text-gray-500">
-                                {{ $users->firstItem() + $index }}
-                            </td>
-                            <td class="p-4">
-                                <p class="font-medium text-center text-sm">{{ $user->username }}</p>
-                                <p class="text-xs text-gray-500 text-center">{{ $user->email }}</p>
-                            </td>
-                            <td class="p-4 text-center text-sm">{{ $user->nipd ?? '-' }}</td>
-                            <td class="p-4 text-center text-xs text-gray-600 max-w-[150px] truncate">{{ $user->alamat ?? '-' }}</td>
-                            <td class="p-4 text-center text-sm whitespace-nowrap">
-                                {{ $user->tanggal_lahir ? $user->tanggal_lahir->format('d M Y') : '-' }}
-                            </td>
-                            <td class="p-4">
-                                <div class="flex justify-center">
-                                    <span class="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-semibold rounded-[30px] border border-blue-200">
-                                        {{ $user->rank ?? 'Reliant' }}
-                                    </span>
-                                </div>
-                            </td>
-                            <td class="p-4 text-center text-sm capitalize">{{ $user->jenis_kelamin ?? '-' }}</td>
-                            <td class="p-4">
-                                <div class="flex gap-2 justify-center">
-                                    {{-- Tombol Edit --}}
-                                    <a href="{{ route('users.edit', $user->id_user) }}"
-                                       class="px-4 py-1.5 bg-yellow-100 text-yellow-700 text-xs font-semibold rounded-[30px] border border-yellow-200 hover:bg-yellow-200 transition whitespace-nowrap">
-                                        Edit
-                                    </a>
-
-                                    {{-- Tombol Hapus (Soft Delete) --}}
-                                    <form action="{{ route('users.destroy', $user->id_user) }}" method="POST"
-                                          onsubmit="return confirm('Pindahkan user \'{{ addslashes($user->username) }}\' ke tempat sampah?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit"
-                                            class="px-4 py-1.5 bg-red-100 text-red-700 text-xs font-semibold rounded-[30px] border border-red-200 hover:bg-red-200 transition whitespace-nowrap">
-                                            Hapus
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="8" class="p-10 text-center text-gray-400 text-sm">
-                                Belum ada data user{{ $search ? ' yang sesuai pencarian' : '' }}.
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-
-        {{-- Pagination --}}
-        <div class="flex flex-col sm:flex-row items-center justify-between p-4 bg-white gap-4">
-            <p class="text-xs lg:text-sm text-gray-600">
-                Menampilkan {{ $users->firstItem() ?? 0 }}–{{ $users->lastItem() ?? 0 }} dari {{ $users->total() }} user
-            </p>
-            <div class="flex items-center gap-2 flex-wrap justify-center">
-                {{ $users->links() }}
-            </div>
-        </div>
+    <div class="overflow-x-auto">
+        <table class="w-full bg-white rounded-[30px] border border-gray-100 shadow-sm">
+            <thead class="bg-gray-50 border-b border-gray-100">
+                <tr>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-600">Username</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-600">Email</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-600">Role</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-600">NIPD / Kelas</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-600">No Telpon</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-600">Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($users as $user)
+                <tr class="border-b border-gray-100 hover:bg-gray-50 transition">
+                    <td class="px-6 py-4 text-sm text-gray-800">{{ $user->username }}</td>
+                    <td class="px-6 py-4 text-sm text-gray-600">{{ $user->email }}</td>
+                    <td class="px-6 py-4 text-sm">
+                        <span class="px-3 py-1 rounded-full text-xs font-semibold {{ $user->role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700' }}">
+                            {{ ucfirst($user->role) }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-600">
+                        @if($user->role === 'peminjam')
+                            {{ $user->nipd ?? '-' }} / {{ $user->kelas ?? '-' }}
+                        @else
+                            -
+                        @endif
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-600">{{ $user->no_telpon ?? '-' }}</td>
+                    <td class="px-6 py-4">
+                        <div class="flex gap-2">
+                            <a href="{{ route('users.edit', $user) }}" class="text-blue-600 hover:text-blue-800 text-sm font-medium">Edit</a>
+                            <form method="POST" action="{{ route('users.destroy', $user) }}" onsubmit="return confirm('Pindahkan user ini ke sampah?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="text-red-600 hover:text-red-800 text-sm font-medium">Hapus</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="6" class="px-6 py-12 text-center text-gray-400">Tidak ada data user.</td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
     </div>
 
+    @if($users->hasPages())
+    <div class="flex flex-col sm:flex-row items-center justify-between mt-6 bg-white rounded-[30px] border border-gray-100 p-4 gap-4">
+        <p class="text-xs lg:text-sm text-gray-600">
+            Menampilkan {{ $users->firstItem() ?? 0 }}–{{ $users->lastItem() ?? 0 }} dari {{ $users->total() }} user
+        </p>
+        <div class="flex items-center gap-2 flex-wrap justify-center">
+            {{ $users->links() }}
+        </div>
+    </div>
+    @endif
 @endsection

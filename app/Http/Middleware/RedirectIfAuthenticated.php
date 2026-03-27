@@ -22,17 +22,14 @@ class RedirectIfAuthenticated
             if (Auth::guard($guard)->check()) {
                 $user = Auth::guard($guard)->user();
 
-                // Redirect admin to /dashboard
-                if ($user->role === 'admin' || (method_exists($user, 'isAdmin') && $user->isAdmin())) {
+                if ($user->role === 'super-admin' || $user->role === 'admin') {
                     return redirect()->route('dashboard');
                 }
 
-                // Redirect regular user to /home
-                if ($user->role === 'peminjam' || (method_exists($user, 'isPeminjam') && $user->isPeminjam())) {
+                if ($user->role === 'peminjam') {
                     return redirect()->route('home');
                 }
 
-                // Fallback
                 return redirect('/');
             }
         }

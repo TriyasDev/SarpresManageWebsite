@@ -43,9 +43,14 @@ class User extends Authenticatable
         'deleted_at' => 'datetime',
     ];
 
+    public function isSuperAdmin()
+    {
+        return $this->role === 'super-admin';
+    }
+
     public function isAdmin()
     {
-        return $this->role === 'admin';
+        return $this->role === 'admin' || $this->role === 'super-admin';
     }
 
     public function isPeminjam()

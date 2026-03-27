@@ -68,28 +68,22 @@ class AuthController extends Controller
         return $this->redirectToDashboard();
     }
 
-    /**
-     * Redirect to appropriate dashboard based on user role
-     */
     protected function redirectToDashboard()
     {
         $user = Auth::user();
 
-        // Admin redirect
-        if ($user->role === 'admin' || method_exists($user, 'isAdmin') && $user->isAdmin()) {
+        if ($user->role === 'super-admin' || $user->role === 'admin') {
             return redirect()
                 ->intended(route('dashboard'))
                 ->with('success', "Selamat datang kembali, {$user->username}!");
         }
 
-        // Regular user redirect
-        if ($user->role === 'peminjam' || method_exists($user, 'isPeminjam') && $user->isPeminjam()) {
+        if ($user->role === 'peminjam') {
             return redirect()
                 ->intended(route('home'))
                 ->with('success', "Selamat datang, {$user->username}!");
         }
 
-        // Invalid role - logout
         Auth::logout();
         return redirect()
             ->route('auth.login')
@@ -165,7 +159,6 @@ class AuthController extends Controller
             return redirect()
                 ->route('auth.verify_code')
                 ->with('success', "Kode verifikasi telah dikirim ke {$email}");
-
         } catch (\Exception $e) {
             \Log::error('Email send failed', ['email' => $email, 'error' => $e->getMessage()]);
 
