@@ -35,12 +35,13 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\Models\User::class, // Menggunakan model User kita
+            'model' => App\Models\User::class,
         ],
 
+        // Alternative: jika pakai database driver
         // 'users' => [
         //     'driver' => 'database',
-        //     'table' => 'users',
+        //     'table' => 'tb_user',
         // ],
     ],
 
