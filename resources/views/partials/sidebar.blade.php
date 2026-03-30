@@ -15,7 +15,7 @@
         <h1 class="text-white text-lg font-bold tracking-tight">KlikAset</h1>
     </div>
 
-    <div class="mx-4 mb-6">
+    {{-- <div class="mx-4 mb-6">
         <div class="bg-linear-to-r rounded-[30px] p-3.5 shadow-sm">
             <div class="flex items-center gap-2.5">
                 <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center shrink-0">
@@ -29,7 +29,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 
     <nav class="flex-1 space-y-1.5 px-4 overflow-y-auto">
         <a href="{{ route('dashboard') }}"
@@ -89,4 +89,3 @@
     </form>
 </div>
 </aside>
- 

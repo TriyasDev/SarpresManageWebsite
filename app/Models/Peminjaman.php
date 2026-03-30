@@ -3,11 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Carbon\Carbon;
 
 class Peminjaman extends Model
 {
     protected $table = 'tb_peminjaman';
     protected $primaryKey = 'id_peminjaman';
+    public $incrementing = true;
+    protected $keyType = 'int';
 
     protected $fillable = [
         'id_user',
@@ -65,56 +69,53 @@ class Peminjaman extends Model
         return $this->hasMany(PointLog::class, 'id_peminjaman', 'id_peminjaman');
     }
 
-    public function scopeMenunggu($query)
+    public function getIsPendingAttribute()
     {
-        return $query->where('status', 'menunggu');
+        return $this->status === 'menunggu';
     }
 
-    public function scopeDisetujui($query)
+    public function getFirstDetailAttribute()
     {
-        return $query->where('status', 'disetujui');
+        return $this->detailPeminjaman->first();
     }
 
-    public function scopeDipinjam($query)
-    {
-        return $query->where('status', 'dipinjam');
-    }
-
-    public function scopeDikembalikan($query)
-    {
-        return $query->where('status', 'dikembalikan');
-    }
-
-    public function scopeDitolak($query)
-    {
-        return $query->where('status', 'ditolak');
-    }
-
-    public function getLabelStatusAttribute()
+    public function getLabelStatusAttribute(): string
     {
         return match ($this->status) {
-            'menunggu' => 'Menunggu',
+            'menunggu' => 'Menunggu Persetujuan',
             'disetujui' => 'Disetujui',
-            'dipinjam' => 'Dipinjam',
+            'dipinjam' => 'Sedang Dipinjam',
             'dikembalikan' => 'Dikembalikan',
             'ditolak' => 'Ditolak',
             default => ucfirst($this->status ?? '-'),
         };
     }
 
-    public function getBadgeStatusAttribute()
+    public function getBadgeStatusAttribute(): string
     {
         return match ($this->status) {
-            'menunggu' => 'bg-yellow-100 text-yellow-800',
-            'disetujui' => 'bg-blue-100 text-blue-800',
-            'dipinjam' => 'bg-indigo-100 text-indigo-800',
-            'dikembalikan' => 'bg-green-100 text-green-800',
-            'ditolak' => 'bg-red-100 text-red-800',
-            default => 'bg-gray-100 text-gray-800',
+            'menunggu' => 'bg-yellow-100 text-yellow-800 border-yellow-200',
+            'disetujui' => 'bg-blue-100 text-blue-800 border-blue-200',
+            'dipinjam' => 'bg-indigo-100 text-indigo-800 border-indigo-200',
+            'dikembalikan' => 'bg-green-100 text-green-800 border-green-200',
+            'ditolak' => 'bg-red-100 text-red-800 border-red-200',
+            default => 'bg-gray-100 text-gray-800 border-gray-200',
         };
     }
 
-    public function getLabelReturnConditionAttribute()
+    public function getIconStatusAttribute(): string
+    {
+        return match ($this->status) {
+            'menunggu' => 'clock',
+            'disetujui' => 'check-circle',
+            'dipinjam' => 'box',
+            'dikembalikan' => 'check-circle',
+            'ditolak' => 'x-circle',
+            default => 'circle',
+        };
+    }
+
+    public function getLabelReturnConditionAttribute(): string
     {
         return match ($this->return_condition) {
             'baik' => 'Baik',
@@ -125,7 +126,7 @@ class Peminjaman extends Model
         };
     }
 
-    public function getBadgeReturnConditionAttribute()
+    public function getBadgeReturnConditionAttribute(): string
     {
         return match ($this->return_condition) {
             'baik' => 'bg-green-100 text-green-800',
@@ -136,66 +137,212 @@ class Peminjaman extends Model
         };
     }
 
-    public function isLate()
+    public function getDurationDaysAttribute(): int
     {
-        if (!$this->tanggal_kembali_aktual) {
+        if (!$this->tanggal_kembali) {
+            return 0;
+        }
+
+        return $this->tanggal_pinjam->diffInDays($this->tanggal_kembali);
+    }
+
+    public function getTotalItemsAttribute(): int
+    {
+        return $this->detailPeminjaman->sum('jumlah');
+    }
+
+    public function isLate(): bool
+    {
+        if (!$this->tanggal_kembali_aktual || !$this->tanggal_kembali) {
             return false;
         }
+
         return $this->tanggal_kembali_aktual->gt($this->tanggal_kembali);
     }
 
-    public function calculateLateDays()
+    public function calculateLateDays(): int
     {
         if (!$this->tanggal_kembali_aktual || !$this->tanggal_kembali) {
             return 0;
         }
+
         if ($this->tanggal_kembali_aktual->lte($this->tanggal_kembali)) {
             return 0;
         }
+
         return $this->tanggal_kembali_aktual->diffInDays($this->tanggal_kembali);
     }
 
-    public function approve($adminId)
+    public function getRemainingDaysAttribute(): int
     {
-        $this->status = 'disetujui';
-        $this->id_admin = $adminId;
-        $this->disetujui_oleh = $adminId;
-        $this->approved_at = now();
-        $this->save();
+        if (!$this->tanggal_kembali || $this->status !== 'dipinjam') {
+            return 0;
+        }
+
+        $diff = now()->diffInDays($this->tanggal_kembali, false);
+        return (int) $diff;
     }
 
-    public function reject($adminId)
+    public function getIsDueSoonAttribute(): bool
     {
-        $this->status = 'ditolak';
-        $this->id_admin = $adminId;
-        $this->disetujui_oleh = $adminId;
-        $this->rejected_at = now();
-        $this->save();
+        if ($this->status !== 'dipinjam') {
+            return false;
+        }
+
+        $remaining = $this->remaining_days;
+        return $remaining >= 0 && $remaining <= 2;
     }
 
-    public function markAsBorrowed()
+    public function getIsOverdueAttribute(): bool
     {
-        $this->status = 'dipinjam';
-        $this->save();
+        if ($this->status !== 'dipinjam') {
+            return false;
+        }
+
+        return $this->remaining_days < 0;
+    }
+
+    public function approve(int $adminId, ?string $catatan = null, ?Carbon $tanggalKembali = null): void
+    {
+        $this->update([
+            'status' => 'disetujui',
+            'id_admin' => $adminId,
+            'disetujui_oleh' => $adminId,
+            'approved_at' => now(),
+            'catatan' => $catatan,
+            'tanggal_kembali' => $tanggalKembali,
+        ]);
+    }
+
+    public function reject(int $adminId, string $catatan): void
+    {
+        $this->update([
+            'status' => 'ditolak',
+            'id_admin' => $adminId,
+            'disetujui_oleh' => $adminId,
+            'rejected_at' => now(),
+            'catatan' => $catatan,
+        ]);
+    }
+
+    public function markAsBorrowed(): void
+    {
+        $this->update([
+            'status' => 'dipinjam',
+        ]);
 
         foreach ($this->detailPeminjaman as $detail) {
-            $detail->barang->decrementStock($detail->jumlah);
+            $detail->barang->decrement('jumlah_tersedia', $detail->jumlah);
         }
     }
 
-    public function markAsReturned($condition, $adminId)
+    public function markAsReturned(string $condition, int $adminId): void
     {
-        $this->status = 'dikembalikan';
-        $this->tanggal_kembali_aktual = now();
-        $this->return_condition = $condition;
-        $this->is_late = $this->isLate();
-        $this->id_admin = $adminId;
-        $this->save();
+        $actualReturn = now();
+        $isLate = $actualReturn->gt($this->tanggal_kembali);
+
+        $this->update([
+            'status' => 'dikembalikan',
+            'tanggal_kembali_aktual' => $actualReturn,
+            'return_condition' => $condition,
+            'is_late' => $isLate,
+            'id_admin' => $adminId,
+        ]);
 
         foreach ($this->detailPeminjaman as $detail) {
-            $detail->kondisi_kembali = $condition;
-            $detail->save();
-            $detail->barang->incrementStock($detail->jumlah);
+            $detail->update([
+                'kondisi_kembali' => $condition,
+            ]);
+
+            $detail->barang->increment('jumlah_tersedia', $detail->jumlah);
         }
+
+        $this->calculateAndAddPoints();
+    }
+
+    private function calculateAndAddPoints(): void
+    {
+        $points = 0;
+        $reasons = [];
+
+        if (!$this->is_late) {
+            $points += 10;
+            $reasons[] = 'Pengembalian tepat waktu (+10)';
+        } else {
+            $lateDays = $this->calculateLateDays();
+            $penalty = min($lateDays * 2, 20);
+            $points -= $penalty;
+            $reasons[] = "Keterlambatan {$lateDays} hari (-{$penalty})";
+        }
+
+        $conditionPoints = match ($this->return_condition) {
+            'baik' => 5,
+            'rusak_ringan' => -5,
+            'rusak_berat' => -15,
+            'hilang' => -30,
+            default => 0,
+        };
+
+        $points += $conditionPoints;
+        $reasons[] = match ($this->return_condition) {
+            'baik' => 'Kondisi barang baik (+5)',
+            'rusak_ringan' => 'Barang rusak ringan (-5)',
+            'rusak_berat' => 'Barang rusak berat (-15)',
+            'hilang' => 'Barang hilang (-30)',
+            default => '',
+        };
+
+        $this->update(['point_earned' => $points]);
+
+        $user = $this->user;
+        $user->increment('points', $points);
+        $user->updateTier();
+
+        PointLog::create([
+            'id_user' => $this->id_user,
+            'id_peminjaman' => $this->id_peminjaman,
+            'change' => $points,
+            'reason' => implode(', ', array_filter($reasons)),
+        ]);
+    }
+
+    public function canBeEditedBy(User $user): bool
+    {
+        if ($user->isAdmin()) {
+            return true;
+        }
+
+        return $this->id_user === $user->id_user && $this->status === 'menunggu';
+    }
+
+    public function canBeApproved(): bool
+    {
+        return $this->status === 'menunggu' && !$this->user->is_banned;
+    }
+
+    public function canBeRejected(): bool
+    {
+        return $this->status === 'menunggu';
+    }
+
+    public function canBeHandedOver(): bool
+    {
+        return $this->status === 'disetujui';
+    }
+
+    public function canBeReturned(): bool
+    {
+        return $this->status === 'dipinjam';
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($peminjaman) {
+            if (!$peminjaman->tanggal_pinjam) {
+                $peminjaman->tanggal_pinjam = now();
+            }
+        });
     }
 }
