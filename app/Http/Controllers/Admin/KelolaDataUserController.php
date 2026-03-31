@@ -53,6 +53,10 @@ class KelolaDataUserController extends Controller
             'role' => 'required|in:peminjam,admin',
         ];
 
+        if (auth()->user()->role === 'admin') {
+            $request->merge(['role' => 'peminjam']);
+        }
+
         if ($request->role === 'peminjam') {
             $rules['nipd'] = 'required|string|unique:tb_user,nipd';
             $rules['kelas'] = 'required|string';
@@ -149,6 +153,10 @@ class KelolaDataUserController extends Controller
 
         return redirect()->route('users.index')
             ->with('success', 'Data user berhasil diperbarui!');
+
+        if (auth()->user()->role === 'admin') {
+            $request->request->remove('role');
+        }
     }
 
     public function destroy(User $user)

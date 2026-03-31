@@ -45,117 +45,96 @@ class User extends Authenticatable
         'deleted_at' => 'datetime',
     ];
 
-    // =========================================================================
-    //  RELATIONSHIPS
-    // =========================================================================
+    protected static function booted()
+    {
+        static::saving(function ($user) {
+            if ($user->isDirty('points')) {
+                $user->updateTier();
+            }
+        });
 
-    /**
-     * Peminjaman yang dibuat oleh user ini.
-     */
+        static::creating(function ($user) {
+            if ($user->role === 'peminjam') {
+                $user->points = $user->points ?? 50;
+                $user->tier = $user->tier ?? 'Reliant';
+            }
+        });
+    }
+
+    public function addPoints(int $points)
+    {
+        $this->points =+ $points;
+        $this->save();
+        return $this;
+    }
+
+    public function reducePoints(int $points)
+    {
+        $this->points = max(0, $this->points - $points);
+        $this->save();
+        return $this;
+    }
+
     public function peminjamans()
     {
         return $this->hasMany(Peminjaman::class, 'id_user', 'id_user');
     }
 
-    /**
-     * Peminjaman yang di-handle sebagai admin.
-     */
     public function approvedPeminjamans()
     {
         return $this->hasMany(Peminjaman::class, 'id_admin', 'id_user');
     }
 
-    /**
-     * Peminjaman yang disetujui/ditolak oleh user ini.
-     */
     public function processedPeminjamans()
     {
         return $this->hasMany(Peminjaman::class, 'disetujui_oleh', 'id_user');
     }
 
-    /**
-     * Laporan yang dibuat oleh admin ini.
-     */
     public function laporans()
     {
         return $this->hasMany(Laporan::class, 'id_admin', 'id_user');
     }
 
-    /**
-     * Point logs untuk user ini.
-     */
     public function pointLogs()
     {
         return $this->hasMany(PointLog::class, 'id_user', 'id_user');
     }
 
-    // =========================================================================
-    //  ROLE CHECKING METHODS
-    // =========================================================================
-
-    /**
-     * Check if user is super admin.
-     */
     public function isSuperAdmin(): bool
     {
         return $this->role === 'super-admin';
     }
 
-    /**
-     * Check if user is admin (includes super-admin).
-     */
     public function isAdmin(): bool
     {
         return in_array($this->role, ['admin', 'super-admin']);
     }
 
-    /**
-     * Check if user is peminjam.
-     */
     public function isPeminjam(): bool
     {
         return $this->role === 'peminjam';
     }
 
-    /**
-     * Check if user can manage users.
-     */
     public function canManageUsers(): bool
     {
         return $this->isSuperAdmin();
     }
 
-    /**
-     * Check if user can manage assets.
-     */
     public function canManageAssets(): bool
     {
         return $this->isAdmin();
     }
 
-    /**
-     * Check if user can approve loans.
-     */
     public function canApproveLoan(): bool
     {
         return $this->isAdmin();
     }
 
-    // =========================================================================
-    //  TIER SYSTEM METHODS
-    // =========================================================================
-
-    /**
-     * Get tier label.
-     */
     public function getTierLabelAttribute(): string
     {
         return $this->tier ?? 'Reliant';
     }
 
-    /**
-     * Get tier color for badge.
-     */
     public function getTierColorAttribute(): string
     {
         return match ($this->tier) {
@@ -169,9 +148,6 @@ class User extends Authenticatable
         };
     }
 
-    /**
-     * Get maximum items that can be borrowed based on tier.
-     */
     public function getMaxItemsAttribute(): int
     {
         return match ($this->tier) {

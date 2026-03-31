@@ -3,6 +3,8 @@
 ```
 ├── app
 │   ├── Console
+│   │   ├── Commands
+│   │   │   └── DebugAuth.php
 │   │   └── Kernel.php
 │   ├── Exceptions
 │   │   └── Handler.php
@@ -22,8 +24,7 @@
 │   │   │   │   ├── RankController.php
 │   │   │   │   └── UserDashboardController.php
 │   │   │   ├── AuthController.php
-│   │   │   ├── Controller.php
-│   │   │   └── UserDashboardController.php
+│   │   │   └── Controller.php
 │   │   ├── Messages
 │   │   │   └── AuthMessages.php
 │   │   ├── Middleware
@@ -50,8 +51,12 @@
 │   │   ├── DetailPeminjaman.php
 │   │   ├── Laporan.php
 │   │   ├── Peminjaman.php
-│   │   ├── Pengajuan.php
+│   │   ├── PointLog.php
 │   │   └── User.php
+│   ├── Policies
+│   │   ├── BarangPolicy.php
+│   │   ├── PeminjamanPolicy.php
+│   │   └── UserPolicy.php
 │   └── Providers
 │       ├── AppServiceProvider.php
 │       ├── AuthServiceProvider.php
@@ -90,19 +95,13 @@
 │   │   ├── 2014_10_12_100000_create_password_reset_tokens_table.php
 │   │   ├── 2019_08_19_000000_create_failed_jobs_table.php
 │   │   ├── 2019_12_14_000001_create_personal_access_tokens_table.php
-│   │   ├── 2026_02_07_011117_create_tb_user.php
-│   │   ├── 2026_02_07_045904_create_tb_barang.php
-│   │   ├── 2026_02_07_045943_create_tb_peminjaman.php
-│   │   ├── 2026_02_07_050152_create_tb_detail_peminjaman.php
-│   │   ├── 2026_02_07_050233_create_tb_laporan.php
-│   │   ├── 2026_02_16_000000_create_password_resets_table.php
-│   │   ├── 2026_03_08_070204_add_fields_to_users_table.php
-│   │   ├── 2026_03_08_182522_add_softdelete_to_tb_laporan.php
-│   │   ├── 2026_03_14_081254_add_softdeletes_to_tb_user.php
-│   │   ├── 2026_03_14_090635_add_softdeletes_to_tb_barang.php
-│   │   └── 2026_03_15_121057_add_status_to_tb_peminjaman.php
+│   │   ├── 2026_03_24_135314_create_users_table.php
+│   │   ├── 2026_03_24_135430_create_assets_table.php
+│   │   ├── 2026_03_24_135452_create_loans_table.php
+│   │   ├── 2026_03_24_135552_create_loan_details_table.php
+│   │   ├── 2026_03_24_135616_create_reports_table.php
+│   │   └── 2026_03_24_135636_create_point_logs_table.php
 │   └── seeders
-│       ├── DashboardTestSeeder.php
 │       ├── DatabaseSeeder.php
 │       └── UserSeeder.php
 ├── public
@@ -244,62 +243,93 @@
 │   │       └── barang
 │   │           ├── BwiZcrj2u7uct5hPVTNy9hJcmqGUa1l5VI4ILTms.png
 │   │           ├── Edr2bgmCBpT0lCMYTeJ8XoH4j2aCu50hDIPNIBwC.jpg
+│   │           ├── OzMLpXtv2GVqm61IcxJvRvjCR0ZXHlUpyjdrtNEP.jpg
 │   │           └── smgBBgZMRj1kefXFrTUJ991ZiyV1yKLj9ec7dLvK.jpg
 │   ├── framework
 │   │   ├── cache
 │   │   │   ├── data
+│   │   │   │   ├── 8f
+│   │   │   │   │   └── 6f
+│   │   │   │   └── eb
+│   │   │   │       └── 0c
 │   │   │   └── laravel-excel
 │   │   ├── sessions
-│   │   │   ├── 8S0nzS9UidzV3UJFQYdjIQgWp1WRqzeiqhp3Z6bT
-│   │   │   ├── 8wvx72xuOvN2DKz1h4epRq5v86QJErWhoHoJFjO8
-│   │   │   ├── Gq9TjFvJV82Cxxptaljf6O7SoYxAfsAeaLWFlY0U
-│   │   │   ├── Wf75awyWb5hQllGX0UB8PFRSrglFN8wI4Mhbn1ET
-│   │   │   └── z31g4ApGdU7kuOQ4lbuL3nMmhfEpDpX5SAiewUdy
+│   │   │   └── CSzyHR3PhSOTtGvrmHF3VNyaMLe7y7CLpY7iBSa1
 │   │   ├── testing
 │   │   │   └── disks
 │   │   │       └── local
 │   │   └── views
+│   │       ├── 05065e6df61f78616ff6ac17e3050a36.blade.php
 │   │       ├── 0b6f5b0a6e9e6ab8126d641b0909dadb.php
 │   │       ├── 14dd2f401c5495a23f1d9982a2587334.php
 │   │       ├── 15ae9aa58c087d757b400ffc510be901.php
+│   │       ├── 17689b28a879c876afc8d7a98ef74f76.blade.php
+│   │       ├── 187f5ad75fabce42c29e514ba3a34b5f.php
+│   │       ├── 23fdc6ffb689f70fc6c6f255d36076c9.blade.php
+│   │       ├── 2716114fb5a2753928b636d0b45f7b6d.php
 │   │       ├── 283f0f59fe4994c8651cf11243d161d1.php
+│   │       ├── 2d8ee12337996b36ebd4819991a44bbc.blade.php
 │   │       ├── 2ece7358c419172775ca624734380795.php
 │   │       ├── 2f8be73f0eb4a389f3813f7c2ca6b028.blade.php
+│   │       ├── 2fa8a4ea65c0425112221a208d336a03.php
 │   │       ├── 30ba2f1a816bbce642ca940755c3ca43.php
 │   │       ├── 336295398964e8b85f56b886cc187ace.blade.php
+│   │       ├── 3493594ec1261010f55af3d890fabcf3.blade.php
 │   │       ├── 383abe7a6a1ceaae4416da12cbe39323.php
+│   │       ├── 3e0e653d3771c70c54166913969f6015.php
+│   │       ├── 452e518e824b59a94ae0e0ac7485ee5e.blade.php
+│   │       ├── 492a6680d973ae9a37670203eb86031c.php
+│   │       ├── 4e3fdd62a809a44b5ec097c8906f02be.php
 │   │       ├── 4ff2a30a5e3ef92cf480d941dec00493.php
 │   │       ├── 561a54518e5c0876ef572a8904007577.php
 │   │       ├── 56ac5784c8d0b4f8547c362500e0a345.php
+│   │       ├── 57f88ca68521920aa0d135853696b99a.blade.php
 │   │       ├── 5beae72ac37b576d925762e62a979b10.blade.php
 │   │       ├── 5f8fac4d5dfffce47a15a8826ba94631.blade.php
+│   │       ├── 6812002d674ed6fe1f373f4cacd9b28c.blade.php
 │   │       ├── 697d771a24827fb39d1a609a7a55a6fd.php
 │   │       ├── 78a11eea36e3ab49ce45b114073fe81a.blade.php
+│   │       ├── 7b55326c88c140acef0e115c95d62d5f.blade.php
 │   │       ├── 7f55b33ee6c209c71d5bc77535749196.php
 │   │       ├── 80ffe0afa38f44f986ba71662105de49.blade.php
 │   │       ├── 891cc39075fa6d6c6d4561811e4cc82b.php
 │   │       ├── 8ecd0ca21bca9c9885004d7f56389b58.php
 │   │       ├── 93bce8e1ab80e2fc8f3747910eccdfa1.php
 │   │       ├── 9aa28b8773a04f93a9247bd9f33639fd.php
+│   │       ├── 9aab719a027883d04f5d0ff110672202.blade.php
+│   │       ├── 9b84ef1c98789250671c3df2bdeca5e2.php
+│   │       ├── 9c2f410686d0f0f28daeefcdd047d4b0.php
+│   │       ├── 9c36e6084f7e1b96ddd52a60c34fd7e0.php
+│   │       ├── 9d6f3bc070579567c40bb6e75115ecac.php
+│   │       ├── aab52e910cd7f6c867c730272a406330.php
+│   │       ├── abe7aadd8619a189b8299fd19a4efc44.php
 │   │       ├── af0fd46b5725fa79d5ef7dcb60846d68.php
 │   │       ├── b3d057fa4b87da67c3605a2f85c7b79c.blade.php
 │   │       ├── b48f87c283a71ebc1e4ddbfb775d8e4a.php
+│   │       ├── b514300bb9ddc7ae3b812a515b30b800.php
 │   │       ├── b6726bf688af91496ab667821ee12803.blade.php
 │   │       ├── b7d26d72ab41f6789d858fa3e410ae66.blade.php
-│   │       ├── bb58e226651b14417936baf2545aee54.php
+│   │       ├── b945b13256f7be80abc4d9f92e0253fd.blade.php
+│   │       ├── bc5997e6d61cf14e5b31a2b70ad4f113.php
 │   │       ├── bce0d0747426a01884639c519da3e9b3.php
 │   │       ├── c122db4539c31ed3f4d0b38c8d6921ae.php
 │   │       ├── c2965947e5218e1f9734bba63528fd7f.php
+│   │       ├── c6bc5773eceeacdef7984114fec80c8b.php
 │   │       ├── c71ca835f16886332bd7f6aee3b233ac.blade.php
+│   │       ├── c79bd9df975405d32bd03990279e71d2.php
 │   │       ├── c7d73d8770df5182ae40ed4c7c45daa6.php
 │   │       ├── c9f7c35e47cffa4251aa1932b8322ba7.blade.php
+│   │       ├── d28e4c4a41dd64b82e0ff96b3f397b10.php
+│   │       ├── d8b7fab4d0ab1ac858e956326097bcbb.php
 │   │       ├── db24f2ca231a3b40f95c79bbdaf386b6.blade.php
+│   │       ├── e2fce710cdc78363f408f098f3807bfc.php
 │   │       ├── e61c1099d9105cef7b1260d3574f07db.php
+│   │       ├── ec30479b43b91772f6faac81bb5d8a25.blade.php
 │   │       ├── eee93a868b15409c90541a782a7715f9.php
-│   │       ├── f51bea1fef403fee0848fff04d8a8693.php
+│   │       ├── efe4415a999339077fa26fae3b0ea247.blade.php
+│   │       ├── f37197fc73a966b9b23d06f1ddfb7b68.php
 │   │       └── fa4de6685545d43a4413751dc0bf3c6d.blade.php
 │   └── logs
-│       └── test.txt
 ├── tests
 │   ├── Feature
 │   │   └── ExampleTest.php
@@ -314,7 +344,361 @@
 ├── composer.lock
 ├── package-lock.json
 ├── package.json
-├── pathproject.txt
+├── PathProject.txt
+├── phpunit.xml
+├── README.md
+└── vite.config.js
+```
+
+# File Contents
+
+## PathProject.txt
+
+````txt
+# Project Structure
+
+```
+├── app
+│   ├── Console
+│   │   ├── Commands
+│   │   │   └── DebugAuth.php
+│   │   └── Kernel.php
+│   ├── Exceptions
+│   │   └── Handler.php
+│   ├── Exports
+│   │   └── LaporanExport.php
+│   ├── Http
+│   │   ├── Controllers
+│   │   │   ├── Admin
+│   │   │   │   ├── DashboardController.php
+│   │   │   │   ├── KelolaAsetController.php
+│   │   │   │   ├── KelolaDataUserController.php
+│   │   │   │   ├── KelolaLaporanController.php
+│   │   │   │   └── KelolaPengajuanController.php
+│   │   │   ├── User
+│   │   │   │   ├── FormController.php
+│   │   │   │   ├── HomeController.php
+│   │   │   │   ├── RankController.php
+│   │   │   │   └── UserDashboardController.php
+│   │   │   ├── AuthController.php
+│   │   │   └── Controller.php
+│   │   ├── Messages
+│   │   │   └── AuthMessages.php
+│   │   ├── Middleware
+│   │   │   ├── Authenticate.php
+│   │   │   ├── EncryptCookies.php
+│   │   │   ├── PreventRequestsDuringMaintenance.php
+│   │   │   ├── RedirectIfAuthenticated.php
+│   │   │   ├── RoleMiddleware.php
+│   │   │   ├── TrimStrings.php
+│   │   │   ├── TrustHosts.php
+│   │   │   ├── TrustProxies.php
+│   │   │   ├── ValidateSignature.php
+│   │   │   └── VerifyCsrfToken.php
+│   │   ├── Requests
+│   │   │   ├── ForgotPasswordRequest.php
+│   │   │   ├── LoginRequest.php
+│   │   │   ├── ResetPasswordRequest.php
+│   │   │   └── VerifyCodeRequest.php
+│   │   └── Kernel.php
+│   ├── Mail
+│   │   └── ResetPasswordMail.php
+│   ├── Models
+│   │   ├── Barang.php
+│   │   ├── DetailPeminjaman.php
+│   │   ├── Laporan.php
+│   │   ├── Peminjaman.php
+│   │   ├── PointLog.php
+│   │   └── User.php
+│   └── Providers
+│       ├── AppServiceProvider.php
+│       ├── AuthServiceProvider.php
+│       ├── BroadcastServiceProvider.php
+│       ├── EventServiceProvider.php
+│       └── RouteServiceProvider.php
+├── bootstrap
+│   ├── cache
+│   │   ├── blade-icons.php
+│   │   ├── packages.php
+│   │   └── services.php
+│   └── app.php
+├── config
+│   ├── app.php
+│   ├── auth.php
+│   ├── blade-icons.php
+│   ├── broadcasting.php
+│   ├── cache.php
+│   ├── cors.php
+│   ├── database.php
+│   ├── excel.php
+│   ├── filesystems.php
+│   ├── hashing.php
+│   ├── ide-helper.php
+│   ├── logging.php
+│   ├── mail.php
+│   ├── queue.php
+│   ├── sanctum.php
+│   ├── services.php
+│   ├── session.php
+│   └── view.php
+├── database
+│   ├── factories
+│   │   └── UserFactory.php
+│   ├── migrations
+│   │   ├── 2014_10_12_100000_create_password_reset_tokens_table.php
+│   │   ├── 2019_08_19_000000_create_failed_jobs_table.php
+│   │   ├── 2019_12_14_000001_create_personal_access_tokens_table.php
+│   │   ├── 2026_03_24_135314_create_users_table.php
+│   │   ├── 2026_03_24_135430_create_assets_table.php
+│   │   ├── 2026_03_24_135452_create_loans_table.php
+│   │   ├── 2026_03_24_135552_create_loan_details_table.php
+│   │   ├── 2026_03_24_135616_create_reports_table.php
+│   │   └── 2026_03_24_135636_create_point_logs_table.php
+│   └── seeders
+│       ├── DatabaseSeeder.php
+│       └── UserSeeder.php
+├── public
+│   ├── images
+│   │   └── assets
+│   │       ├── universitas0.webp
+│   │       ├── universitas1.webp
+│   │       └── universitas2.webp
+│   ├── _ide_helper_models.php
+│   ├── _ide_helper.php
+│   ├── favicon.ico
+│   ├── index.php
+│   └── robots.txt
+├── resources
+│   ├── css
+│   │   └── app.css
+│   ├── js
+│   │   ├── app.js
+│   │   └── bootstrap.js
+│   ├── svg
+│   │   ├── album.svg
+│   │   ├── alt-arrow-down.svg
+│   │   ├── bell.svg
+│   │   ├── box.svg
+│   │   ├── calendar-search.svg
+│   │   ├── calendar.svg
+│   │   ├── chart.svg
+│   │   ├── check-circle.svg
+│   │   ├── checklist-minimalistic.svg
+│   │   ├── clock-circle.svg
+│   │   ├── crown-line.svg
+│   │   ├── crown-star.svg
+│   │   ├── danger-circle.svg
+│   │   ├── document-add.svg
+│   │   ├── eye-closed.svg
+│   │   ├── eye.svg
+│   │   ├── facebook.svg
+│   │   ├── filter.svg
+│   │   ├── forbidden-circle.svg
+│   │   ├── gallery-add.svg
+│   │   ├── hamburger-menu.svg
+│   │   ├── hourglass.svg
+│   │   ├── inbox-unread.svg
+│   │   ├── instagram.svg
+│   │   ├── logo-klikaset.svg
+│   │   ├── logout-3.svg
+│   │   ├── magnifer.svg
+│   │   ├── notebook.svg
+│   │   ├── notes.svg
+│   │   ├── notification-unread.svg
+│   │   ├── shield-user.svg
+│   │   └── x.svg
+│   └── views
+│       ├── admin
+│       │   ├── kelola_aset
+│       │   │   ├── create.blade.php
+│       │   │   ├── edit.blade.php
+│       │   │   ├── index.blade.php
+│       │   │   └── trash.blade.php
+│       │   ├── kelola_data_user
+│       │   │   ├── create.blade.php
+│       │   │   ├── edit.blade.php
+│       │   │   ├── index.blade.php
+│       │   │   └── trash.blade.php
+│       │   ├── kelola_laporan
+│       │   │   ├── create.blade.php
+│       │   │   ├── edit.blade.php
+│       │   │   ├── index.blade.php
+│       │   │   └── trash.blade.php
+│       │   ├── kelola_pengajuan
+│       │   │   └── index.blade.php
+│       │   └── dashboard.blade.php
+│       ├── auth
+│       │   ├── login.blade.php
+│       │   ├── lupa-password.blade.php
+│       │   ├── reset-password.blade.php
+│       │   └── verify-code.blade.php
+│       ├── components
+│       │   ├── icon-album.blade.php
+│       │   ├── icon-alt-arrow-down.blade.php
+│       │   ├── icon-bell.blade.php
+│       │   ├── icon-box.blade.php
+│       │   ├── icon-calendar-search.blade.php
+│       │   ├── icon-calendar.blade.php
+│       │   ├── icon-chart.blade.php
+│       │   ├── icon-check-circle.blade.php
+│       │   ├── icon-checklist-minimalistic.blade.php
+│       │   ├── icon-clock-circle.blade.php
+│       │   ├── icon-crown-line.blade.php
+│       │   ├── icon-crown-star.blade.php
+│       │   ├── icon-danger-circle.blade.php
+│       │   ├── icon-document-add.blade.php
+│       │   ├── icon-eye-closed.blade.php
+│       │   ├── icon-eye.blade.php
+│       │   ├── icon-facebook.blade.php
+│       │   ├── icon-filter.blade.php
+│       │   ├── icon-forbidden-circle.blade.php
+│       │   ├── icon-gallery-add.blade.php
+│       │   ├── icon-hamburger-menu.blade.php
+│       │   ├── icon-hourglass.blade.php
+│       │   ├── icon-inbox-unread.blade.php
+│       │   ├── icon-instagram.blade.php
+│       │   ├── icon-logo-klikaset.blade.php
+│       │   ├── icon-logout-3.blade.php
+│       │   ├── icon-magnifer.blade.php
+│       │   ├── icon-notebook.blade.php
+│       │   ├── icon-notes.blade.php
+│       │   ├── icon-notification-unread.blade.php
+│       │   ├── icon-shield-user.blade.php
+│       │   └── icon-x.blade.php
+│       ├── emails
+│       │   └── reset-password.blade.php
+│       ├── layouts
+│       │   ├── admin.blade.php
+│       │   ├── app.blade.php
+│       │   └── auth.blade.php
+│       ├── partials
+│       │   ├── footer.blade.php
+│       │   ├── navbar.blade.php
+│       │   └── sidebar.blade.php
+│       └── user
+│           ├── dashboard.blade.php
+│           ├── form.blade.php
+│           ├── home.blade.php
+│           ├── profil.blade.php
+│           ├── rank.blade.php
+│           ├── riwayat.blade.php
+│           └── user-dashboard.blade.php
+├── routes
+│   ├── api.php
+│   ├── channels.php
+│   ├── console.php
+│   └── web.php
+├── storage
+│   ├── app
+│   │   ├── backups
+│   │   │   └── dashboard_2024.json
+│   │   └── public
+│   │       └── barang
+│   │           ├── BwiZcrj2u7uct5hPVTNy9hJcmqGUa1l5VI4ILTms.png
+│   │           ├── Edr2bgmCBpT0lCMYTeJ8XoH4j2aCu50hDIPNIBwC.jpg
+│   │           ├── OzMLpXtv2GVqm61IcxJvRvjCR0ZXHlUpyjdrtNEP.jpg
+│   │           └── smgBBgZMRj1kefXFrTUJ991ZiyV1yKLj9ec7dLvK.jpg
+│   ├── framework
+│   │   ├── cache
+│   │   │   ├── data
+│   │   │   │   ├── 8f
+│   │   │   │   │   └── 6f
+│   │   │   │   └── eb
+│   │   │   │       └── 0c
+│   │   │   └── laravel-excel
+│   │   ├── sessions
+│   │   │   ├── nx79ttvxMr2whrBBlfnUEgzWbrDNlX6nho0VTsHE
+│   │   │   └── UYUoSMAhIDTlJ1RomK8twrBSWNXPHa026DywM1nc
+│   │   ├── testing
+│   │   │   └── disks
+│   │   │       └── local
+│   │   └── views
+│   │       ├── 05065e6df61f78616ff6ac17e3050a36.blade.php
+│   │       ├── 0b6f5b0a6e9e6ab8126d641b0909dadb.php
+│   │       ├── 14dd2f401c5495a23f1d9982a2587334.php
+│   │       ├── 15ae9aa58c087d757b400ffc510be901.php
+│   │       ├── 17689b28a879c876afc8d7a98ef74f76.blade.php
+│   │       ├── 187f5ad75fabce42c29e514ba3a34b5f.php
+│   │       ├── 23fdc6ffb689f70fc6c6f255d36076c9.blade.php
+│   │       ├── 2716114fb5a2753928b636d0b45f7b6d.php
+│   │       ├── 283f0f59fe4994c8651cf11243d161d1.php
+│   │       ├── 2d8ee12337996b36ebd4819991a44bbc.blade.php
+│   │       ├── 2ece7358c419172775ca624734380795.php
+│   │       ├── 2f8be73f0eb4a389f3813f7c2ca6b028.blade.php
+│   │       ├── 2fa8a4ea65c0425112221a208d336a03.php
+│   │       ├── 30ba2f1a816bbce642ca940755c3ca43.php
+│   │       ├── 336295398964e8b85f56b886cc187ace.blade.php
+│   │       ├── 3493594ec1261010f55af3d890fabcf3.blade.php
+│   │       ├── 383abe7a6a1ceaae4416da12cbe39323.php
+│   │       ├── 3e0e653d3771c70c54166913969f6015.php
+│   │       ├── 452e518e824b59a94ae0e0ac7485ee5e.blade.php
+│   │       ├── 492a6680d973ae9a37670203eb86031c.php
+│   │       ├── 4e3fdd62a809a44b5ec097c8906f02be.php
+│   │       ├── 4ff2a30a5e3ef92cf480d941dec00493.php
+│   │       ├── 561a54518e5c0876ef572a8904007577.php
+│   │       ├── 56ac5784c8d0b4f8547c362500e0a345.php
+│   │       ├── 57f88ca68521920aa0d135853696b99a.blade.php
+│   │       ├── 5beae72ac37b576d925762e62a979b10.blade.php
+│   │       ├── 5f8fac4d5dfffce47a15a8826ba94631.blade.php
+│   │       ├── 6812002d674ed6fe1f373f4cacd9b28c.blade.php
+│   │       ├── 697d771a24827fb39d1a609a7a55a6fd.php
+│   │       ├── 78a11eea36e3ab49ce45b114073fe81a.blade.php
+│   │       ├── 7b55326c88c140acef0e115c95d62d5f.blade.php
+│   │       ├── 7f55b33ee6c209c71d5bc77535749196.php
+│   │       ├── 80ffe0afa38f44f986ba71662105de49.blade.php
+│   │       ├── 891cc39075fa6d6c6d4561811e4cc82b.php
+│   │       ├── 8ecd0ca21bca9c9885004d7f56389b58.php
+│   │       ├── 93bce8e1ab80e2fc8f3747910eccdfa1.php
+│   │       ├── 9aa28b8773a04f93a9247bd9f33639fd.php
+│   │       ├── 9aab719a027883d04f5d0ff110672202.blade.php
+│   │       ├── 9b84ef1c98789250671c3df2bdeca5e2.php
+│   │       ├── 9c2f410686d0f0f28daeefcdd047d4b0.php
+│   │       ├── 9c36e6084f7e1b96ddd52a60c34fd7e0.php
+│   │       ├── 9d6f3bc070579567c40bb6e75115ecac.php
+│   │       ├── aab52e910cd7f6c867c730272a406330.php
+│   │       ├── abe7aadd8619a189b8299fd19a4efc44.php
+│   │       ├── af0fd46b5725fa79d5ef7dcb60846d68.php
+│   │       ├── b3d057fa4b87da67c3605a2f85c7b79c.blade.php
+│   │       ├── b48f87c283a71ebc1e4ddbfb775d8e4a.php
+│   │       ├── b514300bb9ddc7ae3b812a515b30b800.php
+│   │       ├── b6726bf688af91496ab667821ee12803.blade.php
+│   │       ├── b7d26d72ab41f6789d858fa3e410ae66.blade.php
+│   │       ├── b945b13256f7be80abc4d9f92e0253fd.blade.php
+│   │       ├── bc5997e6d61cf14e5b31a2b70ad4f113.php
+│   │       ├── bce0d0747426a01884639c519da3e9b3.php
+│   │       ├── c122db4539c31ed3f4d0b38c8d6921ae.php
+│   │       ├── c2965947e5218e1f9734bba63528fd7f.php
+│   │       ├── c6bc5773eceeacdef7984114fec80c8b.php
+│   │       ├── c71ca835f16886332bd7f6aee3b233ac.blade.php
+│   │       ├── c79bd9df975405d32bd03990279e71d2.php
+│   │       ├── c7d73d8770df5182ae40ed4c7c45daa6.php
+│   │       ├── c9f7c35e47cffa4251aa1932b8322ba7.blade.php
+│   │       ├── d28e4c4a41dd64b82e0ff96b3f397b10.php
+│   │       ├── d8b7fab4d0ab1ac858e956326097bcbb.php
+│   │       ├── db24f2ca231a3b40f95c79bbdaf386b6.blade.php
+│   │       ├── e2fce710cdc78363f408f098f3807bfc.php
+│   │       ├── e61c1099d9105cef7b1260d3574f07db.php
+│   │       ├── ec30479b43b91772f6faac81bb5d8a25.blade.php
+│   │       ├── eee93a868b15409c90541a782a7715f9.php
+│   │       ├── efe4415a999339077fa26fae3b0ea247.blade.php
+│   │       ├── f37197fc73a966b9b23d06f1ddfb7b68.php
+│   │       └── fa4de6685545d43a4413751dc0bf3c6d.blade.php
+│   └── logs
+├── tests
+│   ├── Feature
+│   │   └── ExampleTest.php
+│   ├── Unit
+│   │   └── ExampleTest.php
+│   ├── CreatesApplication.php
+│   └── TestCase.php
+├── _ide_helper_models.php
+├── _ide_helper.php
+├── artisan
+├── composer.json
+├── composer.lock
+├── package-lock.json
+├── package.json
+├── PathProject.txt
 ├── phpunit.xml
 ├── README.md
 └── vite.config.js
