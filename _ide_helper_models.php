@@ -142,19 +142,22 @@ namespace App\Models{
  * @property-read \App\Models\User|null $approver
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\DetailPeminjaman> $detailPeminjaman
  * @property-read int|null $detail_peminjaman_count
- * @property-read mixed $badge_return_condition
- * @property-read mixed $badge_status
- * @property-read mixed $label_return_condition
- * @property-read mixed $label_status
+ * @property-read string $badge_return_condition
+ * @property-read string $badge_status
+ * @property-read int $duration_days
+ * @property-read mixed $first_detail
+ * @property-read string $icon_status
+ * @property-read bool $is_due_soon
+ * @property-read bool $is_overdue
+ * @property-read mixed $is_pending
+ * @property-read string $label_return_condition
+ * @property-read string $label_status
+ * @property-read int $remaining_days
+ * @property-read int $total_items
  * @property-read \App\Models\Laporan|null $laporan
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PointLog> $pointLogs
  * @property-read int|null $point_logs_count
  * @property-read \App\Models\User $user
- * @method static \Illuminate\Database\Eloquent\Builder|Peminjaman dikembalikan()
- * @method static \Illuminate\Database\Eloquent\Builder|Peminjaman dipinjam()
- * @method static \Illuminate\Database\Eloquent\Builder|Peminjaman disetujui()
- * @method static \Illuminate\Database\Eloquent\Builder|Peminjaman ditolak()
- * @method static \Illuminate\Database\Eloquent\Builder|Peminjaman menunggu()
  * @method static \Illuminate\Database\Eloquent\Builder|Peminjaman newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Peminjaman newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Peminjaman query()
@@ -233,16 +236,31 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Peminjaman> $approvedPeminjamans
  * @property-read int|null $approved_peminjamans_count
- * @property-read mixed $max_days
- * @property-read mixed $max_electronics
- * @property-read mixed $max_items
- * @property-read mixed $tier_label
+ * @property-read int $active_borrows_count
+ * @property-read string|null $formatted_phone
+ * @property-read string $full_name
+ * @property-read int $late_return_count
+ * @property-read int $max_days
+ * @property-read int $max_electronics
+ * @property-read int $max_items
+ * @property-read float $on_time_percentage
+ * @property-read int $overdue_items_count
+ * @property-read int $pending_requests_count
+ * @property-read string $role_badge
+ * @property-read string $role_name
+ * @property-read string $tier_color
+ * @property-read string $tier_label
+ * @property-read int $total_borrowed
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Laporan> $laporans
+ * @property-read int|null $laporans_count
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Peminjaman> $peminjamans
  * @property-read int|null $peminjamans_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PointLog> $pointLogs
  * @property-read int|null $point_logs_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Peminjaman> $processedPeminjamans
+ * @property-read int|null $processed_peminjamans_count
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|User newQuery()

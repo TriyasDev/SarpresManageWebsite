@@ -56,44 +56,34 @@ class FormController extends Controller
         $user = Auth::user();
         $barang = Barang::findOrFail($request->barang_id);
 
-        // Check stock
         if ($barang->jumlah_tersedia < $request->jumlah) {
-            return back()->withErrors(['jumlah' => 'Jumlah yang diminta melebihi stok tersedia.']);
+            return back()->withErrors(['jumlah' => 'Stok tidak mencukupi.']);
         }
 
-        // Begin transaction
         DB::beginTransaction();
         try {
-            // 1. Create Peminjaman record
             $peminjaman = Peminjaman::create([
                 'id_user'           => $user->id_user,
-                'id_admin'          => null,         // not approved yet
+                'id_admin'          => null,
                 'tanggal_pinjam'    => $request->tanggal_pinjam,
                 'tanggal_kembali'   => $request->tanggal_kembali,
                 'tanggal_kembali_aktual' => null,
-                'status'            => 'pending',
+                'status'            => 'menunggu', // DIPERBAIKI
                 'catatan'           => $request->keperluan,
                 'disetujui_oleh'    => null,
-                'point'             => 0,
             ]);
 
-            // 2. Create DetailPeminjaman record
             DetailPeminjaman::create([
                 'id_peminjaman' => $peminjaman->id_peminjaman,
                 'id_barang'     => $barang->id_barang,
                 'jumlah'        => $request->jumlah,
             ]);
 
-            // 3. (Optional) Reduce temporary stock? Usually only after approval.
-            // We'll keep stock untouched until admin approves.
-
             DB::commit();
-
-            return redirect()->route('my.dashboard')
-                ->with('success', 'Pengajuan peminjaman berhasil dikirim. Menunggu persetujuan admin.');
+            return redirect()->route('my.dashboard')->with('success', 'Pengajuan berhasil dikirim.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->withErrors('Terjadi kesalahan. Silakan coba lagi.');
+            return back()->withErrors('Terjadi kesalahan, silakan coba lagi.');
         }
     }
 }
