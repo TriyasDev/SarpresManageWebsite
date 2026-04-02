@@ -549,253 +549,239 @@
             {{-- ===== PAGE CONTENT ===== --}}
             <main class="flex-1 p-4 md:p-6 space-y-5 overflow-auto">
 
-                {{-- ROW 1: Stat Cards + Rank --}}
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+{{-- Stat Cards --}}
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    {{-- Total Poin --}}
+    <div class="stat-card fade-up delay-1" data-tip="Akumulasi poin kamu">
+        <div class="flex items-start justify-between mb-3">
+            <div class="icon-box bg-amber-50">
+                <svg class="w-5 h-5 text-amber-500" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg>
+            </div>
+            <span class="badge badge-yellow">+0 minggu ini</span>
+        </div>
+        <p class="text-xs text-gray-500 font-medium mb-1">Total Poin</p>
+        <p class="text-4xl font-extrabold text-gray-900 counter shimmer-gold" data-target="{{ $currentPoints }}">0</p>
+        <div class="mt-3 flex items-center gap-2">
+            <div class="flex-1 bg-amber-100 rounded-full h-1.5">
+                <div class="bg-amber-400 h-1.5 rounded-full" style="width:{{ $percentage }}%" id="pointBar"></div>
+            </div>
+            <span class="text-[10px] text-gray-400">{{ $currentPoints }}/{{ $nextTier ? $tierRequirements[$nextTier]['min_points'] : $currentPoints }}</span>
+        </div>
+    </div>
 
-                    {{-- Total Poin --}}
-                    <div class="stat-card fade-up delay-1" data-tip="Akumulasi poin kamu">
-                        <div class="flex items-start justify-between mb-3">
-                            <div class="icon-box bg-amber-50">
-                                <svg class="w-5 h-5 text-amber-500" fill="currentColor" viewBox="0 0 24 24">
-                                    <path
-                                        d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                                </svg>
-                            </div>
-                            <span class="badge badge-yellow">+120 minggu ini</span>
-                        </div>
-                        <p class="text-xs text-gray-500 font-medium mb-1">Total Poin</p>
-                        <p class="text-4xl font-extrabold text-gray-900 counter shimmer-gold" data-target="1200">0</p>
-                        <div class="mt-3 flex items-center gap-2">
-                            <div class="flex-1 bg-amber-100 rounded-full h-1.5">
-                                <div class="bg-amber-400 h-1.5 rounded-full" style="width:80%" id="pointBar"></div>
-                            </div>
-                            <span class="text-[10px] text-gray-400">1200/1500</span>
-                        </div>
-                    </div>
+    {{-- Pinjaman Aktif --}}
+    <div class="stat-card fade-up delay-2">
+        <div class="flex items-start justify-between mb-3">
+            <div class="icon-box bg-blue-50">
+                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+            </div>
+            <span class="badge badge-blue">Aktif</span>
+        </div>
+        <p class="text-xs text-gray-500 font-medium mb-1">Pinjaman Aktif</p>
+        <p class="text-4xl font-extrabold text-gray-900 counter" data-target="{{ $activeLoans }}">0</p>
+        <p class="text-xs text-gray-400 mt-2">Batas pengembalian:
+            @if($activeLoansList->first())
+                <span class="font-semibold text-orange-500">
+                    {{ $activeLoansList->first()?->detailPeminjaman->first()?->barang?->nama_barang ?? '-' }}
+                </span>
+            @else
+                -
+            @endif
+        </p>
+    </div>
 
-                    {{-- Pinjaman Aktif --}}
-                    <div class="stat-card fade-up delay-2">
-                        <div class="flex items-start justify-between mb-3">
-                            <div class="icon-box bg-blue-50">
-                                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                                </svg>
-                            </div>
-                            <span class="badge badge-blue">Aktif</span>
-                        </div>
-                        <p class="text-xs text-gray-500 font-medium mb-1">Pinjaman Aktif</p>
-                        <p class="text-4xl font-extrabold text-gray-900 counter" data-target="2">0</p>
-                        <p class="text-xs text-gray-400 mt-2">Batas pengembalian: <span
-                                class="font-semibold text-orange-500">3 hari lagi</span></p>
-                    </div>
-
-                    {{-- Rank --}}
-                    <div class="rank-card fade-up delay-3">
-                        <div class="relative z-10">
-                            <p class="text-blue-200 text-xs font-medium mb-1">Rank Saat Ini</p>
-                            <div class="flex items-center justify-between mb-3">
-                                <p class="text-2xl font-extrabold text-white">Paragon II</p>
-                                <div
-                                    class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center backdrop-blur-sm ring-2 ring-white/30">
-                                    <svg class="w-6 h-6 text-yellow-300" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="M5 3l1.5 4.5L12 5l5.5 2.5L19 3l1 7-4 3 .5 7H7.5L8 13l-4-3 1-7z" />
-                                    </svg>
-                                </div>
-                            </div>
-                            <div class="space-y-1">
-                                <div class="flex justify-between text-xs">
-                                    <span class="text-blue-200">Menuju Paragon III</span>
-                                    <span class="text-white font-semibold">1200 / 1500</span>
-                                </div>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" id="rankBar" style="width:0%"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+    {{-- Rank --}}
+    <div class="rank-card fade-up delay-3">
+        <div class="relative z-10">
+            <p class="text-blue-200 text-xs font-medium mb-1">Rank Saat Ini</p>
+            <div class="flex items-center justify-between mb-3">
+                <p class="text-2xl font-extrabold text-white">{{ $currentTier }}</p>
+                <div class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center backdrop-blur-sm ring-2 ring-white/30">
+                    <svg class="w-6 h-6 text-yellow-300" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M5 3l1.5 4.5L12 5l5.5 2.5L19 3l1 7-4 3 .5 7H7.5L8 13l-4-3 1-7z" />
+                    </svg>
                 </div>
-
-                {{-- ROW 2: Mini Cards --}}
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-
-                    {{-- Pengingat --}}
-                    <div class="mini-card fade-up delay-3">
-                        <div class="icon-box bg-yellow-400 relative">
-                            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                <path
-                                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                            </svg>
-                            <span class="notif-dot" style="top:-3px;right:-3px"></span>
-                        </div>
-                        <div>
-                            <p class="text-gray-800 font-bold text-[13px]">Pengingat</p>
-                            <p class="text-gray-500 text-[11px] mt-0.5">2 tugas menunggu</p>
-                            <p class="text-gray-400 text-[10.5px] mt-1 leading-tight">Aula, 24 Feb 2026<br>®
-                                Laptop-Asus123fb</p>
-                        </div>
-                        <button class="btn-primary mt-auto" onclick="openPengingatModal()">Lihat Tugas</button>
-                    </div>
-
-                    {{-- Panduan --}}
-                    <div class="mini-card fade-up delay-4">
-                        <div class="icon-box bg-indigo-500">
-                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                    d="M12 9v4m0 4h.01M12 3C6.477 3 2 7.477 2 12s4.477 9 10 9 10-4.477 10-10S17.523 3 12 3z" />
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="text-gray-800 font-bold text-[13px]">Panduan</p>
-                            <p class="text-gray-800 font-bold text-[13px]">Peminjaman</p>
-                        </div>
-                        <button class="btn-primary mt-auto" onclick="openPanduanModal()">Lihat Panduan</button>
-                    </div>
-
-                    {{-- Top Peringkat --}}
-                    <div class="mini-card fade-up delay-5">
-                        <p class="text-gray-800 font-bold text-[13px]">🏆 Top Peringkat</p>
-                        <div class="space-y-1">
-                            @php
-                                $topUsers = [
-                                    ['name' => 'Ahmad Rizki', 'poin' => 1200, 'rank' => 1],
-                                    ['name' => 'Budi Santoso', 'poin' => 1150, 'rank' => 2],
-                                    ['name' => 'Citra Dewi', 'poin' => 1100, 'rank' => 3],
-                                ];
-                                $medals = ['🥇', '🥈', '🥉'];
-                            @endphp
-                            @foreach($topUsers as $i => $u)
-                                <div class="lb-item">
-                                    <span class="text-sm">{{ $medals[$i] }}</span>
-                                    <div class="avatar"
-                                        style="background: {{ ['linear-gradient(135deg,#3b82f6,#6366f1)', 'linear-gradient(135deg,#10b981,#06b6d4)', 'linear-gradient(135deg,#f59e0b,#ef4444)'][$i] }}">
-                                        {{ strtoupper(substr($u['name'], 0, 1)) }}
-                                    </div>
-                                    <p class="text-[11.5px] font-semibold text-gray-800 flex-1 truncate">{{ $u['name'] }}</p>
-                                    <span class="text-[11px] text-gray-500 shrink-0">{{ number_format($u['poin']) }}<sub
-                                            class="text-[9px]"> Pn</sub></span>
-                                </div>
-                            @endforeach
-                        </div>
-                        <a href="{{ route('rank') }}"
-                            class="text-[11px] text-blue-600 hover:underline font-semibold text-right block mt-1">Lihat
-                            Semua →</a>
-                    </div>
+            </div>
+            <div class="space-y-1">
+                <div class="flex justify-between text-xs">
+                    <span class="text-blue-200">Menuju {{ $nextTier ?? 'Puncak' }}</span>
+                    <span class="text-white font-semibold">{{ $currentPoints }} / {{ $nextTier ? $tierRequirements[$nextTier]['min_points'] : $currentPoints }}</span>
                 </div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="rankBar" style="width:{{ $percentage }}%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-                {{-- ROW 3: Tabel Pinjaman Aktif --}}
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden fade-up delay-5">
-                    <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100">
-                        <div>
-                            <p class="font-bold text-gray-800 text-sm">Daftar Pinjaman Aktif</p>
-                            <p class="text-xs text-gray-400 mt-0.5">Peminjaman yang sedang berjalan</p>
-                        </div>
-                        <a href="{{ route('borrow') }}"
-                            class="text-xs text-blue-600 font-semibold hover:underline flex items-center gap-1">
-                            Lihat Semua Riwayat
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
-                            </svg>
-                        </a>
+{{-- Mini Cards --}}
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+{{-- Pengingat --}}
+<div class="mini-card fade-up delay-3">
+    <div class="icon-box bg-yellow-400 relative">
+        <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+        </svg>
+        <span class="notif-dot" style="top:-3px;right:-3px"></span>
+    </div>
+    <div>
+        <p class="text-gray-800 font-bold text-[13px]">Pengingat</p>
+        <p class="text-gray-500 text-[11px] mt-0.5">{{ $activeLoansList->count() }} tugas menunggu</p>
+        @php
+            $firstLoan = $activeLoansList->first();
+            $firstDetail = $firstLoan?->detailPeminjaman->first();
+            $firstBarang = $firstDetail?->barang;
+        @endphp
+        @if($firstBarang && $firstLoan?->tanggal_kembali)
+            <p class="text-gray-400 text-[10.5px] mt-1 leading-tight">
+                {{ $firstBarang->nama_barang }}<br>
+                Tenggat: {{ \Carbon\Carbon::parse($firstLoan->tanggal_kembali)->format('d M Y') }}
+            </p>
+        @else
+            <p class="text-gray-400 text-[10.5px] mt-1 leading-tight">Tidak ada pengingat aktif</p>
+        @endif
+    </div>
+    <button class="btn-primary mt-auto" onclick="openPengingatModal()">Lihat Tugas</button>
+</div>
+
+    {{-- Panduan --}}
+    <div class="mini-card fade-up delay-4">
+        <div class="icon-box bg-indigo-500">
+            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v4m0 4h.01M12 3C6.477 3 2 7.477 2 12s4.477 9 10 9 10-4.477 10-10S17.523 3 12 3z" />
+            </svg>
+        </div>
+        <div>
+            <p class="text-gray-800 font-bold text-[13px]">Panduan</p>
+            <p class="text-gray-800 font-bold text-[13px]">Peminjaman</p>
+        </div>
+        <button class="btn-primary mt-auto" onclick="openPanduanModal()">Lihat Panduan</button>
+    </div>
+
+    {{-- Top Peringkat --}}
+    <div class="mini-card fade-up delay-5">
+        <p class="text-gray-800 font-bold text-[13px]">🏆 Top Peringkat</p>
+        <div class="space-y-1">
+            @foreach($topThree as $index => $top)
+                <div class="lb-item">
+                    <span class="text-sm">{{ ['🥇','🥈','🥉'][$index] }}</span>
+                    <div class="avatar"
+                        style="background: {{ ['linear-gradient(135deg,#3b82f6,#6366f1)', 'linear-gradient(135deg,#10b981,#06b6d4)', 'linear-gradient(135deg,#f59e0b,#ef4444)'][$index] }}">
+                        {{ strtoupper(substr($top->nama ?? $top->username, 0, 1)) }}
                     </div>
+                    <p class="text-[11.5px] font-semibold text-gray-800 flex-1 truncate">{{ $top->nama ?? $top->username }}</p>
+                    <span class="text-[11px] text-gray-500 shrink-0">{{ number_format($top->points) }}<sub class="text-[9px]"> Pn</sub></span>
+                </div>
+            @endforeach
+        </div>
+        <a href="{{ route('rank') }}" class="text-[11px] text-blue-600 hover:underline font-semibold text-right block mt-1">Lihat Semua →</a>
+    </div>
+</div>
 
-                    {{-- Desktop Table --}}
-                    <div class="hidden md:block overflow-x-auto">
-                        <table class="w-full text-[12.5px]">
-                            <thead>
-                                <tr class="bg-slate-50 border-b border-slate-100">
-                                    <th class="text-left px-5 py-3 text-gray-500 font-semibold">#</th>
-                                    <th class="text-left px-5 py-3 text-gray-500 font-semibold">Ruangan / Sarpras</th>
-                                    <th class="text-left px-5 py-3 text-gray-500 font-semibold">Tanggal</th>
-                                    <th class="text-center px-5 py-3 text-gray-500 font-semibold">Status</th>
-                                    <th class="text-center px-5 py-3 text-gray-500 font-semibold">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-slate-50">
-                                {{-- Ganti dengan @forelse($pinjaman as $item) nanti --}}
-                                <tr class="tbl-row">
-                                    <td class="px-5 py-3 text-gray-400 text-[11px] font-mono">01</td>
-                                    <td class="px-5 py-3">
-                                        <p class="font-semibold text-gray-800">Aula Pertemuan</p>
-                                        <p class="text-gray-400 text-[11px]">Ruangan</p>
-                                    </td>
-                                    <td class="px-5 py-3 text-gray-600">24 Feb 2026, 14.00 – 16.00</td>
-                                    <td class="px-5 py-3 text-center">
-                                        <span class="badge badge-blue">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-blue-500 inline-block"></span>
-                                            Dipinjam
-                                        </span>
-                                    </td>
-                                    <td class="px-5 py-3 text-center">
-                                        <button class="btn-detail"
-                                            onclick="openDetailModal('Aula Pertemuan','24 Feb 2026, 14.00–16.00','Dipinjam','Ruangan')">
-                                            Lihat Detail
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr class="tbl-row">
-                                    <td class="px-5 py-3 text-gray-400 text-[11px] font-mono">02</td>
-                                    <td class="px-5 py-3">
-                                        <p class="font-semibold text-gray-800">Laptop-Asus123fb</p>
-                                        <p class="text-gray-400 text-[11px]">Perangkat</p>
-                                    </td>
-                                    <td class="px-5 py-3 text-gray-600">24 Feb 2026, 14.00 – 16.00</td>
-                                    <td class="px-5 py-3 text-center">
-                                        <span class="badge badge-blue">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-blue-500 inline-block"></span>
-                                            Dipinjam
-                                        </span>
-                                    </td>
-                                    <td class="px-5 py-3 text-center">
-                                        <button class="btn-detail"
-                                            onclick="openDetailModal('Laptop-Asus123fb','24 Feb 2026, 14.00–16.00','Dipinjam','Perangkat')">
-                                            Lihat Detail
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr class="tbl-row">
-                                    <td class="px-5 py-3 text-gray-400 text-[11px] font-mono">03</td>
-                                    <td class="px-5 py-3">
-                                        <p class="font-semibold text-gray-800">Monitor Samsung</p>
-                                        <p class="text-gray-400 text-[11px]">Perangkat</p>
-                                    </td>
-                                    <td class="px-5 py-3 text-gray-600">24 Feb 2026, 14.00 – 16.00</td>
-                                    <td class="px-5 py-3 text-center">
-                                        <span class="badge badge-yellow">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-yellow-500 inline-block"></span>
-                                            Menunggu
-                                        </span>
-                                    </td>
-                                    <td class="px-5 py-3 text-center">
-                                        <button class="btn-detail"
-                                            onclick="openDetailModal('Monitor Samsung','24 Feb 2026, 14.00–16.00','Menunggu Persetujuan','Perangkat')">
-                                            Lihat Detail
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+{{-- Tabel Pinjaman Aktif --}}
+<div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden fade-up delay-5">
+    <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+        <div>
+            <p class="font-bold text-gray-800 text-sm">Daftar Pinjaman Aktif</p>
+            <p class="text-xs text-gray-400 mt-0.5">Peminjaman yang sedang berjalan</p>
+        </div>
+        <a href="{{ route('history') }}" class="text-xs text-blue-600 font-semibold hover:underline flex items-center gap-1">
+            Lihat Semua Riwayat
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+            </svg>
+        </a>
+    </div>
 
-                    {{-- Mobile Cards --}}
-                    <div class="md:hidden divide-y divide-slate-100">
-                        @foreach([['Aula Pertemuan', 'Ruangan', 'Dipinjam', 'badge-blue'], ['Laptop-Asus123fb', 'Perangkat', 'Dipinjam', 'badge-blue'], ['Monitor Samsung', 'Perangkat', 'Menunggu', 'badge-yellow']] as $item)
-                            <div class="px-4 py-3">
-                                <div class="flex justify-between items-start mb-2">
-                                    <div>
-                                        <p class="font-semibold text-gray-800 text-[13px]">{{ $item[0] }}</p>
-                                        <p class="text-[11px] text-gray-400">{{ $item[1] }} · 24 Feb 2026, 14.00–16.00</p>
-                                    </div>
-                                    <span class="badge {{ $item[3] }} ml-2 shrink-0">{{ $item[2] }}</span>
-                                </div>
-                                <button class="btn-detail"
-                                    onclick="openDetailModal('{{ $item[0] }}','24 Feb 2026, 14.00–16.00','{{ $item[2] }}','{{ $item[1] }}')">
+    {{-- Desktop Table --}}
+    <div class="hidden md:block overflow-x-auto">
+        <table class="w-full text-[12.5px]">
+            <thead>
+                <tr class="bg-slate-50 border-b border-slate-100">
+                    <th class="text-left px-5 py-3 text-gray-500 font-semibold">#</th>
+                    <th class="text-left px-5 py-3 text-gray-500 font-semibold">Ruangan / Sarpras</th>
+                    <th class="text-left px-5 py-3 text-gray-500 font-semibold">Tanggal</th>
+                    <th class="text-center px-5 py-3 text-gray-500 font-semibold">Status</th>
+                    <th class="text-center px-5 py-3 text-gray-500 font-semibold">Aksi</th>
+                 </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-50">
+                @forelse($activeLoansList as $index => $loan)
+@php
+    $barang = $loan->first_barang;
+    $statusLabel = $loan->status === 'disetujui' ? 'Disetujui' : ($loan->status === 'dipinjam' ? 'Dipinjam' : '');
+    $badgeClass = $loan->status === 'disetujui' ? 'badge-yellow' : 'badge-blue';
+@endphp
+                    <tr class="tbl-row">
+                        <td class="px-5 py-3 text-gray-400 text-[11px] font-mono">{{ str_pad($index+1, 2, '0', STR_PAD_LEFT) }}</td>
+                        <td class="px-5 py-3">
+                            <p class="font-semibold text-gray-800">{{ $barang ? $barang->nama_barang : '-' }}</p>
+                            <p class="text-gray-400 text-[11px]">{{ $barang ? $barang->kategori : '-' }}</p>
+                        </td>
+                        <td class="px-5 py-3 text-gray-600">
+                            {{ \Carbon\Carbon::parse($loan->tanggal_pinjam)->format('d M Y') }}<br>
+                            <span class="text-[10px] text-gray-400">s/d {{ \Carbon\Carbon::parse($loan->tanggal_kembali)->format('d M Y') }}</span>
+                        </td>
+                        <td class="px-5 py-3 text-center">
+                            <span class="badge {{ $badgeClass }}">
+                                <span class="w-1.5 h-1.5 rounded-full {{ $loan->status === 'disetujui' ? 'bg-yellow-500' : 'bg-blue-500' }} inline-block"></span>
+                                {{ $statusLabel }}
+                            </span>
+                        </td>
+                        <td class="px-5 py-3 text-center">
+                            @if($barang)
+                                <button class="btn-detail" onclick="openDetailModal('{{ addslashes($barang->nama_barang) }}','{{ \Carbon\Carbon::parse($loan->tanggal_pinjam)->format('d M Y') }} - {{ \Carbon\Carbon::parse($loan->tanggal_kembali)->format('d M Y') }}','{{ $statusLabel }}','{{ $barang->kategori }}')">
                                     Lihat Detail
                                 </button>
-                            </div>
-                        @endforeach
+                            @else
+                                <span class="text-xs text-gray-400">Data tidak lengkap</span>
+                            @endif
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="5" class="text-center py-8 text-gray-400">Tidak ada pinjaman aktif</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+
+    {{-- Mobile Cards --}}
+    <div class="md:hidden divide-y divide-slate-100">
+        @forelse($activeLoansList as $loan)
+            @php
+                $barang = $loan->first_barang;
+                $statusLabel = $loan->status === 'disetujui' ? 'Disetujui' : ($loan->status === 'dipinjam' ? 'Dipinjam' : '');
+                $badgeClass = $loan->status === 'disetujui' ? 'badge-yellow' : 'badge-blue';
+            @endphp
+            <div class="px-4 py-3">
+                <div class="flex justify-between items-start mb-2">
+                    <div>
+                        <p class="font-semibold text-gray-800 text-[13px]">{{ $barang ? $barang->nama_barang : '-' }}</p>
+                        <p class="text-[11px] text-gray-400">{{ $barang ? $barang->kategori : '-' }} · {{ \Carbon\Carbon::parse($loan->tanggal_pinjam)->format('d M Y') }} - {{ \Carbon\Carbon::parse($loan->tanggal_kembali)->format('d M Y') }}</p>
                     </div>
+                    <span class="badge {{ $badgeClass }} ml-2 shrink-0">{{ $statusLabel }}</span>
                 </div>
+                @if($barang)
+                    <button class="btn-detail" onclick="openDetailModal('{{ addslashes($barang->nama_barang) }}','{{ \Carbon\Carbon::parse($loan->tanggal_pinjam)->format('d M Y') }} - {{ \Carbon\Carbon::parse($loan->tanggal_kembali)->format('d M Y') }}','{{ $statusLabel }}','{{ $barang->kategori }}')">
+                        Lihat Detail
+                    </button>
+                @else
+                    <span class="text-xs text-gray-400">Data tidak lengkap</span>
+                @endif
+            </div>
+        @empty
+            <div class="px-4 py-6 text-center text-gray-400">Tidak ada pinjaman aktif</div>
+        @endforelse
+    </div>
+</div>
 
             </main>
         </div>

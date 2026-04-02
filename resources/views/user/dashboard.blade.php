@@ -677,7 +677,7 @@
                                 </div>
                             @endforeach
                         </div>
-                        <a href="{{ route('user.rank') }}"
+                        <a href="{{ route('account.rank') }}" ...>
                             class="text-[11px] text-blue-600 hover:underline font-semibold text-right block mt-1">Lihat
                             Semua →</a>
                     </div>

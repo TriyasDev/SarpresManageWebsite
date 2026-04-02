@@ -3,8 +3,7 @@
 @section('title', 'Riwayat Peminjaman - KlikAset')
 
 @push('styles')
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         *,
         body {
@@ -490,51 +489,28 @@
 
                 {{-- Stat pills --}}
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-3 fade-up delay-1">
-                    <div class="stat-pill">
-                        <div class="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
-                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="text-[10px] text-gray-400 font-medium">Total</p>
-                            <p class="text-lg font-extrabold text-gray-800" id="totalCount">50</p>
-                        </div>
-                    </div>
-                    <div class="stat-pill">
-                        <div class="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
-                            <svg class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
-                                <circle cx="12" cy="12" r="5" />
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="text-[10px] text-gray-400 font-medium">Dipinjam</p>
-                            <p class="text-lg font-extrabold text-blue-600" id="dipinjamCount">15</p>
-                        </div>
-                    </div>
-                    <div class="stat-pill">
-                        <div class="w-9 h-9 rounded-xl bg-green-50 flex items-center justify-center shrink-0">
-                            <svg class="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 24 24">
-                                <circle cx="12" cy="12" r="5" />
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="text-[10px] text-gray-400 font-medium">Dikembalikan</p>
-                            <p class="text-lg font-extrabold text-green-600" id="kembaliCount">35</p>
-                        </div>
-                    </div>
-                    <div class="stat-pill">
-                        <div class="w-9 h-9 rounded-xl bg-amber-50 flex items-center justify-center shrink-0">
-                            <svg class="w-5 h-5 text-amber-500" fill="currentColor" viewBox="0 0 24 24">
-                                <circle cx="12" cy="12" r="5" />
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="text-[10px] text-gray-400 font-medium">Menunggu</p>
-                            <p class="text-lg font-extrabold text-amber-500" id="menungguCount">0</p>
-                        </div>
-                    </div>
+<div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden fade-up delay-2">
+    <div class="flex flex-wrap items-center justify-between gap-3 px-5 py-4 border-b border-slate-100">
+        <div>
+            <p class="font-bold text-gray-800 text-sm">Riwayat Peminjaman</p>
+            <p class="text-xs text-gray-400 mt-0.5" id="tableSubtitle">Menampilkan semua riwayat</p>
+        </div>
+        <div class="flex items-center gap-2 flex-wrap">
+            <div class="flex items-center gap-1.5 bg-slate-100 rounded-xl p-1">
+                <a href="{{ route('account.history', ['status' => '']) }}" class="filter-tab {{ request('status') == '' ? 'active' : '' }}">Semua</a>
+                <a href="{{ route('account.history', ['status' => 'dipinjam,disetujui']) }}" class="filter-tab {{ request('status') == 'dipinjam,disetujui' ? 'active' : '' }}">Dipinjam</a>
+                <a href="{{ route('account.history', ['status' => 'dikembalikan']) }}" class="filter-tab {{ request('status') == 'dikembalikan' ? 'active' : '' }}">Dikembalikan</a>
+            </div>
+            <div class="relative">
+                <svg class="w-3.5 h-3.5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                <form method="GET" action="{{ route('account.history') }}">
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari aset..." class="search-input">
+                </form>
+            </div>
+        </div>
+    </div>
                 </div>
 
                 {{-- Table Card --}}
@@ -567,23 +543,110 @@
                     </div>
 
                     {{-- Desktop Table --}}
-                    <div class="hidden md:block overflow-x-auto">
-                        <table class="w-full text-[12.5px]">
-                            <thead>
-                                <tr class="bg-slate-50 border-b border-slate-100">
-                                    <th class="text-left px-5 py-3 text-gray-500 font-semibold w-10">#</th>
-                                    <th class="text-left px-5 py-3 text-gray-500 font-semibold">Ruangan / Sarpras</th>
-                                    <th class="text-left px-5 py-3 text-gray-500 font-semibold">Tanggal</th>
-                                    <th class="text-center px-5 py-3 text-gray-500 font-semibold">Status</th>
-                                    <th class="text-center px-5 py-3 text-gray-500 font-semibold">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="desktopBody" class="divide-y divide-slate-50"></tbody>
-                        </table>
-                    </div>
+    <div class="hidden md:block overflow-x-auto">
+        <table class="w-full text-[12.5px]">
+            <thead>
+                <tr class="bg-slate-50 border-b border-slate-100">
+                    <th class="text-left px-5 py-3 text-gray-500 font-semibold w-10">#</th>
+                    <th class="text-left px-5 py-3 text-gray-500 font-semibold">Ruangan / Sarpras</th>
+                    <th class="text-left px-5 py-3 text-gray-500 font-semibold">Tanggal</th>
+                    <th class="text-center px-5 py-3 text-gray-500 font-semibold">Status</th>
+                    <th class="text-center px-5 py-3 text-gray-500 font-semibold">Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="desktopBody" class="divide-y divide-slate-50">
+@forelse($loans as $index => $loan)
+    @php
+        $barang = $loan->first_barang;
+        $statusLabel = match($loan->status) {
+            'menunggu' => 'Menunggu',
+            'disetujui' => 'Disetujui',
+            'dipinjam' => 'Dipinjam',
+            'dikembalikan' => 'Dikembalikan',
+            'ditolak' => 'Ditolak',
+            default => ucfirst($loan->status)
+        };
+        $badgeClass = match($loan->status) {
+            'menunggu' => 'badge-yellow',
+            'disetujui' => 'badge-blue',
+            'dipinjam' => 'badge-blue',
+            'dikembalikan' => 'badge-green',
+            'ditolak' => 'badge-red',
+            default => 'badge-gray'
+        };
+    @endphp
+    <tr class="tbl-row">
+        <td class="px-5 py-3 text-gray-400 text-[11px] font-mono">{{ $loans->firstItem() + $index }}</td>
+        <td class="px-5 py-3">
+            <p class="font-semibold text-gray-800">{{ $barang ? $barang->nama_barang : '-' }}</p>
+            <p class="text-gray-400 text-[11px]">{{ $barang ? $barang->kategori : '-' }}</p>
+        </td>
+        <td class="px-5 py-3 text-gray-600">
+            {{ \Carbon\Carbon::parse($loan->tanggal_pinjam)->format('d M Y') }}<br>
+            <span class="text-[10px] text-gray-400">s/d {{ \Carbon\Carbon::parse($loan->tanggal_kembali)->format('d M Y') }}</span>
+        </td>
+        <td class="px-5 py-3 text-center">
+            <span class="badge {{ $badgeClass }}">{{ $statusLabel }}</span>
+        </td>
+        <td class="px-5 py-3 text-center">
+            <button class="btn-detail" onclick="openDetailModalFromData('{{ addslashes($barang ? $barang->nama_barang : '-') }}','{{ \Carbon\Carbon::parse($loan->tanggal_pinjam)->format('d M Y') }} - {{ \Carbon\Carbon::parse($loan->tanggal_kembali)->format('d M Y') }}','{{ $statusLabel }}','{{ $barang ? $barang->kategori : '-' }}','{{ addslashes($loan->catatan) }}','{{ $loan->point_earned }}','{{ $loan->is_late ? 'Terlambat' : 'Tepat Waktu' }}')">
+                Lihat Detail
+            </button>
+        </td>
+    </tr>
+@endforelse
+            </tbody>
+        </table>
+    </div>
 
                     {{-- Mobile Cards --}}
-                    <div class="md:hidden divide-y divide-slate-100" id="mobileCards"></div>
+    <div class="md:hidden divide-y divide-slate-100" id="mobileCards">
+        @forelse($loans as $loan)
+            @php
+                $detail = $loan->detailPeminjaman->first();
+                $barang = $detail ? $detail->barang : null;
+                $statusLabel = match($loan->status) {
+                    'menunggu' => 'Menunggu',
+                    'disetujui' => 'Disetujui',
+                    'dipinjam' => 'Dipinjam',
+                    'dikembalikan' => 'Dikembalikan',
+                    'ditolak' => 'Ditolak',
+                    default => ucfirst($loan->status)
+                };
+                $badgeClass = match($loan->status) {
+                    'menunggu' => 'badge-yellow',
+                    'disetujui' => 'badge-blue',
+                    'dipinjam' => 'badge-blue',
+                    'dikembalikan' => 'badge-green',
+                    'ditolak' => 'badge-red',
+                    default => 'badge-gray'
+                };
+            @endphp
+            <div class="px-4 py-3" onclick="openDetailModalFromData('{{ addslashes($barang->nama_barang ?? '-') }}','{{ \Carbon\Carbon::parse($loan->tanggal_pinjam)->format('d M Y') }} - {{ \Carbon\Carbon::parse($loan->tanggal_kembali)->format('d M Y') }}','{{ $statusLabel }}','{{ $barang->kategori ?? '-' }}','{{ addslashes($loan->catatan) }}','{{ $loan->point_earned }}','{{ $loan->is_late ? 'Terlambat' : 'Tepat Waktu' }}')">
+                <div class="flex justify-between items-start mb-2">
+                    <div>
+                        <p class="font-semibold text-gray-800 text-[13px]">{{ $barang->nama_barang ?? '-' }}</p>
+                        <p class="text-[11px] text-gray-400">{{ $barang->kategori ?? '-' }} · {{ \Carbon\Carbon::parse($loan->tanggal_pinjam)->format('d M Y') }} - {{ \Carbon\Carbon::parse($loan->tanggal_kembali)->format('d M Y') }}</p>
+                    </div>
+                    <span class="badge {{ $badgeClass }} ml-2 shrink-0">{{ $statusLabel }}</span>
+                </div>
+                <button class="btn-detail mt-2" onclick="event.stopPropagation(); openDetailModalFromData('{{ addslashes($barang->nama_barang ?? '-') }}','{{ \Carbon\Carbon::parse($loan->tanggal_pinjam)->format('d M Y') }} - {{ \Carbon\Carbon::parse($loan->tanggal_kembali)->format('d M Y') }}','{{ $statusLabel }}','{{ $barang->kategori ?? '-' }}','{{ addslashes($loan->catatan) }}','{{ $loan->point_earned }}','{{ $loan->is_late ? 'Terlambat' : 'Tepat Waktu' }}')">
+                    Lihat Detail
+                </button>
+            </div>
+        @empty
+            <div class="px-4 py-6 text-center text-gray-400">Belum ada riwayat peminjaman</div>
+        @endforelse
+    </div>
+
+    {{-- Pagination --}}
+    <div class="flex flex-wrap items-center justify-between gap-3 px-5 py-3.5 border-t border-slate-100 bg-slate-50/50">
+        <p class="text-[11.5px] text-gray-500">Menampilkan {{ $loans->firstItem() ?? 0 }} - {{ $loans->lastItem() ?? 0 }} dari {{ $loans->total() }} data</p>
+        <div class="flex items-center gap-1.5">
+            {{ $loans->appends(request()->query())->links('vendor.pagination.tailwind') }}
+        </div>
+    </div>
+</div>
 
                     {{-- Empty State --}}
                     <div id="emptyState" class="hidden empty-state">
@@ -634,7 +697,7 @@
         </div>
     </div>
 
-    @push('scripts')
+@push('scripts')
         <style>
             @keyframes slideUp {
                 from {
@@ -647,6 +710,47 @@
                     transform: translateY(0) scale(1);
                 }
             }
-        </style>
-    @endpush
+    function openDetailModalFromData(name, date, status, type, note, point, timeliness) {
+    const statusColors = {
+        'Dipinjam': 'badge-blue',
+        'Disetujui': 'badge-blue',
+        'Menunggu': 'badge-yellow',
+        'Dikembalikan': 'badge-green',
+        'Ditolak': 'badge-red'
+    };
+    const cls = statusColors[status] || 'badge-blue';
+    document.getElementById('modalContent').innerHTML = `
+        <div class="flex justify-between py-2 border-b border-slate-100">
+            <span class="text-gray-500">Nama Aset</span>
+            <span class="font-bold text-gray-800">${name}</span>
+        </div>
+        <div class="flex justify-between py-2 border-b border-slate-100">
+            <span class="text-gray-500">Jenis</span>
+            <span class="font-semibold text-gray-700">${type}</span>
+        </div>
+        <div class="flex justify-between py-2 border-b border-slate-100">
+            <span class="text-gray-500">Tanggal</span>
+            <span class="font-semibold text-gray-700 text-right max-w-[55%]">${date}</span>
+        </div>
+        <div class="flex justify-between py-2 border-b border-slate-100">
+            <span class="text-gray-500">Status</span>
+            <span class="badge ${cls}">${status}</span>
+        </div>
+        <div class="flex justify-between py-2 border-b border-slate-100">
+            <span class="text-gray-500">Catatan</span>
+            <span class="font-semibold text-gray-700">${note || '-'}</span>
+        </div>
+        <div class="flex justify-between py-2 border-b border-slate-100">
+            <span class="text-gray-500">Poin Didapat</span>
+            <span class="font-semibold text-gray-700">${point || 0}</span>
+        </div>
+        <div class="flex justify-between py-2">
+            <span class="text-gray-500">Ketepatan</span>
+            <span class="font-semibold text-gray-700">${timeliness}</span>
+        </div>
+    `;
+    document.getElementById('detailModal').classList.remove('hidden');
+}
+</style>
+@endpush
 @endsection
