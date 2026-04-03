@@ -158,8 +158,8 @@
 
                     {{-- Nama Peminjam --}}
                     <td class="p-4">
-                        <p class="font-medium text-center text-sm">{{ $laporan->peminjam?->user?->username ?? '-' }}</p>
-                        <p class="text-xs text-gray-500 text-center">{{ $laporan->peminjam?->user?->email ?? '-' }}</p>
+                        <p class="font-medium text-center text-sm">{{ $laporan->peminjaman?->user?->username ?? '-' }}</p>
+                        <p class="text-xs text-gray-500 text-center">{{ $laporan->peminjaman?->user?->email ?? '-' }}</p>
                     </td>
 
                     {{-- Nama Aset --}}
@@ -295,6 +295,15 @@
         searchTimer = setTimeout(() => {
             document.getElementById('filterForm').submit();
         }, 500);
+    });
+
+    document.getElementById('searchLoan')?.addEventListener('input', function() {
+    let filter = this.value.toLowerCase();
+    let options = document.getElementById('loanSelect').options;
+    for (let i = 0; i < options.length; i++) {
+        let text = options[i].getAttribute('data-search') || options[i].textContent;
+        options[i].style.display = text.toLowerCase().includes(filter) ? '' : 'none';
+    }
     });
 
     // Modal Foto

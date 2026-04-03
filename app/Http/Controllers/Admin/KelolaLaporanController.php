@@ -18,21 +18,14 @@ class KelolaLaporanController extends Controller
     // ──────────────────────────────────────────────────────────────
     public function index(Request $request)
     {
-        $query = Laporan::with(['peminjam.user', 'peminjam.aset', 'admin'])
+        $query = Laporan::with(['peminjaman.user', 'peminjaman.detailPeminjaman.barang', 'admin'])
             ->latest();
 
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
-                $q->whereHas(
-                    'peminjam.user',
-                    fn($q2) =>
-                    $q2->where('username', 'like', "%$search%")
-                )->orWhereHas(
-                    'peminjam.aset',
-                    fn($q2) =>
-                    $q2->where('nama_barang', 'like', "%$search%")
-                );
+                $q->whereHas('peminjaman.user', fn($q2) => $q2->where('username', 'like', "%$search%"))
+                    ->orWhereHas('peminjaman.detailPeminjaman.barang', fn($q2) => $q2->where('nama_barang', 'like', "%$search%"));
             });
         }
 
@@ -44,7 +37,7 @@ class KelolaLaporanController extends Controller
             $query->where('kondisi_barang', $request->kondisi_barang);
         }
 
-        $laporans     = $query->paginate(10)->withQueryString();
+        $laporans = $query->paginate(10)->withQueryString();
         $trashedCount = Laporan::onlyTrashed()->count();
 
         return view('admin.kelola_laporan.index', compact('laporans', 'trashedCount'));
@@ -55,7 +48,16 @@ class KelolaLaporanController extends Controller
     // ──────────────────────────────────────────────────────────────
     public function create()
     {
-        return view('admin.kelola_laporan.create');
+        $activeLoans = Peminjaman::with(['user', 'detailPeminjaman.barang'])
+            ->whereIn('status', ['dipinjam', 'disetujui'])
+            ->orderBy('tanggal_kembali', 'asc')
+            ->get()
+            ->map(function ($loan) {
+                $loan->first_barang = $loan->detailPeminjaman->first()?->barang;
+                return $loan;
+            });
+
+        return view('admin.kelola_laporan.create', compact('activeLoans'));
     }
 
     // ──────────────────────────────────────────────────────────────
@@ -212,7 +214,7 @@ class KelolaLaporanController extends Controller
     // ──────────────────────────────────────────────────────────────
     public function exportPdf(Request $request)
     {
-        $query = Laporan::with(['peminjam.user', 'peminjam.aset', 'admin'])->latest();
+        $query = Laporan::with(['peminjaman.user', 'peminjaman.detailPeminjaman.barang', 'admin'])->latest();
 
         if ($request->filled('jenis_laporan')) {
             $query->where('jenis_laporan', $request->jenis_laporan);

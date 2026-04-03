@@ -21,7 +21,8 @@ class LaporanExport implements FromQuery, WithHeadings, WithMapping, WithStyles,
 
     public function query()
     {
-        $query = Laporan::with(['peminjam.user', 'peminjam.aset', 'admin'])->latest();
+        $query = Laporan::with(['peminjaman.user', 'peminjaman.detailPeminjaman.barang', 'admin'])
+            ->latest();
 
         if (!empty($this->filters['jenis_laporan'])) {
             $query->where('jenis_laporan', $this->filters['jenis_laporan']);
@@ -42,7 +43,7 @@ class LaporanExport implements FromQuery, WithHeadings, WithMapping, WithStyles,
             'Nama Peminjam',
             'Email Peminjam',
             'Nama Aset',
-            'Kode Aset',
+            'Kategori Aset',
             'Jenis Laporan',
             'Kondisi Barang',
             'Tgl. Dipinjam',
@@ -57,16 +58,20 @@ class LaporanExport implements FromQuery, WithHeadings, WithMapping, WithStyles,
         static $no = 0;
         $no++;
 
+        $peminjaman = $laporan->peminjaman;
+        $user = $peminjaman?->user;
+        $barang = $peminjaman?->detailPeminjaman->first()?->barang;
+
         return [
             $no,
             $laporan->id_laporan,
-            $laporan->peminjam?->user?->nama    ?? '-',
-            $laporan->peminjam?->user?->email   ?? '-',
-            $laporan->peminjam?->aset?->nama_aset  ?? '-',
-            $laporan->peminjam?->aset?->kode_aset  ?? '-',
-            ucwords($laporan->jenis_laporan),
-            ucwords($laporan->kondisi_barang),
-            $laporan->tanggal_dipinjam?->format('d/m/Y H:i')     ?? '-',
+            $user?->nama ?? $user?->username ?? '-',
+            $user?->email ?? '-',
+            $barang?->nama_barang ?? '-',
+            $barang?->kategori ?? '-',
+            $laporan->label_jenis,
+            $laporan->label_kondisi,
+            $laporan->tanggal_dipinjam?->format('d/m/Y H:i') ?? '-',
             $laporan->tanggal_dikembalikan?->format('d/m/Y H:i') ?? '-',
             $laporan->admin?->nama ?? '-',
             $laporan->created_at->format('d/m/Y H:i'),
@@ -76,10 +81,9 @@ class LaporanExport implements FromQuery, WithHeadings, WithMapping, WithStyles,
     public function styles(Worksheet $sheet): array
     {
         return [
-            // Baris header (baris 1) — bold + background biru muda
             1 => [
-                'font'      => ['bold' => true, 'color' => ['argb' => 'FFFFFFFF']],
-                'fill'      => ['fillType' => 'solid', 'startColor' => ['argb' => 'FF2563EB']],
+                'font' => ['bold' => true, 'color' => ['argb' => 'FFFFFFFF']],
+                'fill' => ['fillType' => 'solid', 'startColor' => ['argb' => 'FF2563EB']],
                 'alignment' => ['horizontal' => 'center'],
             ],
         ];

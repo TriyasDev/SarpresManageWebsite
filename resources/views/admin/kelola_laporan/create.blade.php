@@ -35,14 +35,26 @@
             {{-- Kolom Kiri --}}
             <div class="space-y-5">
 
-                {{-- ID Peminjaman --}}
-                <div>
-                    <label class="block text-gray-800 font-medium mb-2 text-sm">ID Peminjaman <span class="text-red-500">*</span></label>
-                    <input type="text" name="id_peminjaman" value="{{ old('id_peminjaman') }}"
-                        placeholder="Masukkan ID peminjaman"
-                        class="w-full px-5 py-3 border-2 border-gray-300 rounded-[30px] outline-none focus:ring-2 focus:ring-costume-second focus:border-transparent text-sm transition @error('id_peminjaman') border-red-400 @enderror"/>
-                    @error('id_peminjaman')<p class="text-red-500 text-xs mt-1 ml-3">{{ $message }}</p>@enderror
-                </div>
+{{-- ID Peminjaman --}}
+<div>
+    <label class="block text-gray-800 font-medium mb-2 text-sm">Pilih Peminjaman <span class="text-red-500">*</span></label>
+    <input type="text" id="searchLoan" placeholder="Cari ID / peminjam / barang..." class="w-full px-5 py-3 border-2 border-gray-300 rounded-[30px] outline-none focus:ring-2 focus:ring-costume-second focus:border-transparent text-sm transition mb-2">
+    <div class="relative">
+        <select name="id_peminjaman" id="loanSelect" size="5" class="w-full px-5 py-3 border-2 border-gray-300 rounded-[30px] outline-none focus:ring-2 focus:ring-costume-second focus:border-transparent text-sm transition @error('id_peminjaman') border-red-400 @enderror">
+            <option value="">-- Pilih Peminjaman --</option>
+            @foreach($activeLoans as $loan)
+                <option value="{{ $loan->id_peminjaman }}" data-search="{{ $loan->id_peminjaman }} {{ $loan->user->username }} {{ $loan->first_barang?->nama_barang }}">
+                    #{{ $loan->id_peminjaman }} – {{ $loan->user->username }} – {{ $loan->first_barang?->nama_barang ?? '-' }} (tenggat: {{ $loan->tanggal_kembali->format('d/m/Y') }})
+                </option>
+            @endforeach
+        </select>
+        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-5 text-gray-500">
+            <svg class="fill-current h-4 w-4" ...></svg>
+        </div>
+    </div>
+    @error('id_peminjaman')<p class="text-red-500 text-xs mt-1 ml-3">{{ $message }}</p>@enderror
+    <p class="text-xs text-gray-400 mt-1 ml-3">* Hanya menampilkan peminjaman yang sedang berlangsung (dipinjam / disetujui), diurutkan dari tenggat terdekat.</p>
+</div>
 
                 {{-- Jenis Laporan --}}
                 <div>
