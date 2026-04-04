@@ -51,10 +51,10 @@ class Laporan extends Model
     public function getBadgeJenisAttribute()
     {
         return match ($this->jenis_laporan) {
-            'dikembalikan' => 'bg-green-100 text-green-800 border-green-300',
-            'telat mengembalikan' => 'bg-red-100 text-red-800 border-red-300',
-            'hilang' => 'bg-gray-100 text-gray-800 border-gray-300',
-            default => 'bg-gray-100 text-gray-600 border-gray-200',
+            'dikembalikan' => 'bg-green-100 text-green-800',
+            'telat mengembalikan' => 'bg-yellow-100 text-yellow-800',
+            'hilang' => 'bg-red-100 text-red-800',
+            default => 'bg-gray-100 text-gray-800',
         };
     }
 
@@ -71,9 +71,9 @@ class Laporan extends Model
     public function getBadgeKondisiAttribute()
     {
         return match ($this->kondisi_barang) {
-            'baik' => 'bg-green-100 text-green-800 border-green-300',
-            'masih di pinjam' => 'bg-blue-100 text-blue-800 border-blue-300',
-            'rusak' => 'bg-red-100 text-red-800 border-red-200',
+            'baik' => 'bg-green-100 text-green-800',
+            'masih di pinjam' => 'bg-blue-100 text-blue-800',
+            'rusak' => 'bg-red-100 text-red-800',
             default => 'bg-gray-100 text-gray-800',
         };
     }

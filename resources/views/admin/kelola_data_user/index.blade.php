@@ -1,218 +1,124 @@
+{{-- resources/views/admin/kelola_data_user/index.blade.php --}}
 @extends('layouts.admin')
 @section('title', 'Kelola User - KlikAset')
+
 @section('content')
+    @if(session('success'))
+        <div id="flashMsg" class="mb-5 px-5 py-3 bg-green-100 text-green-700 border border-green-200 rounded-[30px] text-sm font-medium flex items-center justify-between">
+            <span>{{ session('success') }}</span>
+            <button onclick="document.getElementById('flashMsg').remove()" class="ml-4 text-green-500 hover:text-green-700 text-lg leading-none">&times;</button>
+        </div>
+    @endif
 
-{{-- Header & Tombol Aksi --}}
-<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
-    <div>
-        <h1 class="text-xl font-bold text-gray-800">Kelola User</h1>
-        <p class="text-sm text-gray-500 mt-0.5">Manajemen akun peminjam dan admin</p>
-    </div>
-    <div class="flex items-center gap-2 flex-wrap">
-
-        {{-- Tombol Tempat Sampah --}}
-        <a href="{{ route('users.trash') }}"
-           class="relative flex items-center gap-2 px-4 py-2.5 border-2 border-gray-300 text-gray-600 text-sm font-semibold rounded-full hover:bg-gray-50 transition">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-            </svg>
-            Sampah
-            @if($trashedCount > 0)
-                <span class="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                    {{ $trashedCount > 99 ? '99+' : $trashedCount }}
-                </span>
-            @endif
-        </a>
-
-        {{-- Tombol Tambah User --}}
-        <a href="{{ route('users.create') }}"
-           class="flex items-center gap-2 px-5 py-2.5 bg-costume-primary text-white text-sm font-semibold rounded-full hover:bg-blue-700 transition shadow-sm">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
-            </svg>
-            Tambah User
-        </a>
-    </div>
-</div>
-
-{{-- Filter & Pencarian --}}
-<form method="GET" action="{{ route('users.index') }}" id="filterForm">
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 mb-6">
-        <div class="flex flex-col lg:flex-row gap-4">
-
-            {{-- Pencarian --}}
-            <div class="flex-1 relative">
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari username, email, atau NIPD..."
-                       id="searchInput"
-                       class="w-full px-5 py-3 pr-12 border-2 border-gray-300 rounded-full outline-none focus:ring-2 focus:ring-costume-second focus:border-transparent text-sm transition"/>
-                <svg class="w-5 h-5 absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+        <div>
+            <h1 class="text-xl font-bold text-gray-800">Kelola User</h1>
+            <p class="text-sm text-gray-500 mt-0.5">Manajemen akun peminjam dan admin</p>
+        </div>
+        <div class="flex items-center gap-2">
+            <a href="{{ route('users.trash') }}"
+               class="relative flex items-center gap-2 px-4 py-2.5 border-2 border-gray-300 text-gray-600 text-sm font-semibold rounded-[30px] hover:bg-gray-50 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                 </svg>
-            </div>
+                Sampah
+                @if($trashedCount > 0)
+                    <span class="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                        {{ $trashedCount > 99 ? '99+' : $trashedCount }}
+                    </span>
+                @endif
+            </a>
 
-            {{-- Filter Role (hanya untuk super-admin) --}}
-            @if(auth()->user()->role === 'super-admin')
-            <div class="lg:w-48">
-                <div class="relative">
-                    <select name="role" onchange="document.getElementById('filterForm').submit()"
-                            class="w-full px-5 py-3 border-2 border-gray-300 rounded-full outline-none focus:ring-2 focus:ring-costume-second focus:border-transparent appearance-none bg-white cursor-pointer text-sm transition">
-                        <option value="">Semua Role</option>
-                        <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Admin</option>
-                        <option value="peminjam" {{ request('role') == 'peminjam' ? 'selected' : '' }}>Peminjam</option>
-                    </select>
-                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-5 text-gray-500">
-                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                            <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-            @endif
-
-            {{-- Tombol Filter --}}
-            <div class="lg:w-auto">
-                <button type="submit" class="w-full px-5 py-3 bg-costume-primary text-white text-sm font-semibold rounded-full hover:bg-blue-700 transition shadow-sm">
-                    Filter
-                </button>
-            </div>
+            <a href="{{ route('users.create') }}"
+               class="flex items-center gap-2 px-5 py-2.5 bg-costume-primary text-white text-sm font-semibold rounded-[30px] hover:bg-blue-700 transition shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+                </svg>
+                Tambah User
+            </a>
         </div>
     </div>
-</form>
 
-{{-- Tabel Data User --}}
-<div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="bg-white rounded-[30px] border border-gray-100 shadow-sm p-5 mb-6">
+        <form method="GET" action="{{ route('users.index') }}" class="flex flex-col lg:flex-row gap-4">
+            <div class="flex-1 relative">
+                <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Cari username, email, atau NIPD..."
+                    class="w-full px-5 py-3 pr-12 border-2 border-gray-300 rounded-[30px] outline-none focus:ring-2 focus:ring-costume-second focus:border-transparent text-sm transition"/>
+                <x-icon-magnifer class="w-5 h-5 absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"/>
+            </div>
+            @if(auth()->user()->role === 'super-admin')
+            <div class="lg:w-48">
+                <select name="role" class="w-full px-5 py-3 border-2 border-gray-300 rounded-[30px] outline-none focus:ring-2 focus:ring-costume-second focus:border-transparent appearance-none bg-white cursor-pointer text-sm transition">
+                    <option value="">Semua Role</option>
+                    <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Admin</option>
+                    <option value="peminjam" {{ request('role') == 'peminjam' ? 'selected' : '' }}>Peminjam</option>
+                </select>
+            </div>
+            @endif
+            <div>
+                <button type="submit" class="px-6 py-3 bg-costume-primary text-white rounded-[30px] text-sm font-semibold hover:bg-blue-700 transition">Filter</button>
+            </div>
+        </form>
+    </div>
+
     <div class="overflow-x-auto">
-        <table class="w-full">
-            <thead>
-                <tr class="border-b border-gray-100 bg-gray-50/80">
-                    <th class="p-4 text-center font-semibold text-xs lg:text-sm text-gray-700 whitespace-nowrap">No</th>
-                    <th class="p-4 text-center font-semibold text-xs lg:text-sm text-gray-700 whitespace-nowrap">Username</th>
-                    <th class="p-4 text-center font-semibold text-xs lg:text-sm text-gray-700 whitespace-nowrap">Email</th>
-                    <th class="p-4 text-center font-semibold text-xs lg:text-sm text-gray-700 whitespace-nowrap">Role</th>
-                    <th class="p-4 text-center font-semibold text-xs lg:text-sm text-gray-700 whitespace-nowrap">NIPD / Kelas</th>
-                    <th class="p-4 text-center font-semibold text-xs lg:text-sm text-gray-700 whitespace-nowrap">No Telpon</th>
-                    <th class="p-4 text-center font-semibold text-xs lg:text-sm text-gray-700 whitespace-nowrap">Aksi</th>
+        <table class="w-full bg-white rounded-[30px] border border-gray-100 shadow-sm">
+            <thead class="bg-gray-50 border-b border-gray-100">
+                <tr>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-600">Username</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-600">Email</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-600">Role</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-600">NIPD / Kelas</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-600">No Telpon</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-600">Aksi</th>
                 </tr>
             </thead>
             <tbody>
-                @forelse($users as $index => $user)
-                <tr class="border-b border-gray-100 hover:bg-gray-50/50 transition">
-                    <td class="p-4 text-center text-sm text-gray-500">{{ $users->firstItem() + $index }}</td>
-                    <td class="p-4 text-center text-sm text-gray-800">{{ $user->username }}</td>
-                    <td class="p-4 text-center text-sm text-gray-600">{{ $user->email }}</td>
-                    <td class="p-4 text-center">
-                        <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full border
-                            {{ $user->role === 'admin' ? 'bg-purple-100 text-purple-700 border-purple-200' : 'bg-blue-100 text-blue-700 border-blue-200' }}">
+                @forelse($users as $user)
+                <tr class="border-b border-gray-100 hover:bg-gray-50 transition">
+                    <td class="px-6 py-4 text-sm text-gray-800">{{ $user->username }}</td>
+                    <td class="px-6 py-4 text-sm text-gray-600">{{ $user->email }}</td>
+                    <td class="px-6 py-4 text-sm">
+                        <span class="px-3 py-1 rounded-full text-xs font-semibold {{ $user->role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700' }}">
                             {{ ucfirst($user->role) }}
                         </span>
                     </td>
-                    <td class="p-4 text-center text-sm text-gray-600">
+                    <td class="px-6 py-4 text-sm text-gray-600">
                         @if($user->role === 'peminjam')
                             {{ $user->nipd ?? '-' }} / {{ $user->kelas ?? '-' }}
                         @else
                             -
                         @endif
                     </td>
-                    <td class="p-4 text-center text-sm text-gray-600">{{ $user->no_telpon ?? '-' }}</td>
-                    <td class="p-4 text-center">
-                        <div class="flex justify-center items-center gap-2">
-                            <a href="{{ route('users.edit', $user) }}"
-                               class="w-8 h-8 flex items-center justify-center rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 transition"
-                               title="Edit">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                                </svg>
-                            </a>
-                            <form action="{{ route('users.destroy', $user) }}" method="POST"
-                                  onsubmit="return confirm('Pindahkan user ini ke tempat sampah?')">
+                    <td class="px-6 py-4 text-sm text-gray-600">{{ $user->no_telpon ?? '-' }}</td>
+                    <td class="px-6 py-4">
+                        <div class="flex gap-2">
+                            <a href="{{ route('users.edit', $user) }}" class="text-blue-600 hover:text-blue-800 text-sm font-medium">Edit</a>
+                            <form method="POST" action="{{ route('users.destroy', $user) }}" onsubmit="return confirm('Pindahkan user ini ke sampah?')">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit"
-                                        class="w-8 h-8 flex items-center justify-center rounded-full bg-red-50 text-red-600 hover:bg-red-100 transition"
-                                        title="Hapus">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                    </svg>
-                                </button>
+                                <button type="submit" class="text-red-600 hover:text-red-800 text-sm font-medium">Hapus</button>
                             </form>
                         </div>
                     </td>
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="7" class="p-10 text-center text-gray-400 text-sm">
-                        Tidak ada data user{{ request('search') || request('role') ? ' yang sesuai filter' : '' }}.
-                    </td>
+                    <td colspan="6" class="px-6 py-12 text-center text-gray-400">Tidak ada data user.</td>
                 </tr>
                 @endforelse
             </tbody>
         </table>
     </div>
 
-    {{-- PAGINATION CUSTOM (sama persis dengan kelola laporan) --}}
-    @if($users->total() > 0)
-    <div class="flex flex-col lg:flex-row items-center justify-between gap-5 p-5 bg-white border-t border-gray-100 rounded-3xl shadow-sm">
-        <div class="flex flex-wrap items-center gap-3">
-            <p class="text-sm text-gray-600 bg-gray-50 px-4 py-2 rounded-full">
-                Menampilkan {{ $users->firstItem() }}–{{ $users->lastItem() }} dari {{ $users->total() }} user
-            </p>
-
-            @if($users->onFirstPage())
-                <span class="px-4 py-2 rounded-full bg-gray-100 text-gray-400 text-sm font-medium cursor-not-allowed">← Sebelumnya</span>
-            @else
-                <a href="{{ $users->previousPageUrl() }}" class="px-4 py-2 rounded-full bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition shadow-sm">← Sebelumnya</a>
-            @endif
-
-            <div class="flex gap-1.5">
-                @php
-                    $current = $users->currentPage();
-                    $last = $users->lastPage();
-                    $start = max(1, $current - 2);
-                    $end = min($last, $current + 2);
-                    if ($start > 1) echo '<span class="px-3 py-2 text-gray-400">...</span>';
-                    for ($i = $start; $i <= $end; $i++) {
-                        $activeClass = ($i == $current) ? 'bg-costume-primary text-white shadow-md' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50';
-                        echo '<a href="' . $users->url($i) . '" class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium transition ' . $activeClass . '">' . $i . '</a>';
-                    }
-                    if ($end < $last) echo '<span class="px-3 py-2 text-gray-400">...</span>';
-                @endphp
-            </div>
-
-            @if($users->hasMorePages())
-                <a href="{{ $users->nextPageUrl() }}" class="px-4 py-2 rounded-full bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition shadow-sm">Selanjutnya →</a>
-            @else
-                <span class="px-4 py-2 rounded-full bg-gray-100 text-gray-400 text-sm font-medium cursor-not-allowed">Selanjutnya →</span>
-            @endif
-        </div>
-
-        <div class="flex items-center gap-2 rounded-full px-4 py-1.5">
-            <span class="text-sm text-gray-500">Ke halaman :</span>
-            <form action="{{ url()->current() }}" method="GET" class="flex items-center gap-2" id="jumpToPageForm">
-                @foreach(request()->query() as $key => $value)
-                    @if($key != 'page')
-                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
-                    @endif
-                @endforeach
-                <input type="number" name="page" value="{{ $users->currentPage() }}" min="1" max="{{ $users->lastPage() }}"
-                       class="w-9 px-3 py-1.5 border border-gray-300 rounded-full text-center text-sm focus:ring-2 focus:ring-costume-second focus:border-transparent appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none">
-                <button type="submit" class="px-5 py-1.5 bg-costume-primary text-white text-sm font-medium rounded-full hover:bg-blue-700 transition shadow-md">Pergi</button>
-            </form>
-            <span class="text-sm text-gray-500">dari {{ $users->lastPage() }}</span>
+    @if($users->hasPages())
+    <div class="flex flex-col sm:flex-row items-center justify-between mt-6 bg-white rounded-[30px] border border-gray-100 p-4 gap-4">
+        <p class="text-xs lg:text-sm text-gray-600">
+            Menampilkan {{ $users->firstItem() ?? 0 }}–{{ $users->lastItem() ?? 0 }} dari {{ $users->total() }} user
+        </p>
+        <div class="flex items-center gap-2 flex-wrap justify-center">
+            {{ $users->links() }}
         </div>
     </div>
     @endif
-</div>
-
 @endsection
-
-@push('scripts')
-<script>
-    let searchTimer;
-    document.getElementById('searchInput')?.addEventListener('input', () => {
-        clearTimeout(searchTimer);
-        searchTimer = setTimeout(() => {
-            document.getElementById('filterForm').submit();
-        }, 500);
-    });
-</script>
-@endpush
