@@ -33,59 +33,61 @@
 
     <nav class="flex-1 space-y-1.5 px-4 overflow-y-auto">
         <a href="{{ route('dashboard') }}"
-            class="group flex items-center gap-3 px-4 py-2.5 rounded-[30px] text-white font-bold text-[0.96rem] transition-all duration-200 @if(request()->is('dashboard')) bg-costume-second @else hover:bg-costume-second @endif">
+            class="group flex items-center gap-3 px-4 py-2.5 rounded-[30px] text-white font-bold text-[0.96rem] transition-all duration-200 {{ request()->routeIs('dashboard') ? 'bg-costume-second' : 'hover:bg-costume-second' }}">
             <x-icon-chart class="w-10 h-10 shrink-0 text-white" />
             <span class="relative inline-block">
                 Dashboard
-                <span class="absolute left-0 bottom-[-4px] @if(request()->is('dashboard')) w-12 @else w-0 @endif h-[3px] bg-white rounded-full transition-all duration-300 ease-in-out group-hover:w-12"></span>
+                <span class="absolute left-0 bottom-[-4px] {{ request()->routeIs('dashboard') ? 'w-12' : 'w-0' }} h-[3px] bg-white rounded-full transition-all duration-300 ease-in-out group-hover:w-12"></span>
             </span>
         </a>
 
-        <a href="{{ route('assets.index') }}" class="group flex items-center gap-3 px-4 py-2.5 rounded-[30px] text-white font-bold text-[0.96rem] transition-all duration-200 @if(request()->is('assets.index')) bg-costume-second @else hover:bg-costume-second @endif">
-            <x-icon-album class="w-10 h-10 shrink-0 text-white"/>
+        <a href="{{ route('assets.index') }}"
+            class="group flex items-center gap-3 px-4 py-2.5 rounded-[30px] text-white font-bold text-[0.96rem] transition-all duration-200 {{ request()->routeIs('assets.*') ? 'bg-costume-second' : 'hover:bg-costume-second' }}">
+            <x-icon-album class="w-10 h-10 shrink-0 text-white" />
             <span class="relative inline-block">
                 Kelola Aset
-                <span class="absolute left-0 bottom-[-4px] @if(request()->is('assets.index')) w-12 @else w-0 @endif h-[3px] bg-white rounded-full transition-all duration-300 ease-in-out group-hover:w-12"></span>
+                <span class="absolute left-0 bottom-[-4px] {{ request()->routeIs('assets.*') ? 'w-12' : 'w-0' }} h-[3px] bg-white rounded-full transition-all duration-300 ease-in-out group-hover:w-12"></span>
             </span>
         </a>
 
         <a href="{{ route('approvals.index') }}"
-            class="group flex items-center gap-3 px-4 py-2.5 rounded-[30px] text-white font-bold text-[0.96rem] transition-all duration-200 @if(request()->is('admin/kelola_pengajuan*')) bg-costume-second @else hover:bg-costume-second @endif">
+            class="group flex items-center gap-3 px-4 py-2.5 rounded-[30px] text-white font-bold text-[0.96rem] transition-all duration-200 {{ request()->routeIs('approvals.*') ? 'bg-costume-second' : 'hover:bg-costume-second' }}">
             <x-icon-inbox-unread class="w-10 h-10 shrink-0 text-white" />
             <span class="relative inline-block">
                 Kelola Pengajuan
-                <span class="absolute left-0 bottom-[-4px] @if(request()->is('admin/kelola_pengajuan*')) w-12 @else w-0 @endif h-[3px] bg-white rounded-full transition-all duration-300 ease-in-out group-hover:w-12"></span>
+                <span class="absolute left-0 bottom-[-4px] {{ request()->routeIs('approvals.*') ? 'w-12' : 'w-0' }} h-[3px] bg-white rounded-full transition-all duration-300 ease-in-out group-hover:w-12"></span>
             </span>
         </a>
 
-        <a href="{{ route('reports.index') }}" class="group flex items-center gap-3 px-4 py-2.5 rounded-[30px] text-white font-bold text-[0.96rem] transition-all duration-200 @if(request()->is('admin/kelola_laporan*')) bg-costume-second @else hover:bg-costume-second @endif">
-            <x-icon-notebook class="w-10 h-10 shrink-0 text-white"/>
+        <a href="{{ route('reports.index') }}"
+            class="group flex items-center gap-3 px-4 py-2.5 rounded-[30px] text-white font-bold text-[0.96rem] transition-all duration-200 {{ request()->routeIs('reports.*') ? 'bg-costume-second' : 'hover:bg-costume-second' }}">
+            <x-icon-notebook class="w-10 h-10 shrink-0 text-white" />
             <span class="relative inline-block">
                 Kelola Laporan
-                <span class="absolute left-0 bottom-[-4px] @if(request()->is('admin/kelola_laporan*')) w-12 @else w-0 @endif h-[3px] bg-white rounded-full transition-all duration-300 ease-in-out group-hover:w-12"></span>
+                <span class="absolute left-0 bottom-[-4px] {{ request()->routeIs('reports.*') ? 'w-12' : 'w-0' }} h-[3px] bg-white rounded-full transition-all duration-300 ease-in-out group-hover:w-12"></span>
             </span>
         </a>
 
-        <a href="{{ route('users.index') }}"
-            class="group flex items-center gap-3 px-4 py-2.5 rounded-[30px] text-white font-bold text-[0.96rem] transition-all duration-200 @if(request()->is('admin/kelola_data_user*')) bg-costume-second @else hover:bg-costume-second @endif">
+       <a href="{{ route('users.index') }}"
+            class="group flex items-center gap-3 px-4 py-2.5 rounded-[30px] text-white font-bold text-[0.96rem] transition-all duration-200 {{ request()->routeIs('users.*') ? 'bg-costume-second' : 'hover:bg-costume-second' }}">
             <x-icon-shield-user class="w-10 h-10 shrink-0 text-white" />
             <span class="relative inline-block">
                 Kelola Data User
-                <span class="absolute left-0 bottom-[-4px] @if(request()->is('admin/kelola_data_user*')) w-12 @else w-0 @endif h-[3px] bg-white rounded-full transition-all duration-300 group-hover:w-12"></span>
+                <span class="absolute left-0 bottom-[-4px] {{ request()->routeIs('users.*') ? 'w-12' : 'w-0' }} h-[3px] bg-white rounded-full transition-all duration-300 ease-in-out group-hover:w-12"></span>
             </span>
         </a>
     </nav>
 
-<div class="px-4 pb-6 mt-auto pt-4">
-    <form method="POST" action="{{ route('auth.logout') }}">
-        @csrf
-        <button type="submit" class="group flex items-center gap-3 px-4 py-2.5 text-white font-bold rounded-[30px] transition-all duration-200 hover:bg-red-500 text-[0.96rem] w-full text-left">
-            <x-icon-logout-3 class="w-10 h-10 shrink-0 text-white"/>
-            <span class="relative inline-block">
-                Logout
-                <span class="absolute left-0 bottom-[-4px] w-0 h-[3px] bg-white rounded-full transition-all duration-300 group-hover:w-12"></span>
-            </span>
-        </button>
-    </form>
-</div>
+    <div class="px-4 pb-6 mt-auto pt-4">
+        <form method="POST" action="{{ route('auth.logout') }}">
+            @csrf
+            <button type="submit" class="group flex items-center gap-3 px-4 py-2.5 text-white font-bold rounded-[30px] transition-all duration-200 hover:bg-red-500 text-[0.96rem] w-full text-left">
+                <x-icon-logout-3 class="w-10 h-10 shrink-0 text-white" />
+                <span class="relative inline-block">
+                    Logout
+                    <span class="absolute left-0 bottom-[-4px] w-0 h-[3px] bg-white rounded-full transition-all duration-300 group-hover:w-12"></span>
+                </span>
+            </button>
+        </form>
+    </div>
 </aside>

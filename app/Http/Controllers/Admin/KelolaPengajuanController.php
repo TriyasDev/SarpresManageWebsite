@@ -7,67 +7,57 @@ use App\Models\Peminjaman;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class KelolaPengajuanController extends Controller
 {
     public function index(Request $request)
     {
         $query = Peminjaman::with([
-            'user:id_user,username,email,nipd,kelas',
-            'detailPeminjaman.barang:id_barang,nama_barang,kategori,foto',
-            'approver:id_user,username',
-        ])
-        ->select([
-            'id_peminjaman',
-            'id_user',
-            'id_admin',
-            'tanggal_pinjam',
-            'tanggal_kembali',
-            'status',
-            'catatan',
-            'disetujui_oleh',
-            'approved_at',
-            'rejected_at',
-            'created_at',
-        ])
-        ->withCount('detailPeminjaman')
-        ->latest('created_at');
+            'user',
+            'detailPeminjaman.barang',
+            'admin',
+            'approver'
+        ])->withCount('detailPeminjaman as details_count');
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
 
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
-                $q->whereHas('user', function ($userQuery) use ($search) {
-                    $userQuery->where('username', 'like', "%{$search}%")
-                        ->orWhere('nipd', 'like', "%{$search}%")
-                        ->orWhere('email', 'like', "%{$search}%");
-                })
-                ->orWhereHas('detailPeminjaman.barang', function ($barangQuery) use ($search) {
-                    $barangQuery->where('nama_barang', 'like', "%{$search}%");
-                })
-                ->orWhere('id_peminjaman', 'like', "%{$search}%");
+                $q->whereHas('user', function ($q2) use ($search) {
+                    $q2->where('username', 'like', "%{$search}%")
+                       ->orWhere('nipd', 'like', "%{$search}%");
+                })->orWhereHas('detailPeminjaman.barang', function ($q2) use ($search) {
+                    $q2->where('nama_barang', 'like', "%{$search}%");
+                });
             });
         }
 
-        if ($request->filled('status') && in_array($request->status, ['menunggu', 'disetujui', 'dipinjam', 'dikembalikan', 'ditolak'])) {
-            $query->where('status', $request->status);
-        }
-
+        $query->orderBy('created_at', 'desc');
         $pengajuans = $query->paginate(10)->withQueryString();
 
-        $currentMonth = now()->month;
-        $currentYear = now()->year;
+        $startOfMonth = now()->startOfMonth();
+        $endOfMonth   = now()->endOfMonth();
+
+        $statDisetujui = Peminjaman::where('status', 'dipinjam')
+            ->whereBetween('approved_at', [$startOfMonth, $endOfMonth])
+            ->count();
+
+        $statDitolak = Peminjaman::where('status', 'ditolak')
+            ->whereBetween('rejected_at', [$startOfMonth, $endOfMonth])
+            ->count();
 
         $statMenunggu = Peminjaman::where('status', 'menunggu')->count();
-        $statDisetujui = Peminjaman::where('status', 'disetujui')
-            ->whereMonth('approved_at', $currentMonth)
-            ->whereYear('approved_at', $currentYear)
-            ->count();
-        $statDitolak = Peminjaman::where('status', 'ditolak')
-            ->whereMonth('rejected_at', $currentMonth)
-            ->whereYear('rejected_at', $currentYear)
-            ->count();
 
-        return view('admin.kelola_pengajuan.index', compact('pengajuans', 'statMenunggu', 'statDisetujui', 'statDitolak'));
+        return view('admin.kelola_pengajuan.index', compact(
+            'pengajuans',
+            'statDisetujui',
+            'statDitolak',
+            'statMenunggu'
+        ));
     }
 
     public function show($id)
@@ -82,45 +72,57 @@ class KelolaPengajuanController extends Controller
         return view('admin.kelola_pengajuan.show', compact('pengajuan'));
     }
 
-    public function approve(Request $request, $id)
+    /**
+     * Menyetujui pengajuan sekaligus mengurangi stok barang
+     * Status langsung menjadi 'dipinjam' karena barang sudah diambil/diserahkan
+     */
+    public function approve($id)
     {
-        $request->validate([
-            'catatan' => 'nullable|string|max:500',
-            'tanggal_kembali' => 'required|date|after:today',
-        ]);
-
-        $pengajuan = Peminjaman::with(['user', 'detailPeminjaman.barang'])
+        $peminjaman = Peminjaman::with(['user', 'detailPeminjaman.barang'])
             ->where('status', 'menunggu')
             ->findOrFail($id);
 
-        if ($pengajuan->user->is_banned) {
-            return redirect()->back()->with('error', 'User ini sedang dalam status banned dan tidak dapat meminjam.');
+        // Cek apakah user sedang dibanned
+        if ($peminjaman->user->is_banned) {
+            return redirect()->route('approvals.index')
+                ->with('error', 'Pengajuan tidak dapat disetujui karena peminjam sedang dibanned.');
         }
 
-        foreach ($pengajuan->detailPeminjaman as $detail) {
+        // Cek ketersediaan stok untuk setiap barang
+        foreach ($peminjaman->detailPeminjaman as $detail) {
             if ($detail->barang->jumlah_tersedia < $detail->jumlah) {
-                return redirect()->back()
-                    ->with('error', "Stok {$detail->barang->nama_barang} tidak mencukupi. Tersedia: {$detail->barang->jumlah_tersedia}, Diminta: {$detail->jumlah}");
+                return redirect()->route('approvals.index')
+                    ->with('error', "Stok {$detail->barang->nama_barang} tidak mencukupi (tersedia: {$detail->barang->jumlah_tersedia}, dibutuhkan: {$detail->jumlah}).");
             }
         }
 
+        // Jika tanggal kembali belum diisi, set default +7 hari dari sekarang
+        $tanggalKembali = $peminjaman->tanggal_kembali ?? now()->addDays(7);
+
         DB::beginTransaction();
         try {
-            $pengajuan->approve(Auth::id(), $request->catatan, $request->tanggal_kembali);
+            // Update status dan data approval
+            $peminjaman->update([
+                'status'            => 'dipinjam',  // Langsung dipinjam, tidak melalui disetujui dulu
+                'id_admin'          => Auth::id(),
+                'disetujui_oleh'    => Auth::id(),
+                'approved_at'       => now(),
+                'tanggal_kembali'   => $tanggalKembali,
+            ]);
 
-            foreach ($pengajuan->detailPeminjaman as $detail) {
-                $detail->update([
-                    'kondisi_pinjam' => $detail->barang->kondisi,
-                ]);
+            // Kurangi stok setiap barang
+            foreach ($peminjaman->detailPeminjaman as $detail) {
+                $detail->barang->decrement('jumlah_tersedia', $detail->jumlah);
             }
 
             DB::commit();
 
             return redirect()->route('approvals.index')
-                ->with('success', "Pengajuan dari {$pengajuan->user->username} berhasil disetujui.");
+                ->with('success', "Pengajuan dari {$peminjaman->user->username} berhasil disetujui. Stok barang telah dikurangi.");
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Terjadi kesalahan saat menyetujui pengajuan: ' . $e->getMessage());
+            return redirect()->route('approvals.index')
+                ->with('error', 'Terjadi kesalahan saat menyetujui pengajuan: ' . $e->getMessage());
         }
     }
 
@@ -138,7 +140,14 @@ class KelolaPengajuanController extends Controller
 
         DB::beginTransaction();
         try {
-            $pengajuan->reject(Auth::id(), $request->catatan);
+            $pengajuan->update([
+                'status'          => 'ditolak',
+                'id_admin'        => Auth::id(),
+                'disetujui_oleh'  => Auth::id(),
+                'rejected_at'     => now(),
+                'catatan'         => $request->catatan,
+            ]);
+
             DB::commit();
 
             return redirect()->route('approvals.index')
@@ -149,30 +158,15 @@ class KelolaPengajuanController extends Controller
         }
     }
 
+    /**
+     * Method handover bisa dihapus atau tetap ada jika masih diperlukan
+     * untuk skenario serah terima terpisah. Karena sekarang approve langsung
+     * meminjamkan barang, method ini mungkin tidak terpakai.
+     */
     public function handover(Request $request, $id)
     {
-        $pengajuan = Peminjaman::with(['user', 'detailPeminjaman.barang'])
-            ->where('status', 'disetujui')
-            ->findOrFail($id);
-
-        foreach ($pengajuan->detailPeminjaman as $detail) {
-            if ($detail->barang->jumlah_tersedia < $detail->jumlah) {
-                return redirect()->back()
-                    ->with('error', "Stok {$detail->barang->nama_barang} tidak mencukupi.");
-            }
-        }
-
-        DB::beginTransaction();
-        try {
-            $pengajuan->markAsBorrowed();
-            DB::commit();
-
-            return redirect()->route('approvals.index')
-                ->with('success', "Barang berhasil diserahkan kepada {$pengajuan->user->username}.");
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return redirect()->back()->with('error', 'Terjadi kesalahan saat serah terima barang: ' . $e->getMessage());
-        }
+        // Method ini bisa dinonaktifkan atau diarahkan ke approve
+        return $this->approve($id);
     }
 
     public function bulkApprove(Request $request)
@@ -187,26 +181,37 @@ class KelolaPengajuanController extends Controller
         try {
             $count = 0;
             foreach ($request->pengajuan_ids as $id) {
-                $pengajuan = Peminjaman::where('status', 'menunggu')->find($id);
+                $pengajuan = Peminjaman::with('detailPeminjaman.barang')
+                    ->where('status', 'menunggu')
+                    ->find($id);
 
                 if ($pengajuan && !$pengajuan->user->is_banned) {
-                    $canApprove = true;
+                    $stockAvailable = true;
                     foreach ($pengajuan->detailPeminjaman as $detail) {
                         if ($detail->barang->jumlah_tersedia < $detail->jumlah) {
-                            $canApprove = false;
+                            $stockAvailable = false;
                             break;
                         }
                     }
 
-                    if ($canApprove) {
-                        $pengajuan->approve(Auth::id(), null, $request->tanggal_kembali);
+                    if ($stockAvailable) {
+                        $pengajuan->update([
+                            'status'          => 'dipinjam',
+                            'id_admin'        => Auth::id(),
+                            'disetujui_oleh'  => Auth::id(),
+                            'approved_at'     => now(),
+                            'tanggal_kembali' => $request->tanggal_kembali,
+                        ]);
+
+                        foreach ($pengajuan->detailPeminjaman as $detail) {
+                            $detail->barang->decrement('jumlah_tersedia', $detail->jumlah);
+                        }
                         $count++;
                     }
                 }
             }
 
             DB::commit();
-
             return redirect()->route('approvals.index')
                 ->with('success', "{$count} pengajuan berhasil disetujui.");
         } catch (\Exception $e) {
@@ -228,15 +233,14 @@ class KelolaPengajuanController extends Controller
             $count = Peminjaman::whereIn('id_peminjaman', $request->pengajuan_ids)
                 ->where('status', 'menunggu')
                 ->update([
-                    'status' => 'ditolak',
-                    'catatan' => $request->catatan,
-                    'disetujui_oleh' => Auth::id(),
-                    'id_admin' => Auth::id(),
-                    'rejected_at' => now(),
+                    'status'          => 'ditolak',
+                    'catatan'         => $request->catatan,
+                    'disetujui_oleh'  => Auth::id(),
+                    'id_admin'        => Auth::id(),
+                    'rejected_at'     => now(),
                 ]);
 
             DB::commit();
-
             return redirect()->route('approvals.index')
                 ->with('success', "{$count} pengajuan berhasil ditolak.");
         } catch (\Exception $e) {
@@ -254,8 +258,8 @@ class KelolaPengajuanController extends Controller
         }
 
         $pengajuan->update([
-            'status' => 'ditolak',
-            'catatan' => 'Dibatalkan oleh ' . (Auth::id() === $pengajuan->id_user ? 'peminjam' : 'admin'),
+            'status'      => 'ditolak',
+            'catatan'     => 'Dibatalkan oleh ' . (Auth::id() === $pengajuan->id_user ? 'peminjam' : 'admin'),
             'rejected_at' => now(),
         ]);
 
@@ -264,14 +268,6 @@ class KelolaPengajuanController extends Controller
 
     public function export(Request $request)
     {
-        $query = Peminjaman::with(['user', 'detailPeminjaman.barang']);
-
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-
-        $pengajuans = $query->get();
-
-        // return Excel::download(new PengajuanExport($pengajuans), 'pengajuan.xlsx');
+        // Implementasi export jika diperlukan
     }
 }

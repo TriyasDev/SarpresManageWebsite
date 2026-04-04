@@ -107,7 +107,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/borrow/{barang?}', [FormController::class, 'index'])->name('borrow');
         Route::post('/borrow', [FormController::class, 'store'])->name('borrow.store');
         Route::get('/rankings', [RankController::class, 'index'])->name('rankings');
-        
+
         Route::get('/profile',   [UserDashboardController::class, 'profile'])->name('profile');
         Route::get('/history',   [UserDashboardController::class, 'riwayat'])->name('history');
         Route::get('/loans',     [UserDashboardController::class, 'pinjaman'])->name('loans');
