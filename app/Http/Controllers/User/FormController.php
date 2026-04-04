@@ -12,16 +12,9 @@ use Illuminate\Support\Facades\DB;
 
 class FormController extends Controller
 {
-    /**
-     * Show the borrowing form, pre-filled with user data.
-     *
-     * @param int|null $barangId
-     * @return \Illuminate\View\View
-     */
     public function index($barangId = null)
     {
         $user = Auth::user();
-
         $barang = null;
         if ($barangId) {
             $barang = Barang::where('id_barang', $barangId)
@@ -29,7 +22,7 @@ class FormController extends Controller
                 ->firstOrFail();
         }
 
-        // If no specific asset, fetch all available assets for the dropdown
+        // Jika tidak ada barang spesifik, ambil semua barang yang tersedia
         $barangs = Barang::whereNull('deleted_at')
             ->where('jumlah_tersedia', '>', 0)
             ->get();
@@ -37,27 +30,30 @@ class FormController extends Controller
         return view('user.form', compact('user', 'barang', 'barangs'));
     }
 
-    /**
-     * Store a new loan request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
     public function store(Request $request)
     {
         $request->validate([
-            'barang_id'     => 'required|exists:tb_barang,id_barang',
-            'jumlah'        => 'required|integer|min:1',
+            'barang_id'      => 'required|exists:tb_barang,id_barang',
+            'jumlah'         => 'required|integer|min:1',
             'tanggal_pinjam' => 'required|date|after_or_equal:today',
-            'tanggal_kembali' => 'required|date|after:tanggal_pinjam',
-            'keperluan'     => 'nullable|string|max:500',
+            'tanggal_kembali'=> 'required|date|after:tanggal_pinjam',
+            'keperluan'      => 'nullable|string|max:500',
         ]);
 
         $user = Auth::user();
         $barang = Barang::findOrFail($request->barang_id);
 
+        // Cek stok
         if ($barang->jumlah_tersedia < $request->jumlah) {
             return back()->withErrors(['jumlah' => 'Stok tidak mencukupi.']);
+        }
+
+        // Cek batas peminjaman aktif (opsional, sesuai tier)
+        $activeLoans = Peminjaman::where('id_user', $user->id_user)
+            ->whereIn('status', ['disetujui', 'dipinjam'])
+            ->count();
+        if ($activeLoans >= $user->max_items) {
+            return back()->withErrors(['msg' => "Anda hanya bisa meminjam maksimal {$user->max_items} item sekaligus."]);
         }
 
         DB::beginTransaction();
@@ -67,10 +63,8 @@ class FormController extends Controller
                 'id_admin'          => null,
                 'tanggal_pinjam'    => $request->tanggal_pinjam,
                 'tanggal_kembali'   => $request->tanggal_kembali,
-                'tanggal_kembali_aktual' => null,
-                'status'            => 'menunggu', // DIPERBAIKI
+                'status'            => 'menunggu',
                 'catatan'           => $request->keperluan,
-                'disetujui_oleh'    => null,
             ]);
 
             DetailPeminjaman::create([
@@ -80,10 +74,10 @@ class FormController extends Controller
             ]);
 
             DB::commit();
-            return redirect()->route('my.dashboard')->with('success', 'Pengajuan berhasil dikirim.');
+            return redirect()->route('my.dashboard')->with('success', 'Pengajuan peminjaman berhasil dikirim.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->withErrors('Terjadi kesalahan, silakan coba lagi.');
+            return back()->withErrors('Terjadi kesalahan: ' . $e->getMessage());
         }
     }
 }

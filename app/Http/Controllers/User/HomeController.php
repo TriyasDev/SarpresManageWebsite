@@ -8,13 +8,14 @@ use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
+
     public function index(Request $request)
     {
         $kategoriList   = Barang::whereNull('deleted_at')
-                            ->distinct()
-                            ->pluck('kategori')
-                            ->sort()
-                            ->values();
+            ->distinct()
+            ->pluck('kategori')
+            ->sort()
+            ->values();
 
         $activeKategori = $request->get('kategori', '');
 
@@ -26,11 +27,14 @@ class HomeController extends Controller
         $popularItems = Barang::whereNull('deleted_at')
             ->where('jumlah_tersedia', '>', 0)
             ->orderByDesc('jumlah_tersedia')
-            ->limit(3)
+            ->limit(9)
             ->get();
 
         return view('user.home', compact(
-            'barangs', 'popularItems', 'kategoriList', 'activeKategori'
+            'barangs',
+            'popularItems',
+            'kategoriList',
+            'activeKategori'
         ));
     }
 }

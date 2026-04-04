@@ -19,29 +19,29 @@
                     <input type="hidden" name="barang_id" value="{{ $barang->id_barang }}">
                 @endif
 
-                {{-- User Data (pre-filled, read-only) --}}
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                    <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-1">Nama Lengkap</label>
-                        <input type="text" value="{{ $user->nama ?? $user->name }}" readonly
-                            class="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-600">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-1">Kelas</label>
-                        <input type="text" value="{{ $user->kelas }}" readonly
-                            class="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-600">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-1">NIPD</label>
-                        <input type="text" value="{{ $user->nipd }}" readonly
-                            class="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-600">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-1">No. HP / WhatsApp</label>
-                        <input type="text" value="{{ $user->telepon }}" readonly
-                            class="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-600">
-                    </div>
-                </div>
+{{-- User Data (pre-filled, read-only) --}}
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+    <div>
+        <label class="block text-sm font-semibold text-slate-700 mb-1">Nama Lengkap</label>
+        <input type="text" value="{{ $user->nama ?? $user->username }}" readonly
+            class="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-600">
+    </div>
+    <div>
+        <label class="block text-sm font-semibold text-slate-700 mb-1">Kelas</label>
+        <input type="text" value="{{ $user->kelas ?? '-' }}" readonly
+            class="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-600">
+    </div>
+    <div>
+        <label class="block text-sm font-semibold text-slate-700 mb-1">NIPD</label>
+        <input type="text" value="{{ $user->nipd ?? '-' }}" readonly
+            class="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-600">
+    </div>
+    <div>
+        <label class="block text-sm font-semibold text-slate-700 mb-1">No. HP / WhatsApp</label>
+        <input type="text" value="{{ $user->no_telpon ?? '-' }}" readonly
+            class="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-600">
+    </div>
+</div>
 
                 {{-- Asset Selection --}}
                 @if(!$barang)

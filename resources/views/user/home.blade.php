@@ -236,111 +236,95 @@
 
         </div>
     </section>
-    {{-- PINJAM SECTION --}}
-    <section class="py-24 bg-white" id="pinjam">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
 
-            <div class="text-center mb-16 opacity-0 translate-y-5 [&.visible]:opacity-100 [&.visible]:translate-y-0 transition-all duration-700" data-animate>
-                <div class="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 rounded-full mb-4">
-                    <span class="text-sm font-semibold text-costume-primary">Mulai Sekarang</span>
+{{-- PINJAM SECTION --}}
+<section class="py-24 bg-white" id="pinjam">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="text-center mb-16 opacity-0 translate-y-5 [&.visible]:opacity-100 [&.visible]:translate-y-0 transition-all duration-700" data-animate>
+            <div class="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 rounded-full mb-4">
+                <span class="text-sm font-semibold text-costume-primary">Mulai Sekarang</span>
+            </div>
+            <h2 class="text-3xl lg:text-5xl font-bold text-slate-900 mb-4">
+                Pinjam <span class="text-costume-primary">Sekarang</span>
+            </h2>
+            <p class="text-lg text-slate-600 max-w-2xl mx-auto">
+                Pilih aset yang Anda butuhkan dan ajukan peminjaman dengan mudah
+            </p>
+        </div>
+
+        {{-- Grid untuk 9 aset terpopuler (hanya 3 tampil awal) --}}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16" id="popularGrid">
+            @foreach($popularItems as $index => $item)
+                <div class="group bg-white rounded-2xl border border-slate-200 overflow-hidden hover:border-costume-primary hover:shadow-xl hover:-translate-y-1 transition-all duration-300 opacity-0 translate-y-5 [&.visible]:opacity-100 [&.visible]:translate-y-0"
+                     data-animate data-popular-index="{{ $index }}"
+                     @if($index >= 3) style="display: none;" @endif>
+                    {{-- Card content (sama seperti sebelumnya) --}}
+                    <div class="relative h-56 bg-gradient-to-br from-slate-100 to-slate-200 overflow-hidden">
+                        @if($item->foto && $item->foto !== 'default.jpg')
+                            <img src="{{ asset('storage/' . $item->foto) }}" alt="{{ $item->nama_barang }}"
+                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        @else
+                            <div class="w-full h-full flex items-center justify-center">
+                                <svg class="w-20 h-20 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                </svg>
+                            </div>
+                        @endif
+                        <div class="absolute top-3 left-3 px-3 py-1.5 bg-white/95 backdrop-blur-sm rounded-full shadow-lg">
+                            <div class="flex items-center gap-2">
+                                <div class="w-2 h-2 {{ $item->jumlah_tersedia > 5 ? 'bg-emerald-500' : 'bg-amber-500' }} rounded-full animate-pulse"></div>
+                                <span class="text-xs font-bold text-slate-900">{{ $item->jumlah_tersedia }} Tersedia</span>
+                            </div>
+                        </div>
+                        <div class="absolute top-3 right-3 px-3 py-1.5 bg-white/95 backdrop-blur-sm rounded-full shadow-lg">
+                            <span class="text-xs font-bold
+                                @if($item->kondisi === 'baik') text-emerald-600
+                                @elseif($item->kondisi === 'rusak ringan') text-amber-600
+                                @else text-red-600 @endif">
+                                {{ ucfirst($item->kondisi) }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="mb-4">
+                            <span class="px-3 py-1 bg-blue-50 text-costume-primary text-xs font-semibold rounded-full">
+                                {{ $item->kategori }}
+                            </span>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-2">{{ $item->nama_barang }}</h3>
+                        <p class="text-sm text-slate-600 mb-4 line-clamp-2">{{ $item->deskripsi }}</p>
+                        <div class="space-y-2 mb-6">
+                            <div class="flex items-center gap-2 text-xs text-slate-600">
+                                <svg class="w-4 h-4 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                </svg>
+                                <span>Kondisi: {{ ucfirst($item->kondisi) }}</span>
+                            </div>
+                            <div class="flex items-center gap-2 text-xs text-slate-600">
+                                <svg class="w-4 h-4 text-costume-primary" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                </svg>
+                                <span>Stok: {{ $item->jumlah_total }} unit ({{ $item->jumlah_tersedia }} tersedia)</span>
+                            </div>
+                        </div>
+                        <a href="{{ route('borrow', ['barang' => $item->id_barang]) }}"
+                           class="block w-full py-3.5 bg-costume-primary text-white text-center rounded-xl font-semibold hover:bg-costume-primary/90 transition-all shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 group">
+                            <span class="flex items-center justify-center gap-2">
+                                Pinjam Sekarang
+                                <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                                </svg>
+                            </span>
+                        </a>
+                    </div>
                 </div>
-                <h2 class="text-3xl lg:text-5xl font-bold text-slate-900 mb-4">
-                    Pinjam <span class="text-costume-primary">Sekarang</span>
-                </h2>
-                <p class="text-lg text-slate-600 max-w-2xl mx-auto">
-                    Pilih aset yang Anda butuhkan dan ajukan peminjaman dengan mudah
-                </p>
-            </div>
-
-            {{-- Popular Items Grid (dinamis dari DB) --}}
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-                @forelse($popularItems as $item)
-                    <div class="group bg-white rounded-2xl border border-slate-200 overflow-hidden hover:border-costume-primary hover:shadow-xl hover:-translate-y-1 transition-all duration-300 opacity-0 translate-y-5 [&.visible]:opacity-100 [&.visible]:translate-y-0"
-                        data-animate>
-                        <div class="relative h-56 bg-gradient-to-br from-slate-100 to-slate-200 overflow-hidden">
-                            @if($item->foto && $item->foto !== 'default.jpg')
-                                <img src="{{ asset('storage/' . $item->foto) }}" alt="{{ $item->nama_barang }}"
-                                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                            @else
-                                <div class="w-full h-full flex items-center justify-center">
-                                    <svg class="w-20 h-20 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                    </svg>
-                                </div>
-                            @endif
-
-                            {{-- Stok Badge --}}
-                            <div class="absolute top-3 left-3 px-3 py-1.5 bg-white/95 backdrop-blur-sm rounded-full shadow-lg">
-                                <div class="flex items-center gap-2">
-                                    <div class="w-2 h-2 {{ $item->jumlah_tersedia > 5 ? 'bg-emerald-500' : 'bg-amber-500' }} rounded-full animate-pulse"></div>
-                                    <span class="text-xs font-bold text-slate-900">{{ $item->jumlah_tersedia }} Tersedia</span>
-                                </div>
-                            </div>
-
-                            {{-- Kondisi Badge --}}
-                            <div class="absolute top-3 right-3 px-3 py-1.5 bg-white/95 backdrop-blur-sm rounded-full shadow-lg">
-                                <span class="text-xs font-bold
-                                    @if($item->kondisi === 'baik') text-emerald-600
-                                    @elseif($item->kondisi === 'rusak ringan') text-amber-600
-                                    @else text-red-600 @endif">
-                                    {{ ucfirst($item->kondisi) }}
-                                </span>
-                            </div>
-                        </div>
-
-                        <div class="p-6">
-                            <div class="mb-4">
-                                <span class="px-3 py-1 bg-blue-50 text-costume-primary text-xs font-semibold rounded-full">
-                                    {{ $item->kategori }}
-                                </span>
-                            </div>
-                            <h3 class="text-xl font-bold text-slate-900 mb-2">{{ $item->nama_barang }}</h3>
-                            <p class="text-sm text-slate-600 mb-4 line-clamp-2">{{ $item->deskripsi }}</p>
-
-                            <div class="space-y-2 mb-6">
-                                <div class="flex items-center gap-2 text-xs text-slate-600">
-                                    <svg class="w-4 h-4 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                    </svg>
-                                    <span>Kondisi: {{ ucfirst($item->kondisi) }}</span>
-                                </div>
-                                <div class="flex items-center gap-2 text-xs text-slate-600">
-                                    <svg class="w-4 h-4 text-costume-primary" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                    </svg>
-                                    <span>Stok: {{ $item->jumlah_total }} unit tersedia {{ $item->jumlah_tersedia }}</span>
-                                </div>
-                            </div>
-
-                            <a href="{{ route('borrow', ['barang' => $item->id_barang]) }}"
-                                class="block w-full py-3.5 bg-costume-primary text-white text-center rounded-xl font-semibold hover:bg-costume-primary/90 transition-all shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 group">
-                                <span class="flex items-center justify-center gap-2">
-                                    Pinjam Sekarang
-                                    <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-                                    </svg>
-                                </span>
-                            </a>
-                        </div>
-                    </div>
-                @empty
-                    <div class="col-span-3 py-16 text-center text-slate-400">
-                        <p class="font-medium">Belum ada aset tersedia saat ini.</p>
-                    </div>
-                @endforelse
-            </div>
+            @endforeach
         </div>
 
-        <div class="flex items-center justify-center gap-2">
-            <a href="{{ route('borrow') }}"
-                class="inline-flex items-center gap-2 px-10 py-3.5 bg-costume-primary text-white rounded-xl font-semibold hover:bg-costume-primary/90 transition-all shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 group">
-                Lihat Lainnya
-                <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-                </svg>
-            </a>
-        </div>
-    </section>
+        {{-- Container tombol (akan diisi JavaScript) --}}
+        <div class="flex flex-wrap items-center justify-center gap-4" id="buttonContainer"></div>
+    </div>
+</section>
 
 @endsection
 
@@ -358,67 +342,118 @@
 @endpush
 
 @push('scripts')
-    <script>
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting) entry.target.classList.add('visible');
-            });
-        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
-
-        // Observe all animated elements
-        document.querySelectorAll('[data-animate]').forEach(el => {
-            observer.observe(el);
+<script>
+    // Intersection Observer untuk animasi scroll
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) entry.target.classList.add('visible');
         });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+    document.querySelectorAll('[data-animate]').forEach(el => observer.observe(el));
 
-
-
-
-        (function () {
-            const tabs = document.querySelectorAll('.tab-btn');
-            const cards = document.querySelectorAll('.asset-card');
-            const grid = document.getElementById('assets-grid');
-            const empty = document.getElementById('empty-state');
-
+    // Tab filter untuk Sarana (jika ada)
+    (function () {
+        const tabs = document.querySelectorAll('.tab-btn');
+        const cards = document.querySelectorAll('.asset-card');
+        const grid = document.getElementById('assets-grid');
+        const empty = document.getElementById('empty-state');
+        if (tabs.length && cards.length) {
             function filterCards(activeTab) {
                 let visible = 0;
-
                 cards.forEach(card => {
                     const match = card.dataset.tab === activeTab;
-
                     if (match) {
                         card.style.display = '';
                         card.classList.remove('visible');
-                        requestAnimationFrame(() => {
-                            requestAnimationFrame(() => card.classList.add('visible'));
-                        });
+                        requestAnimationFrame(() => requestAnimationFrame(() => card.classList.add('visible')));
                         visible++;
                     } else {
                         card.style.display = 'none';
                     }
                 });
-
-                empty.classList.toggle('hidden', visible > 0);
-                grid.classList.toggle('hidden', visible === 0);
+                if (empty) empty.classList.toggle('hidden', visible > 0);
+                if (grid) grid.classList.toggle('hidden', visible === 0);
             }
-
             tabs.forEach(tab => {
                 tab.addEventListener('click', () => {
                     tabs.forEach(t => {
                         t.classList.remove('active', 'bg-costume-primary', 'text-white', 'shadow-md', 'shadow-blue-500/25');
                         t.classList.add('bg-white', 'text-slate-700', 'border', 'border-slate-200');
                     });
-
                     tab.classList.add('active', 'bg-costume-primary', 'text-white', 'shadow-md', 'shadow-blue-500/25');
                     tab.classList.remove('bg-white', 'text-slate-700', 'border', 'border-slate-200');
-
                     filterCards(tab.dataset.tab);
                 });
             });
-
-            // Aktifkan tab pertama saat load
             const firstTab = tabs[0];
             if (firstTab) filterCards(firstTab.dataset.tab);
-        })();
+        }
+    })();
 
-    </script>
+    // ========== TOGGLE 3 ⇄ 9 + TOMBOL LIAT SEMUA ASET ==========
+    (function() {
+        const popularGrid = document.getElementById('popularGrid');
+        const btnContainer = document.getElementById('buttonContainer');
+        if (!popularGrid || !btnContainer) return;
+
+        const cards = document.querySelectorAll('#popularGrid > div[data-popular-index]');
+        const totalCards = cards.length; // harusnya 9
+
+        let showingAllNine = false; // state: false = 3 card, true = 9 card
+
+        function renderButtons() {
+            if (!showingAllNine) {
+                // Tampilkan tombol "Lihat Lebih Banyak"
+                btnContainer.innerHTML = `
+                    <button id="btnShowMore" class="inline-flex items-center gap-2 px-8 py-3 bg-costume-primary text-white rounded-xl font-semibold hover:bg-costume-primary/90 transition-all shadow-md shadow-blue-500/25">
+                        Lihat Lebih Banyak
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                `;
+                document.getElementById('btnShowMore')?.addEventListener('click', () => setShowNine(true));
+            } else {
+                // Tampilkan dua tombol: "Lihat Lebih Sedikit" dan "Lihat Semua Aset"
+                btnContainer.innerHTML = `
+                    <button id="btnShowLess" class="inline-flex items-center gap-2 px-8 py-3 bg-slate-200 text-slate-700 rounded-xl font-semibold hover:bg-slate-300 transition-all shadow-md">
+                        Lihat Lebih Sedikit
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
+                    </button>
+                    <a href="{{ route('all-assets') }}" id="btnViewAll" class="inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-costume-primary to-blue-600 text-white rounded-xl font-semibold hover:from-costume-primary/90 hover:to-blue-600/90 transition-all shadow-md shadow-blue-500/30 hover:shadow-lg">
+                        Lihat Semua Aset
+                        <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                    </a>
+                `;
+                document.getElementById('btnShowLess')?.addEventListener('click', () => setShowNine(false));
+                // Link "Lihat Semua Aset" sudah otomatis mengarah ke route all-assets
+            }
+        }
+
+        function setShowNine(showNine) {
+            showingAllNine = showNine;
+            cards.forEach((card, idx) => {
+                if (showNine) {
+                    if (idx < 9) {
+                        card.style.display = '';
+                        card.classList.remove('visible');
+                        setTimeout(() => card.classList.add('visible'), 50);
+                    } else {
+                        card.style.display = 'none';
+                    }
+                } else {
+                    if (idx < 3) {
+                        card.style.display = '';
+                        card.classList.remove('visible');
+                        setTimeout(() => card.classList.add('visible'), 50);
+                    } else {
+                        card.style.display = 'none';
+                    }
+                }
+            });
+            renderButtons();
+        }
+
+        // Inisialisasi: hanya 3 card yang tampil
+        setShowNine(false);
+    })();
+</script>
 @endpush

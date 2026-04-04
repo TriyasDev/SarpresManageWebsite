@@ -115,3 +115,5 @@ Route::middleware('auth')->group(function () {
         Route::get('/rank',      [UserDashboardController::class, 'rank'])->name('rank');
     });
 });
+
+Route::get('/all-assets', [App\Http\Controllers\User\AssetCatalogController::class, 'index'])->name('all-assets');
