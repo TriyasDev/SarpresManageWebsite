@@ -76,7 +76,7 @@ class KelolaPengajuanController extends Controller
      * Menyetujui pengajuan sekaligus mengurangi stok barang
      * Status langsung menjadi 'dipinjam' karena barang sudah diambil/diserahkan
      */
-    public function approve($id)
+    public function approve(Request $request, $id)
     {
         $peminjaman = Peminjaman::with(['user', 'detailPeminjaman.barang'])
             ->where('status', 'menunggu')
@@ -103,11 +103,12 @@ class KelolaPengajuanController extends Controller
         try {
             // Update status dan data approval
             $peminjaman->update([
-                'status'            => 'dipinjam',  // Langsung dipinjam, tidak melalui disetujui dulu
+                'status'            => 'dipinjam',  // Langsung dipinjam
                 'id_admin'          => Auth::id(),
                 'disetujui_oleh'    => Auth::id(),
                 'approved_at'       => now(),
                 'tanggal_kembali'   => $tanggalKembali,
+                'catatan'           => $request->catatan ?? null, // simpan catatan dari modal
             ]);
 
             // Kurangi stok setiap barang
@@ -158,15 +159,9 @@ class KelolaPengajuanController extends Controller
         }
     }
 
-    /**
-     * Method handover bisa dihapus atau tetap ada jika masih diperlukan
-     * untuk skenario serah terima terpisah. Karena sekarang approve langsung
-     * meminjamkan barang, method ini mungkin tidak terpakai.
-     */
     public function handover(Request $request, $id)
     {
-        // Method ini bisa dinonaktifkan atau diarahkan ke approve
-        return $this->approve($id);
+        return $this->approve($request, $id);
     }
 
     public function bulkApprove(Request $request)

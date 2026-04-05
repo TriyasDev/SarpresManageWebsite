@@ -3,14 +3,6 @@
 
 @section('content')
 
-    {{-- Alert --}}
-    @if(session('success'))
-        <div id="flashMsg" class="mb-5 px-5 py-3 bg-green-100 text-green-700 border border-green-200 rounded-[30px] text-sm font-medium flex items-center justify-between">
-            <span>{{ session('success') }}</span>
-            <button onclick="document.getElementById('flashMsg').remove()" class="ml-4 text-green-500 hover:text-green-700 text-lg leading-none">&times;</button>
-        </div>
-    @endif
-
     {{-- Header & Tombol Aksi --}}
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
         <div>
@@ -56,7 +48,7 @@
                     <select id="filterKategori"
                         class="w-full px-5 py-3 border-2 border-gray-300 rounded-[30px] outline-none focus:ring-2 focus:ring-costume-second focus:border-transparent appearance-none bg-white cursor-pointer text-sm transition">
                         <option value="">Semua Kategori</option>
-                        @foreach(['Prasaran','Media Pendidikan','Perlengkapan Kelas','Fasilitas Penunjang'] as $kat)
+                        @foreach(['Prasaran','Media Pendidikan','Perlengkapan Kelas','Fasilitas Penunjang', 'Elektronik', 'Alat Kantor', 'Alat Laboratorium'] as $kat)
                             <option value="{{ $kat }}">{{ $kat }}</option>
                         @endforeach
                     </select>

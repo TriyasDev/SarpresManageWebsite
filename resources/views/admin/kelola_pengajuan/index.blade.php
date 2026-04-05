@@ -8,21 +8,10 @@
         <h1 class="text-xl font-bold text-gray-800">Kelola Pengajuan</h1>
         <p class="text-sm text-gray-500 mt-0.5">Daftar pengajuan peminjaman barang</p>
     </div>
-    {{-- Tidak ada tombol aksi kanan agar fokus ke pengajuan --}}
 </div>
 
-{{-- Flash Message --}}
-@if(session('success'))
-    <div id="flashSuccess"
-         class="mb-6 px-5 py-3 bg-green-100 text-green-700 border border-green-200 rounded-full text-sm font-medium flex items-center justify-between">
-        <span>{{ session('success') }}</span>
-        <button onclick="document.getElementById('flashSuccess').remove()" class="ml-4 text-green-500 hover:text-green-700 text-lg leading-none">✕</button>
-    </div>
-@endif
-
-{{-- Statistik Card (minimalis, seperti gaya laporan) --}}
+{{-- Statistik Card --}}
 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-    {{-- Disetujui Bulan Ini --}}
     <div class="bg-white rounded-2xl border border-gray-100 p-5 flex items-center gap-4 shadow-sm">
         <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center shrink-0">
             <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -35,7 +24,6 @@
         </div>
     </div>
 
-    {{-- Ditolak Bulan Ini --}}
     <div class="bg-white rounded-2xl border border-gray-100 p-5 flex items-center gap-4 shadow-sm">
         <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center shrink-0">
             <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -48,7 +36,6 @@
         </div>
     </div>
 
-    {{-- Menunggu --}}
     <div class="bg-white rounded-2xl border border-gray-100 p-5 flex items-center gap-4 shadow-sm">
         <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center shrink-0">
             <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -62,12 +49,10 @@
     </div>
 </div>
 
-{{-- Filter & Pencarian (gaya rounded-full seperti laporan) --}}
+{{-- Filter & Pencarian --}}
 <form method="GET" action="{{ route('approvals.index') }}" id="filterForm">
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 mb-6">
         <div class="flex flex-col lg:flex-row gap-4">
-
-            {{-- Search --}}
             <div class="flex-1 relative">
                 <input type="text" name="search" id="searchInput"
                     value="{{ request('search') }}"
@@ -77,8 +62,6 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
             </div>
-
-            {{-- Filter Status --}}
             <div class="lg:w-52">
                 <div class="relative">
                     <select name="status" onchange="document.getElementById('filterForm').submit()"
@@ -199,7 +182,11 @@
                 @empty
                 <tr>
                     <td colspan="8" class="py-16 text-center">
-                        <p class="text-4xl mb-3">📭</p>
+                        <div class="flex justify-center mb-3">
+                            <svg class="w-16 h-16 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+                            </svg>
+                        </div>
                         <p class="font-semibold text-gray-500 text-sm">
                             Belum ada pengajuan{{ request('search') || request('status') ? ' yang sesuai filter' : ' masuk' }}
                         </p>
@@ -211,7 +198,7 @@
         </table>
     </div>
 
-    {{-- Pagination Custom (sama persis dengan kelola laporan) --}}
+    {{-- Pagination --}}
     @if($pengajuans->total() > 0)
     <div class="flex flex-col lg:flex-row items-center justify-between gap-5 p-5 bg-white border-t border-gray-100 rounded-3xl shadow-sm">
         <div class="flex flex-wrap items-center gap-3">
@@ -265,13 +252,13 @@
     @endif
 </div>
 
-{{-- Modal Konfirmasi Terima / Tolak (gaya rounded-2xl) --}}
+{{-- Modal Konfirmasi Terima / Tolak --}}
 <div id="confirmModal"
      class="fixed inset-0 z-50 hidden bg-black/50 items-center justify-center p-4"
      onclick="if(event.target===this) closeModal()">
     <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6">
         <div class="flex items-center gap-3 mb-5">
-            <div id="modalIcon" class="w-12 h-12 rounded-full flex items-center justify-center shrink-0 text-xl"></div>
+            <div id="modalIcon" class="w-12 h-12 rounded-full flex items-center justify-center shrink-0"></div>
             <div>
                 <h3 id="modalTitle" class="text-lg font-bold text-gray-800"></h3>
                 <p id="modalSubtitle" class="text-sm text-gray-500 mt-0.5"></p>
@@ -311,14 +298,22 @@
 
     function openModal(type, id, nama, barang) {
         const isApprove = type === 'approve';
-        const baseUrl   = "{{ url('admin/kelola_pengajuan') }}";
-        document.getElementById('modalForm').action = `${baseUrl}/${id}/${type}`;
+        // Gunakan named route yang benar
+        const approveUrl = "{{ route('approvals.approve', ':id') }}";
+        const rejectUrl  = "{{ route('approvals.reject', ':id') }}";
+        const url = (isApprove ? approveUrl : rejectUrl).replace(':id', id);
+        document.getElementById('modalForm').action = url;
 
         const iconEl = document.getElementById('modalIcon');
-        iconEl.textContent = isApprove ? '✅' : '❌';
-        iconEl.className = `w-12 h-12 rounded-full flex items-center justify-center shrink-0 text-xl ${isApprove ? 'bg-green-100' : 'bg-red-100'}`;
+        if (isApprove) {
+            iconEl.innerHTML = `<svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>`;
+            iconEl.className = "w-12 h-12 rounded-full flex items-center justify-center shrink-0 bg-green-100";
+        } else {
+            iconEl.innerHTML = `<svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>`;
+            iconEl.className = "w-12 h-12 rounded-full flex items-center justify-center shrink-0 bg-red-100";
+        }
 
-        document.getElementById('modalTitle').textContent    = isApprove ? 'Setujui Pengajuan?' : 'Tolak Pengajuan?';
+        document.getElementById('modalTitle').textContent = isApprove ? 'Setujui Pengajuan?' : 'Tolak Pengajuan?';
         document.getElementById('modalSubtitle').textContent = `${nama} — ${barang}`;
 
         const btn = document.getElementById('modalSubmitBtn');
