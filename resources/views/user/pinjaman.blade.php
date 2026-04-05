@@ -1,249 +1,118 @@
-@extends('layouts.app')
+@extends('layouts.user')
 
 @section('title', 'Pinjaman Aktif - KlikAset')
 
 @push('styles')
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
 <style>
-    *, body {
-        font-family: 'Plus Jakarta Sans', sans-serif;
+    body {
+        font-family: 'Inter', sans-serif;
     }
-
-    :root {
-        --blue: #2563eb;
-        --blue-dark: #1d4ed8;
-        --sidebar-w: 220px;
-    }
-
-    /* Sidebar styling */
-    #sidebar {
-        width: var(--sidebar-w);
-        background: linear-gradient(165deg, #1e40af 0%, #2563eb 60%, #3b82f6 100%);
-        transition: transform 0.3s cubic-bezier(.4, 0, .2, 1);
-        box-shadow: 4px 0 24px rgba(37, 99, 235, 0.18);
-    }
-
-    @media (max-width: 767px) {
-        #sidebar {
-            position: fixed;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            z-index: 50;
-            transform: translateX(-100%);
-        }
-        #sidebar.open {
-            transform: translateX(0);
-        }
-    }
-
-    .nav-link {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 10px 13px;
-        border-radius: 10px;
-        color: #bfdbfe;
-        font-size: 13.5px;
-        font-weight: 500;
-        transition: all 0.18s;
-        text-decoration: none;
-        position: relative;
-    }
-
-    .nav-link:hover {
-        color: #fff;
-        background: rgba(255, 255, 255, 0.1);
-        transform: translateX(3px);
-    }
-
-    .nav-link.active {
-        background: rgba(255, 255, 255, 0.2);
-        color: #fff;
-        font-weight: 600;
-    }
-
-    .loan-card {
-        background: white;
-        border-radius: 16px;
-        padding: 20px;
-        border: 1px solid #f1f5f9;
-        transition: all 0.2s;
-    }
-
-    .loan-card:hover {
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-        transform: translateY(-2px);
-    }
-
-    .badge {
-        padding: 4px 12px;
-        border-radius: 20px;
-        font-size: 11px;
-        font-weight: 600;
-    }
-
-    .badge-blue {
-        background: #dbeafe;
-        color: #1e40af;
-    }
-
-    .badge-yellow {
-        background: #fef3c7;
-        color: #92400e;
-    }
-
-    .badge-green {
-        background: #d1fae5;
-        color: #065f46;
-    }
+    footer { display: none !important; }
 </style>
 @endpush
 
 @section('content')
-<div id="overlay" onclick="closeSidebar()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:40"></div>
+<div class="flex min-h-screen bg-slate-50">
+    @include('partials.sidebar-user')
 
-<div class="flex min-h-screen bg-slate-100">
-    {{-- Sidebar --}}
-    <aside id="sidebar" class="flex flex-col py-5 px-3 min-h-screen shrink-0">
-        <div class="flex items-center gap-2.5 mb-8 px-2">
-            <div class="bg-white rounded-xl w-9 h-9 flex items-center justify-center shadow-lg shrink-0">
-                <svg class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M3 6a3 3 0 013-3h12a3 3 0 013 3v2a3 3 0 01-3 3H6a3 3 0 01-3-3V6zm0 7a3 3 0 013-3h12a3 3 0 013 3v2a3 3 0 01-3 3H6a3 3 0 01-3-3v-2z"/>
-                </svg>
-            </div>
-            <span class="text-white font-bold text-[17px] tracking-tight">KlikAset</span>
-        </div>
-
-        <nav class="flex flex-col gap-1 flex-1">
-            <p class="text-blue-300 text-[10px] font-semibold uppercase tracking-widest px-3 mb-1">Menu</p>
-
-            <a href="{{ route('my.dashboard') }}" class="nav-link">
-                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0h4"/>
-                </svg>
-                Dashboard
-            </a>
-
-            <a href="{{ route('loans') }}" class="nav-link active">
-                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-                </svg>
-                Pinjaman Aktif
-            </a>
-
-            <a href="{{ route('history') }}" class="nav-link">
-                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-                Riwayat
-            </a>
-        </nav>
-
-        {{-- User Info & Logout --}}
-        <div class="mt-auto border-t border-white/10 pt-4 px-1">
-            <div class="flex items-center gap-2.5 mb-3 px-2">
-                <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white font-bold text-sm shrink-0">
-                    {{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 1)) }}
-                </div>
-                <div class="min-w-0">
-                    <p class="text-white font-semibold text-[12px] truncate">{{ auth()->user()->name ?? 'User' }}</p>
-                    <p class="text-blue-200 text-[10.5px] truncate">{{ auth()->user()->email ?? '' }}</p>
-                </div>
-            </div>
-            <form method="POST" action="{{ route('auth.logout') }}">
-                @csrf
-                <button type="submit" class="nav-link w-full text-left">
-                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1"/>
-                    </svg>
-                    Logout
-                </button>
-            </form>
-        </div>
-    </aside>
-
-    {{-- Main Content --}}
-    <div class="flex-1 flex flex-col min-w-0">
-        {{-- Mobile Menu Button --}}
-        <div class="md:hidden bg-white border-b border-slate-200 px-4 py-3">
-            <button onclick="openSidebar()" class="text-slate-600">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+    <div class="flex-1 lg:ml-64">
+        {{-- Mobile header --}}
+        <div class="lg:hidden sticky top-0 z-20 bg-white/80 backdrop-blur-sm border-b border-slate-200 px-4 py-3 flex items-center justify-between">
+            <button onclick="openSidebarUser()" class="p-2 rounded-lg hover:bg-slate-100 transition">
+                <svg class="w-6 h-6 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
             </button>
+            <span class="font-bold text-slate-800">KlikAset</span>
+            <div class="w-8"></div>
         </div>
 
-        {{-- Page Content --}}
-        <main class="flex-1 p-4 md:p-6 space-y-5">
-            <div class="bg-white rounded-2xl p-6 border border-slate-200">
-                <h1 class="text-2xl font-bold text-slate-900 mb-2">Pinjaman Aktif</h1>
-                <p class="text-sm text-slate-600">Daftar aset yang sedang Anda pinjam</p>
+        <main class="p-4 md:p-6 space-y-6">
+            {{-- Header dengan statistik --}}
+            <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex flex-wrap justify-between items-center gap-3">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-800">Pinjaman Aktif</h1>
+                    <p class="text-slate-500 text-sm mt-1">Daftar aset yang sedang Anda pinjam</p>
+                </div>
+                <div class="bg-costume-primary/10 rounded-full px-4 py-2">
+                    <span class="text-costume-primary font-bold text-lg">{{ $activeLoans->count() }}</span>
+                    <span class="text-slate-600 text-sm"> pinjaman aktif</span>
+                </div>
             </div>
 
-            @if(session('success'))
-                <div class="bg-green-50 border border-green-200 rounded-xl p-4 flex items-center gap-3">
-                    <svg class="w-5 h-5 text-green-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                    <p class="text-sm text-green-800 font-medium">{{ session('success') }}</p>
-                </div>
-            @endif
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {{-- Grid card pinjaman --}}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                 @forelse($activeLoans as $loan)
-                    <div class="loan-card">
-                        <div class="flex justify-between items-start mb-3">
-                            <div class="flex-1">
-                                <h3 class="font-bold text-slate-900 text-base mb-1">
-                                    {{ $loan->first_barang->nama_barang ?? 'Aset tidak ditemukan' }}
-                                </h3>
-                                <p class="text-xs text-slate-500">
-                                    {{ $loan->first_barang->kategori ?? '-' }}
-                                </p>
-                            </div>
-                            @if($loan->status === 'disetujui')
-                                <span class="badge badge-blue">Disetujui</span>
-                            @elseif($loan->status === 'dipinjam')
-                                <span class="badge badge-yellow">Dipinjam</span>
-                            @else
-                                <span class="badge badge-green">{{ ucfirst($loan->status) }}</span>
-                            @endif
-                        </div>
+                    @php
+                        $barang = $loan->first_barang ?? null;
+                        $namaBarang = $barang->nama_barang ?? 'Aset tidak diketahui';
+                        $kategori = $barang->kategori ?? '-';
+                        $tanggalPinjam = \Carbon\Carbon::parse($loan->tanggal_pinjam)->format('d M Y');
+                        $tanggalKembali = \Carbon\Carbon::parse($loan->tanggal_kembali)->format('d M Y');
+                        $status = $loan->status ?? 'dipinjam';
+                        $jumlah = $loan->detailPeminjaman->first()->jumlah ?? 1;
 
-                        <div class="space-y-2 text-xs text-slate-600">
-                            <div class="flex justify-between">
-                                <span>Tanggal Pinjam:</span>
-                                <span class="font-semibold">{{ $loan->tanggal_pinjam->format('d/m/Y') }}</span>
+                        // Badge color based on status
+                        $badgeClass = $status == 'disetujui' ? 'bg-amber-100 text-amber-800' : 'bg-blue-100 text-blue-800';
+                        $statusText = $status == 'disetujui' ? 'Disetujui' : 'Dipinjam';
+                    @endphp
+                    <div class="bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-1 overflow-hidden">
+                        <div class="p-5">
+                            {{-- Header card: icon + status --}}
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="w-10 h-10 rounded-xl bg-costume-primary/10 flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-costume-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                                    </svg>
+                                </div>
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold {{ $badgeClass }}">
+                                    {{ $statusText }}
+                                </span>
                             </div>
-                            <div class="flex justify-between">
-                                <span>Tanggal Kembali:</span>
-                                <span class="font-semibold text-orange-600">{{ $loan->tanggal_kembali->format('d/m/Y') }}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span>Jumlah:</span>
-                                <span class="font-semibold">{{ $loan->detailPeminjaman->first()->jumlah ?? 1 }} unit</span>
-                            </div>
-                        </div>
 
-                        @if($loan->catatan)
-                            <div class="mt-3 pt-3 border-t border-slate-100">
-                                <p class="text-xs text-slate-500">
-                                    <span class="font-semibold">Catatan:</span> {{ $loan->catatan }}
-                                </p>
+                            {{-- Nama barang & kategori --}}
+                            <h3 class="font-bold text-slate-800 text-lg">{{ $namaBarang }}</h3>
+                            <p class="text-xs text-slate-500 mt-0.5">{{ $kategori }}</p>
+
+                            {{-- Detail peminjaman --}}
+                            <div class="mt-4 space-y-2 text-sm">
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">Jumlah</span>
+                                    <span class="font-medium text-slate-700">{{ $jumlah }} unit</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">Tanggal pinjam</span>
+                                    <span class="font-medium text-slate-700">{{ $tanggalPinjam }}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">Tanggal kembali</span>
+                                    <span class="font-medium text-slate-700">{{ $tanggalKembali }}</span>
+                                </div>
                             </div>
-                        @endif
+
+                            {{-- Tombol detail --}}
+                            <button onclick="openDetailModal(
+                                '{{ addslashes($namaBarang) }}',
+                                '{{ $tanggalPinjam }} - {{ $tanggalKembali }}',
+                                '{{ $statusText }}',
+                                '{{ addslashes($kategori) }}',
+                                '{{ $jumlah }}'
+                            )" class="mt-5 w-full py-2 rounded-xl border border-costume-primary/30 text-costume-primary font-semibold text-sm hover:bg-costume-primary hover:text-white transition duration-200">
+                                Lihat Detail
+                            </button>
+                        </div>
                     </div>
                 @empty
                     <div class="col-span-full">
-                        <div class="bg-white rounded-2xl p-12 text-center border border-slate-200">
+                        <div class="bg-white rounded-2xl border border-slate-100 p-12 text-center shadow-sm">
                             <svg class="w-16 h-16 mx-auto text-slate-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
                             </svg>
-                            <p class="text-slate-500 font-medium mb-2">Tidak ada pinjaman aktif</p>
-                            <p class="text-sm text-slate-400 mb-4">Anda belum memiliki peminjaman yang sedang berjalan</p>
-                            <a href="{{ route('borrow') }}" class="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl font-semibold text-sm transition-all">
-                                Ajukan Peminjaman
+                            <h3 class="text-lg font-semibold text-slate-700">Tidak ada pinjaman aktif</h3>
+                            <p class="text-slate-500 mt-1">Anda belum meminjam aset apapun saat ini.</p>
+                            <a href="{{ route('all-assets') }}" class="inline-block mt-4 px-5 py-2 bg-costume-primary text-white rounded-xl text-sm font-semibold hover:bg-costume-primary/90 transition">
+                                + Ajukan Peminjaman
                             </a>
                         </div>
                     </div>
@@ -253,17 +122,38 @@
     </div>
 </div>
 
-@push('scripts')
-<script>
-    function openSidebar() {
-        document.getElementById('sidebar').classList.add('open');
-        document.getElementById('overlay').style.display = 'block';
-    }
+{{-- Modal Detail (sama seperti di dashboard) --}}
+<div id="detailModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-4" onclick="if(event.target===this) closeModal()">
+    <div class="bg-white rounded-2xl max-w-sm w-full shadow-xl overflow-hidden">
+        <div class="bg-costume-primary px-5 py-4 text-white flex justify-between items-center">
+            <span class="font-bold">Detail Peminjaman</span>
+            <button onclick="closeModal()" class="text-white/80 hover:text-white">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+        </div>
+        <div class="p-5 space-y-3 text-sm" id="modalContent"></div>
+        <div class="px-5 pb-5">
+            <button onclick="closeModal()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold py-2 rounded-xl transition">Tutup</button>
+        </div>
+    </div>
+</div>
 
-    function closeSidebar() {
-        document.getElementById('sidebar').classList.remove('open');
-        document.getElementById('overlay').style.display = 'none';
+<script>
+    function openDetailModal(name, date, status, type, qty) {
+        const statusBadge = (status === 'Dipinjam')
+            ? 'bg-blue-100 text-blue-800'
+            : 'bg-amber-100 text-amber-800';
+        document.getElementById('modalContent').innerHTML = `
+            <div class="flex justify-between border-b pb-2"><span class="text-slate-500">Aset</span><span class="font-semibold">${name}</span></div>
+            <div class="flex justify-between border-b pb-2"><span class="text-slate-500">Kategori</span><span>${type}</span></div>
+            <div class="flex justify-between border-b pb-2"><span class="text-slate-500">Jumlah</span><span>${qty} unit</span></div>
+            <div class="flex justify-between border-b pb-2"><span class="text-slate-500">Periode</span><span>${date}</span></div>
+            <div class="flex justify-between"><span class="text-slate-500">Status</span><span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold ${statusBadge}">${status}</span></div>
+        `;
+        document.getElementById('detailModal').classList.remove('hidden');
+    }
+    function closeModal() {
+        document.getElementById('detailModal').classList.add('hidden');
     }
 </script>
-@endpush
 @endsection

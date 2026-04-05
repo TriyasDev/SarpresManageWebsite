@@ -143,10 +143,12 @@ class UserDashboardController extends Controller
     public function rank()
     {
         $user = Auth::user();
+
+        // Gunakan paginate() bukan get()
         $rankings = User::where('role', 'peminjam')
             ->orderBy('points', 'desc')
-            ->take(10)
-            ->get();
+            ->paginate(10); // 10 data per halaman, sesuaikan kebutuhan
+
         $position = User::where('role', 'peminjam')
             ->where('points', '>', $user->points)
             ->count() + 1;

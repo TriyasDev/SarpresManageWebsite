@@ -1,984 +1,199 @@
-@extends('layouts.app')
+@extends('layouts.user')
 
-@section('title', 'Dashboard - KlikAset')
+@section('title', 'Dashboard User - KlikAset')
 
+{{-- Optional: font Inter dari Google Fonts (minimal) --}}
 @push('styles')
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet">
-    <style>
-        *,
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-
-        :root {
-            --blue: #2563eb;
-            --blue-dark: #1d4ed8;
-            --blue-light: #dbeafe;
-            --gold: #f59e0b;
-            --green: #10b981;
-            --sidebar-w: 220px;
-        }
-
-        /* ===== SCROLLBAR ===== */
-        ::-webkit-scrollbar {
-            width: 5px;
-            height: 5px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 99px;
-        }
-
-        /* ===== SIDEBAR ===== */
-        #sidebar {
-            width: var(--sidebar-w);
-            background: linear-gradient(165deg, #1e40af 0%, #2563eb 60%, #3b82f6 100%);
-            transition: transform 0.3s cubic-bezier(.4, 0, .2, 1);
-            box-shadow: 4px 0 24px rgba(37, 99, 235, 0.18);
-        }
-
-        @media (max-width: 767px) {
-            #sidebar {
-                position: fixed;
-                left: 0;
-                top: 0;
-                bottom: 0;
-                z-index: 50;
-                transform: translateX(-100%);
-            }
-
-            #sidebar.open {
-                transform: translateX(0);
-            }
-        }
-
-        /* ===== NAV LINKS ===== */
-        .nav-link {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 13px;
-            border-radius: 10px;
-            color: #bfdbfe;
-            font-size: 13.5px;
-            font-weight: 500;
-            transition: all 0.18s;
-            text-decoration: none;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .nav-link::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: rgba(255, 255, 255, 0.1);
-            opacity: 0;
-            transition: opacity 0.18s;
-            border-radius: 10px;
-        }
-
-        .nav-link:hover::before {
-            opacity: 1;
-        }
-
-        .nav-link:hover {
-            color: #fff;
-            transform: translateX(3px);
-        }
-
-        .nav-link.active {
-            background: rgba(255, 255, 255, 0.2);
-            color: #fff;
-            font-weight: 600;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
-        }
-
-        .nav-link .nav-indicator {
-            position: absolute;
-            left: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 3px;
-            height: 0;
-            background: #fff;
-            border-radius: 0 3px 3px 0;
-            transition: height 0.2s;
-        }
-
-        .nav-link.active .nav-indicator {
-            height: 60%;
-        }
-
-        /* ===== STAT CARD ===== */
-        .stat-card {
-            background: #fff;
-            border-radius: 16px;
-            padding: 22px;
-            border: 1px solid #f1f5f9;
-            transition: all 0.22s cubic-bezier(.4, 0, .2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .stat-card::after {
-            content: '';
-            position: absolute;
-            bottom: -30px;
-            right: -30px;
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: var(--blue-light);
-            opacity: 0.4;
-            transition: transform 0.3s;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 32px rgba(37, 99, 235, 0.1);
-        }
-
-        .stat-card:hover::after {
-            transform: scale(1.5);
-        }
-
-        /* ===== MINI CARD ===== */
-        .mini-card {
-            background: #fff;
-            border-radius: 14px;
-            padding: 16px;
-            border: 1px solid #f1f5f9;
-            transition: all 0.22s;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .mini-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-        }
-
-        /* ===== ICON BOX ===== */
-        .icon-box {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        /* ===== BTN ===== */
-        .btn-primary {
-            background: var(--blue);
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            padding: 7px 14px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            transition: all 0.18s;
-            font-family: inherit;
-        }
-
-        .btn-primary:hover {
-            background: var(--blue-dark);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-        }
-
-        .btn-primary:active {
-            transform: translateY(0);
-        }
-
-        /* ===== BADGE ===== */
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            border-radius: 99px;
-            padding: 3px 10px;
-            font-size: 11px;
-            font-weight: 600;
-        }
-
-        .badge-blue {
-            background: #dbeafe;
-            color: #1d4ed8;
-        }
-
-        .badge-green {
-            background: #d1fae5;
-            color: #065f46;
-        }
-
-        .badge-yellow {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        .badge-red {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        /* ===== TABLE ===== */
-        .tbl-row {
-            transition: background 0.12s;
-        }
-
-        .tbl-row:hover {
-            background: #f8faff;
-        }
-
-        .btn-detail {
-            border: 1.5px solid #e2e8f0;
-            background: #fff;
-            color: #374151;
-            border-radius: 7px;
-            padding: 5px 14px;
-            font-size: 11.5px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.15s;
-            font-family: inherit;
-        }
-
-        .btn-detail:hover {
-            border-color: var(--blue);
-            color: var(--blue);
-            background: #eff6ff;
-        }
-
-        /* ===== RANK CARD ===== */
-        .rank-card {
-            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
-            border-radius: 16px;
-            padding: 22px;
-            color: #fff;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .rank-card::before {
-            content: '';
-            position: absolute;
-            top: -40px;
-            right: -40px;
-            width: 130px;
-            height: 130px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.08);
-        }
-
-        .rank-card::after {
-            content: '';
-            position: absolute;
-            bottom: -50px;
-            right: 30px;
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.06);
-        }
-
-        /* ===== PROGRESS BAR ===== */
-        .progress-bar-bg {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 99px;
-            height: 6px;
-            overflow: hidden;
-        }
-
-        .progress-bar-fill {
-            height: 100%;
-            background: #fff;
-            border-radius: 99px;
-            transition: width 1.2s cubic-bezier(.4, 0, .2, 1);
-            box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
-        }
-
-        /* ===== LEADERBOARD ITEM ===== */
-        .lb-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 7px 0;
-            border-bottom: 1px solid #f1f5f9;
-            transition: background 0.12s;
-            border-radius: 8px;
-            padding: 7px 8px;
-        }
-
-        .lb-item:last-child {
-            border-bottom: none;
-        }
-
-        .lb-item:hover {
-            background: #f8faff;
-        }
-
-        /* ===== AVATAR ===== */
-        .avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #3b82f6, #6366f1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-weight: 700;
-            font-size: 12px;
-            flex-shrink: 0;
-        }
-
-        /* ===== OVERLAY ===== */
-        #overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(15, 23, 42, 0.45);
-            z-index: 40;
-            backdrop-filter: blur(2px);
-        }
-
-        #overlay.show {
-            display: block;
-        }
-
-        /* ===== PAGE LOAD ANIMATION ===== */
-        .fade-up {
-            opacity: 0;
-            transform: translateY(16px);
-            animation: fadeUp 0.45s ease forwards;
-        }
-
-        @keyframes fadeUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .delay-1 {
-            animation-delay: 0.05s;
-        }
-
-        .delay-2 {
-            animation-delay: 0.1s;
-        }
-
-        .delay-3 {
-            animation-delay: 0.15s;
-        }
-
-        .delay-4 {
-            animation-delay: 0.2s;
-        }
-
-        .delay-5 {
-            animation-delay: 0.25s;
-        }
-
-        /* ===== COUNT UP ===== */
-        .counter {
-            display: inline-block;
-        }
-
-        /* ===== TOOLTIP ===== */
-        [data-tip] {
-            position: relative;
-        }
-
-        [data-tip]::after {
-            content: attr(data-tip);
-            position: absolute;
-            bottom: 110%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #1e293b;
-            color: #fff;
-            font-size: 11px;
-            padding: 4px 8px;
-            border-radius: 6px;
-            white-space: nowrap;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.15s;
-        }
-
-        [data-tip]:hover::after {
-            opacity: 1;
-        }
-
-        /* ===== NOTIFICATION DOT ===== */
-        .notif-dot {
-            width: 8px;
-            height: 8px;
-            background: #ef4444;
-            border-radius: 50%;
-            position: absolute;
-            top: -2px;
-            right: -2px;
-            box-shadow: 0 0 0 2px #fff;
-            animation: pulse 1.8s infinite;
-        }
-
-        @keyframes pulse {
-
-            0%,
-            100% {
-                box-shadow: 0 0 0 2px #fff, 0 0 0 4px rgba(239, 68, 68, 0);
-            }
-
-            50% {
-                box-shadow: 0 0 0 2px #fff, 0 0 0 5px rgba(239, 68, 68, 0.3);
-            }
-        }
-
-        /* ===== TOPBAR ===== */
-        .topbar {
-            background: #fff;
-            border-bottom: 1px solid #f1f5f9;
-        }
-
-        /* Coin shimmer */
-        @keyframes shimmer {
-            0% {
-                background-position: -200% center;
-            }
-
-            100% {
-                background-position: 200% center;
-            }
-        }
-
-        .shimmer-gold {
-            background: linear-gradient(90deg, #f59e0b 0%, #fcd34d 40%, #f59e0b 60%, #d97706 100%);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: shimmer 2.5s linear infinite;
-        }
-    </style>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<style>
+    /* Hanya fallback font, semua styling lain pakai Tailwind */
+    body {
+        font-family: 'Inter', sans-serif;
+    }
+    footer { display: none !important; }
+</style>
 @endpush
 
 @section('content')
-    <div id="overlay" onclick="closeSidebar()"></div>
+<div class="flex min-h-screen bg-slate-50">
+    {{-- Sidebar user (sudah diperbaiki) --}}
+    @include('partials.sidebar-user')
 
-    <div class="flex min-h-screen bg-slate-100">
-
-        {{-- ===== SIDEBAR ===== --}}
-        <aside id="sidebar" class="flex flex-col py-5 px-3 min-h-screen shrink-0">
-
-            {{-- Logo --}}
-            <div class="flex items-center gap-2.5 mb-8 px-2">
-                <div class="bg-white rounded-xl w-9 h-9 flex items-center justify-center shadow-lg shrink-0">
-                    <svg class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
-                        <path
-                            d="M3 6a3 3 0 013-3h12a3 3 0 013 3v2a3 3 0 01-3 3H6a3 3 0 01-3-3V6zm0 7a3 3 0 013-3h12a3 3 0 013 3v2a3 3 0 01-3 3H6a3 3 0 01-3-3v-2z" />
-                    </svg>
-                </div>
-                <span class="text-white font-bold text-[17px] tracking-tight">KlikAset</span>
-            </div>
-
-            {{-- Nav --}}
-            <nav class="flex flex-col gap-1 flex-1">
-                <p class="text-blue-300 text-[10px] font-semibold uppercase tracking-widest px-3 mb-1">Menu</p>
-
-                <a href="{{ route('dashboard') }}" class="nav-link active">
-                    <span class="nav-indicator"></span>
-                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0h4" />
-                    </svg>
-                    Dashboard
-                </a>
-
-                <a href="{{ route('borrow') }}" class="nav-link">
-                    <span class="nav-indicator"></span>
-                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    Riwayat
-                </a>
-
-            </nav>
-
-            {{-- User + Logout --}}
-            <div class="mt-auto border-t border-white/10 pt-4 px-1">
-                <div class="flex items-center gap-2.5 mb-3 px-2">
-                    <div
-                        class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white font-bold text-sm shrink-0 ring-2 ring-white/30">
-                        {{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 1)) }}
-                    </div>
-                    <div class="min-w-0">
-                        <p class="text-white font-semibold text-[12px] truncate">{{ auth()->user()->name ?? 'User' }}</p>
-                        <p class="text-blue-200 text-[10.5px] truncate">{{ auth()->user()->email ?? '' }}</p>
-                    </div>
-                </div>
-                <form method="POST" action="{{ route('auth.logout') }}">
-                    @csrf
-                    <button type="submit" class="nav-link w-full text-left">
-                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1" />
-                        </svg>
-                        Logout
-                    </button>
-                </form>
-            </div>
-        </aside>
-
-        {{-- ===== MAIN CONTENT ===== --}}
-        <div class="flex-1 flex flex-col min-w-0">
-
-            {{-- ===== PAGE CONTENT ===== --}}
-            <main class="flex-1 p-4 md:p-6 space-y-5 overflow-auto">
-
-{{-- Stat Cards --}}
-<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-    {{-- Total Poin --}}
-    <div class="stat-card fade-up delay-1" data-tip="Akumulasi poin kamu">
-        <div class="flex items-start justify-between mb-3">
-            <div class="icon-box bg-amber-50">
-                <svg class="w-5 h-5 text-amber-500" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+    {{-- Main content --}}
+    <div class="flex-1 lg:ml-64">
+        {{-- Mobile header --}}
+        <div class="lg:hidden sticky top-0 z-20 bg-white/80 backdrop-blur-sm border-b border-slate-200 px-4 py-3 flex items-center justify-between">
+            <button onclick="openSidebarUser()" class="p-2 rounded-lg hover:bg-slate-100 transition">
+                <svg class="w-6 h-6 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
-            </div>
-            <span class="badge badge-yellow">+0 minggu ini</span>
+            </button>
+            <span class="font-bold text-slate-800">KlikAset</span>
+            <div class="w-8"></div>
         </div>
-        <p class="text-xs text-gray-500 font-medium mb-1">Total Poin</p>
-        <p class="text-4xl font-extrabold text-gray-900 counter shimmer-gold" data-target="{{ $currentPoints }}">0</p>
-        <div class="mt-3 flex items-center gap-2">
-            <div class="flex-1 bg-amber-100 rounded-full h-1.5">
-                <div class="bg-amber-400 h-1.5 rounded-full" style="width:{{ $percentage }}%" id="pointBar"></div>
-            </div>
-            <span class="text-[10px] text-gray-400">{{ $currentPoints }}/{{ $nextTier ? $tierRequirements[$nextTier]['min_points'] : $currentPoints }}</span>
-        </div>
-    </div>
 
-    {{-- Pinjaman Aktif --}}
-    <div class="stat-card fade-up delay-2">
-        <div class="flex items-start justify-between mb-3">
-            <div class="icon-box bg-blue-50">
-                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                </svg>
+        <main class="p-4 md:p-6 space-y-6">
+            {{-- Welcome Card dengan gradien tema sidebar --}}
+            <div class="bg-gradient-to-r from-costume-primary to-costume-second rounded-2xl p-6 text-white shadow-lg">
+                <h1 class="text-2xl font-bold">Halo, {{ $user->nama ?? $user->username ?? 'Pengguna' }}!</h1>
+                <p class="text-white/80 mt-1">Kelola peminjaman aset dengan mudah & transparan.</p>
             </div>
-            <span class="badge badge-blue">Aktif</span>
-        </div>
-        <p class="text-xs text-gray-500 font-medium mb-1">Pinjaman Aktif</p>
-        <p class="text-4xl font-extrabold text-gray-900 counter" data-target="{{ $activeLoans }}">0</p>
-        <p class="text-xs text-gray-400 mt-2">Batas pengembalian:
-            @if($activeLoansList->first())
-                <span class="font-semibold text-orange-500">
-                    {{ $activeLoansList->first()?->detailPeminjaman->first()?->barang?->nama_barang ?? '-' }}
-                </span>
-            @else
-                -
-            @endif
-        </p>
-    </div>
 
-    {{-- Rank --}}
-    <div class="rank-card fade-up delay-3">
-        <div class="relative z-10">
-            <p class="text-blue-200 text-xs font-medium mb-1">Rank Saat Ini</p>
-            <div class="flex items-center justify-between mb-3">
-                <p class="text-2xl font-extrabold text-white">{{ $currentTier }}</p>
-                <div class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center backdrop-blur-sm ring-2 ring-white/30">
-                    <svg class="w-6 h-6 text-yellow-300" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M5 3l1.5 4.5L12 5l5.5 2.5L19 3l1 7-4 3 .5 7H7.5L8 13l-4-3 1-7z" />
-                    </svg>
-                </div>
-            </div>
-            <div class="space-y-1">
-                <div class="flex justify-between text-xs">
-                    <span class="text-blue-200">Menuju {{ $nextTier ?? 'Puncak' }}</span>
-                    <span class="text-white font-semibold">{{ $currentPoints }} / {{ $nextTier ? $tierRequirements[$nextTier]['min_points'] : $currentPoints }}</span>
-                </div>
-                <div class="progress-bar-bg">
-                    <div class="progress-bar-fill" id="rankBar" style="width:{{ $percentage }}%"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-{{-- Mini Cards --}}
-<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-{{-- Pengingat --}}
-<div class="mini-card fade-up delay-3">
-    <div class="icon-box bg-yellow-400 relative">
-        <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-        </svg>
-        <span class="notif-dot" style="top:-3px;right:-3px"></span>
-    </div>
-    <div>
-        <p class="text-gray-800 font-bold text-[13px]">Pengingat</p>
-        <p class="text-gray-500 text-[11px] mt-0.5">{{ $activeLoansList->count() }} tugas menunggu</p>
-        @php
-            $firstLoan = $activeLoansList->first();
-            $firstDetail = $firstLoan?->detailPeminjaman->first();
-            $firstBarang = $firstDetail?->barang;
-        @endphp
-        @if($firstBarang && $firstLoan?->tanggal_kembali)
-            <p class="text-gray-400 text-[10.5px] mt-1 leading-tight">
-                {{ $firstBarang->nama_barang }}<br>
-                Tenggat: {{ \Carbon\Carbon::parse($firstLoan->tanggal_kembali)->format('d M Y') }}
-            </p>
-        @else
-            <p class="text-gray-400 text-[10.5px] mt-1 leading-tight">Tidak ada pengingat aktif</p>
-        @endif
-    </div>
-    <button class="btn-primary mt-auto" onclick="openPengingatModal()">Lihat Tugas</button>
-</div>
-
-    {{-- Panduan --}}
-    <div class="mini-card fade-up delay-4">
-        <div class="icon-box bg-indigo-500">
-            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v4m0 4h.01M12 3C6.477 3 2 7.477 2 12s4.477 9 10 9 10-4.477 10-10S17.523 3 12 3z" />
-            </svg>
-        </div>
-        <div>
-            <p class="text-gray-800 font-bold text-[13px]">Panduan</p>
-            <p class="text-gray-800 font-bold text-[13px]">Peminjaman</p>
-        </div>
-        <button class="btn-primary mt-auto" onclick="openPanduanModal()">Lihat Panduan</button>
-    </div>
-
-    {{-- Top Peringkat --}}
-    <div class="mini-card fade-up delay-5">
-        <p class="text-gray-800 font-bold text-[13px]">🏆 Top Peringkat</p>
-        <div class="space-y-1">
-            @foreach($topThree as $index => $top)
-                <div class="lb-item">
-                    <span class="text-sm">{{ ['🥇','🥈','🥉'][$index] }}</span>
-                    <div class="avatar"
-                        style="background: {{ ['linear-gradient(135deg,#3b82f6,#6366f1)', 'linear-gradient(135deg,#10b981,#06b6d4)', 'linear-gradient(135deg,#f59e0b,#ef4444)'][$index] }}">
-                        {{ strtoupper(substr($top->nama ?? $top->username, 0, 1)) }}
+            {{-- Stat Cards --}}
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                {{-- Card Total Poin --}}
+                <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm hover:shadow-md transition hover:-translate-y-1">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                            </svg>
+                        </div>
+                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800">Poin Aktif</span>
                     </div>
-                    <p class="text-[11.5px] font-semibold text-gray-800 flex-1 truncate">{{ $top->nama ?? $top->username }}</p>
-                    <span class="text-[11px] text-gray-500 shrink-0">{{ number_format($top->points) }}<sub class="text-[9px]"> Pn</sub></span>
+                    <p class="text-xs text-slate-500 uppercase tracking-wide">Total Poin</p>
+                    <p class="text-3xl font-bold text-slate-800 mt-1">{{ number_format($currentPoints ?? 2450) }}</p>
+                    <div class="mt-3 space-y-1">
+                        <div class="flex justify-between text-xs text-slate-500">
+                            <span>Menuju {{ $nextTier ?? 'Gold' }}</span>
+                            <span>{{ $currentPoints ?? 2450 }} / {{ $nextTier ? ($tierRequirements[$nextTier]['min_points'] ?? 3000) : 3000 }}</span>
+                        </div>
+                        <div class="bg-gray-200 rounded-full h-2 overflow-hidden">
+                            <div class="bg-amber-500 h-full rounded-full transition-all duration-700" style="width: {{ $percentage ?? 82 }}%"></div>
+                        </div>
+                    </div>
                 </div>
-            @endforeach
-        </div>
-        <a href="{{ route('rank') }}" class="text-[11px] text-blue-600 hover:underline font-semibold text-right block mt-1">Lihat Semua →</a>
-    </div>
-</div>
 
-{{-- Tabel Pinjaman Aktif --}}
-<div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden fade-up delay-5">
-    <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100">
-        <div>
-            <p class="font-bold text-gray-800 text-sm">Daftar Pinjaman Aktif</p>
-            <p class="text-xs text-gray-400 mt-0.5">Peminjaman yang sedang berjalan</p>
-        </div>
-        <a href="{{ route('history') }}" class="text-xs text-blue-600 font-semibold hover:underline flex items-center gap-1">
-            Lihat Semua Riwayat
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
-            </svg>
-        </a>
-    </div>
+                {{-- Card Pinjaman Aktif --}}
+                <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm hover:shadow-md transition hover:-translate-y-1">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                            </svg>
+                        </div>
+                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">Aktif</span>
+                    </div>
+                    <p class="text-xs text-slate-500 uppercase tracking-wide">Pinjaman Aktif</p>
+                    <p class="text-3xl font-bold text-slate-800 mt-1">{{ $activeLoans ?? 3 }}</p>
+                    @if(isset($activeLoansList) && $activeLoansList->first())
+                        <p class="text-xs text-slate-500 mt-2">Terdekat: {{ $activeLoansList->first()->tanggal_kembali->format('d M Y') }}</p>
+                    @else
+                        <p class="text-xs text-slate-500 mt-2">Tidak ada pinjaman aktif</p>
+                    @endif
+                </div>
 
-    {{-- Desktop Table --}}
-    <div class="hidden md:block overflow-x-auto">
-        <table class="w-full text-[12.5px]">
-            <thead>
-                <tr class="bg-slate-50 border-b border-slate-100">
-                    <th class="text-left px-5 py-3 text-gray-500 font-semibold">#</th>
-                    <th class="text-left px-5 py-3 text-gray-500 font-semibold">Ruangan / Sarpras</th>
-                    <th class="text-left px-5 py-3 text-gray-500 font-semibold">Tanggal</th>
-                    <th class="text-center px-5 py-3 text-gray-500 font-semibold">Status</th>
-                    <th class="text-center px-5 py-3 text-gray-500 font-semibold">Aksi</th>
-                 </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-50">
-                @forelse($activeLoansList as $index => $loan)
-@php
-    $barang = $loan->first_barang;
-    $statusLabel = $loan->status === 'disetujui' ? 'Disetujui' : ($loan->status === 'dipinjam' ? 'Dipinjam' : '');
-    $badgeClass = $loan->status === 'disetujui' ? 'badge-yellow' : 'badge-blue';
-@endphp
-                    <tr class="tbl-row">
-                        <td class="px-5 py-3 text-gray-400 text-[11px] font-mono">{{ str_pad($index+1, 2, '0', STR_PAD_LEFT) }}</td>
-                        <td class="px-5 py-3">
-                            <p class="font-semibold text-gray-800">{{ $barang ? $barang->nama_barang : '-' }}</p>
-                            <p class="text-gray-400 text-[11px]">{{ $barang ? $barang->kategori : '-' }}</p>
-                        </td>
-                        <td class="px-5 py-3 text-gray-600">
-                            {{ \Carbon\Carbon::parse($loan->tanggal_pinjam)->format('d M Y') }}<br>
-                            <span class="text-[10px] text-gray-400">s/d {{ \Carbon\Carbon::parse($loan->tanggal_kembali)->format('d M Y') }}</span>
-                        </td>
-                        <td class="px-5 py-3 text-center">
-                            <span class="badge {{ $badgeClass }}">
-                                <span class="w-1.5 h-1.5 rounded-full {{ $loan->status === 'disetujui' ? 'bg-yellow-500' : 'bg-blue-500' }} inline-block"></span>
-                                {{ $statusLabel }}
-                            </span>
-                        </td>
-                        <td class="px-5 py-3 text-center">
-                            @if($barang)
-                                <button class="btn-detail" onclick="openDetailModal('{{ addslashes($barang->nama_barang) }}','{{ \Carbon\Carbon::parse($loan->tanggal_pinjam)->format('d M Y') }} - {{ \Carbon\Carbon::parse($loan->tanggal_kembali)->format('d M Y') }}','{{ $statusLabel }}','{{ $barang->kategori }}')">
-                                    Lihat Detail
-                                </button>
-                            @else
-                                <span class="text-xs text-gray-400">Data tidak lengkap</span>
-                            @endif
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="5" class="text-center py-8 text-gray-400">Tidak ada pinjaman aktif</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
+                {{-- Card Peringkat & Tier (STATIS contoh) --}}
+                <div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-5 text-white shadow-sm hover:shadow-md transition hover:-translate-y-1">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                            </svg>
+                        </div>
+                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-white/20 text-white">Tier & Peringkat</span>
+                    </div>
+                    <p class="text-xs uppercase tracking-wide opacity-80">Peringkat Kamu</p>
+                    <p class="text-3xl font-bold mt-1">{{ $currentTier ?? 'Silver' }}</p>
+                    <p class="text-sm mt-2">
+                        🏆 Peringkat <strong>#{{ $rank ?? 8 }}</strong> dari {{ $totalUsers ?? 94 }} pengguna
+                    </p>
+                    <div class="mt-3 text-xs opacity-80 flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
+                        <span>Butuh {{ $pointsToNextRank ?? 550 }} poin lagi ke peringkat berikutnya</span>
+                    </div>
+                </div>
+            </div>
 
-    {{-- Mobile Cards --}}
-    <div class="md:hidden divide-y divide-slate-100">
-        @forelse($activeLoansList as $loan)
-            @php
-                $barang = $loan->first_barang;
-                $statusLabel = $loan->status === 'disetujui' ? 'Disetujui' : ($loan->status === 'dipinjam' ? 'Dipinjam' : '');
-                $badgeClass = $loan->status === 'disetujui' ? 'badge-yellow' : 'badge-blue';
-            @endphp
-            <div class="px-4 py-3">
-                <div class="flex justify-between items-start mb-2">
+            {{-- Daftar Pinjaman Aktif --}}
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                <div class="px-5 py-4 border-b border-slate-100 flex justify-between items-center flex-wrap gap-2">
                     <div>
-                        <p class="font-semibold text-gray-800 text-[13px]">{{ $barang ? $barang->nama_barang : '-' }}</p>
-                        <p class="text-[11px] text-gray-400">{{ $barang ? $barang->kategori : '-' }} · {{ \Carbon\Carbon::parse($loan->tanggal_pinjam)->format('d M Y') }} - {{ \Carbon\Carbon::parse($loan->tanggal_kembali)->format('d M Y') }}</p>
+                        <h2 class="font-bold text-slate-800">Pinjaman Aktif</h2>
+                        <p class="text-xs text-slate-500">Barang yang sedang kamu pinjam</p>
                     </div>
-                    <span class="badge {{ $badgeClass }} ml-2 shrink-0">{{ $statusLabel }}</span>
+                    <a href="{{ route('loans') }}" class="text-sm text-costume-primary font-semibold hover:underline flex items-center gap-1">
+                        Lihat semua
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </a>
                 </div>
-                @if($barang)
-                    <button class="btn-detail" onclick="openDetailModal('{{ addslashes($barang->nama_barang) }}','{{ \Carbon\Carbon::parse($loan->tanggal_pinjam)->format('d M Y') }} - {{ \Carbon\Carbon::parse($loan->tanggal_kembali)->format('d M Y') }}','{{ $statusLabel }}','{{ $barang->kategori }}')">
-                        Lihat Detail
-                    </button>
+
+                @if(isset($activeLoansList) && $activeLoansList->count())
+                    <div class="divide-y divide-slate-100">
+                        @foreach($activeLoansList->take(3) as $loan)
+                            @php $barang = $loan->first_barang ?? null; @endphp
+                            <div class="p-4 hover:bg-slate-50 transition">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h3 class="font-semibold text-slate-800">{{ $barang->nama_barang ?? 'Aset Tidak Diketahui' }}</h3>
+                                        <p class="text-xs text-slate-500 mt-0.5">{{ $barang->kategori ?? '-' }} · {{ \Carbon\Carbon::parse($loan->tanggal_pinjam)->format('d/m/Y') }} - {{ \Carbon\Carbon::parse($loan->tanggal_kembali)->format('d/m/Y') }}</p>
+                                    </div>
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold
+                                        {{ $loan->status == 'disetujui' ? 'bg-amber-100 text-amber-800' : 'bg-blue-100 text-blue-800' }}">
+                                        {{ $loan->status == 'disetujui' ? 'Disetujui' : 'Dipinjam' }}
+                                    </span>
+                                </div>
+                                <div class="mt-2 flex justify-between items-center">
+                                    <span class="text-xs text-slate-500">Jumlah: {{ $loan->detailPeminjaman->first()->jumlah ?? 1 }} unit</span>
+                                    <button onclick="openDetailModal(
+                                        '{{ addslashes($barang->nama_barang ?? 'Aset') }}',
+                                        '{{ \Carbon\Carbon::parse($loan->tanggal_pinjam)->format('d M Y') }} - {{ \Carbon\Carbon::parse($loan->tanggal_kembali)->format('d M Y') }}',
+                                        '{{ $loan->status == 'disetujui' ? 'Disetujui' : 'Dipinjam' }}',
+                                        '{{ addslashes($barang->kategori ?? '-') }}'
+                                    )" class="text-xs text-costume-primary font-medium hover:underline">
+                                        Detail
+                                    </button>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
                 @else
-                    <span class="text-xs text-gray-400">Data tidak lengkap</span>
+                    <div class="p-8 text-center text-slate-400">
+                        <svg class="w-12 h-12 mx-auto mb-3 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                        </svg>
+                        <p>Tidak ada pinjaman aktif saat ini.</p>
+                        <a href="{{ route('all-assets') }}" class="inline-block mt-3 text-costume-primary text-sm font-semibold">Ajukan peminjaman →</a>
+                    </div>
                 @endif
             </div>
-        @empty
-            <div class="px-4 py-6 text-center text-gray-400">Tidak ada pinjaman aktif</div>
-        @endforelse
+        </main>
     </div>
 </div>
 
-            </main>
+{{-- Modal Detail --}}
+<div id="detailModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-4" onclick="if(event.target===this) closeModal()">
+    <div class="bg-white rounded-2xl max-w-sm w-full shadow-xl overflow-hidden">
+        <div class="bg-costume-primary px-5 py-4 text-white flex justify-between items-center">
+            <span class="font-bold">Detail Peminjaman</span>
+            <button onclick="closeModal()" class="text-white/80 hover:text-white">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+        </div>
+        <div class="p-5 space-y-3 text-sm" id="modalContent"></div>
+        <div class="px-5 pb-5">
+            <button onclick="closeModal()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold py-2 rounded-xl transition">Tutup</button>
         </div>
     </div>
+</div>
 
-    {{-- ===== MODAL DETAIL ===== --}}
-    <div id="detailModal" class="hidden fixed inset-0 z-60 flex items-center justify-center p-4"
-        style="background:rgba(15,23,42,0.5);backdrop-filter:blur(4px)">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden" style="animation:slideUp .25s ease">
-            <div class="bg-gradient-to-r from-blue-600 to-blue-500 px-5 py-4">
-                <div class="flex items-center justify-between">
-                    <p class="text-white font-bold text-sm">Detail Peminjaman</p>
-                    <button onclick="closeModal('detailModal')" class="text-white/70 hover:text-white">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-            <div class="p-5 space-y-3 text-[13px]" id="detailModalContent"></div>
-            <div class="px-5 pb-5">
-                <button onclick="closeModal('detailModal')"
-                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl transition-all text-sm">
-                    Tutup
-                </button>
-            </div>
-        </div>
-    </div>
-
-    {{-- ===== MODAL PENGINGAT ===== --}}
-    <div id="pengingatModal" class="hidden fixed inset-0 z-60 flex items-center justify-center p-4"
-        style="background:rgba(15,23,42,0.5);backdrop-filter:blur(4px)">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm" style="animation:slideUp .25s ease">
-            <div class="bg-gradient-to-r from-yellow-500 to-amber-400 px-5 py-4 rounded-t-2xl">
-                <div class="flex items-center justify-between">
-                    <p class="text-white font-bold text-sm">Pengingat &amp; Tugas</p>
-                    <button onclick="closeModal('pengingatModal')" class="text-white/70 hover:text-white">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-            <div class="p-5 space-y-3">
-                <div class="bg-yellow-50 border border-yellow-100 rounded-xl p-3 flex gap-3">
-                    <div class="w-8 h-8 rounded-lg bg-yellow-400 flex items-center justify-center shrink-0">
-                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="text-[12.5px] font-semibold text-gray-800">Kembalikan Aula Pertemuan</p>
-                        <p class="text-[11px] text-gray-500 mt-0.5">24 Februari 2026 · Jam 16.00</p>
-                    </div>
-                </div>
-                <div class="bg-yellow-50 border border-yellow-100 rounded-xl p-3 flex gap-3">
-                    <div class="w-8 h-8 rounded-lg bg-yellow-400 flex items-center justify-center shrink-0">
-                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="text-[12.5px] font-semibold text-gray-800">Kembalikan Laptop-Asus123fb</p>
-                        <p class="text-[11px] text-gray-500 mt-0.5">24 Februari 2026 · Jam 16.00</p>
-                    </div>
-                </div>
-            </div>
-            <div class="px-5 pb-5">
-                <button onclick="closeModal('pengingatModal')"
-                    class="w-full bg-yellow-400 hover:bg-yellow-500 text-white font-bold py-2.5 rounded-xl transition-all text-sm">Mengerti</button>
-            </div>
-        </div>
-    </div>
-
-    {{-- ===== MODAL PANDUAN ===== --}}
-    <div id="panduanModal" class="hidden fixed inset-0 z-60 flex items-center justify-center p-4"
-        style="background:rgba(15,23,42,0.5);backdrop-filter:blur(4px)">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm" style="animation:slideUp .25s ease">
-            <div class="bg-gradient-to-r from-indigo-600 to-blue-500 px-5 py-4 rounded-t-2xl">
-                <div class="flex items-center justify-between">
-                    <p class="text-white font-bold text-sm">Panduan Peminjaman</p>
-                    <button onclick="closeModal('panduanModal')" class="text-white/70 hover:text-white">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-            <div class="p-5 space-y-2.5 text-[12.5px] text-gray-700">
-                @foreach(['Pilih aset yang ingin dipinjam dari katalog', 'Isi form peminjaman dengan lengkap dan benar', 'Tunggu persetujuan dari admin', 'Ambil aset sesuai jadwal yang disetujui', 'Kembalikan aset tepat waktu untuk menjaga poin'] as $i => $step)
-                    <div class="flex gap-3 items-start">
-                        <div
-                            class="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-[10px] shrink-0 mt-0.5">
-                            {{ $i + 1 }}</div>
-                        <p>{{ $step }}</p>
-                    </div>
-                @endforeach
-            </div>
-            <div class="px-5 pb-5">
-                <button onclick="closeModal('panduanModal')"
-                    class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl transition-all text-sm">Mengerti</button>
-            </div>
-        </div>
-    </div>
-
-    @push('scripts')
-        <style>
-            @keyframes slideUp {
-                from {
-                    opacity: 0;
-                    transform: translateY(20px) scale(0.97);
-                }
-
-                to {
-                    opacity: 1;
-                    transform: translateY(0) scale(1);
-                }
-            }
-        </style>
-        <script>
-            // Sidebar
-            function openSidebar() {
-                document.getElementById('sidebar').classList.add('open');
-                document.getElementById('overlay').classList.add('show');
-            }
-            function closeSidebar() {
-                document.getElementById('sidebar').classList.remove('open');
-                document.getElementById('overlay').classList.remove('show');
-            }
-
-            // Modals
-            function openDetailModal(name, date, status, type) {
-                const statusColors = {
-                    'Dipinjam': 'badge-blue',
-                    'Menunggu Persetujuan': 'badge-yellow',
-                    'Menunggu': 'badge-yellow',
-                    'Dikembalikan': 'badge-green'
-                };
-                const cls = statusColors[status] || 'badge-blue';
-                document.getElementById('detailModalContent').innerHTML = `
-              <div class="flex justify-between py-2 border-b border-slate-100">
-                <span class="text-gray-500">Nama Aset</span>
-                <span class="font-bold text-gray-800">${name}</span>
-              </div>
-              <div class="flex justify-between py-2 border-b border-slate-100">
-                <span class="text-gray-500">Jenis</span>
-                <span class="font-semibold text-gray-700">${type}</span>
-              </div>
-              <div class="flex justify-between py-2 border-b border-slate-100">
-                <span class="text-gray-500">Tanggal</span>
-                <span class="font-semibold text-gray-700 text-right max-w-[55%]">${date}</span>
-              </div>
-              <div class="flex justify-between py-2 items-center">
-                <span class="text-gray-500">Status</span>
-                <span class="badge ${cls}">${status}</span>
-              </div>
-            `;
-                document.getElementById('detailModal').classList.remove('hidden');
-            }
-            function openPengingatModal() { document.getElementById('pengingatModal').classList.remove('hidden'); }
-            function openPanduanModal() { document.getElementById('panduanModal').classList.remove('hidden'); }
-            function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-
-            // Close modal on backdrop click
-            ['detailModal', 'pengingatModal', 'panduanModal'].forEach(id => {
-                document.getElementById(id).addEventListener('click', function (e) {
-                    if (e.target === this) closeModal(id);
-                });
-            });
-
-            // Counter animation
-            function animateCounter(el) {
-                const target = parseInt(el.dataset.target);
-                const duration = 1200;
-                const start = performance.now();
-                function update(now) {
-                    const elapsed = now - start;
-                    const progress = Math.min(elapsed / duration, 1);
-                    const eased = 1 - Math.pow(1 - progress, 3);
-                    el.textContent = Math.round(eased * target).toLocaleString('id-ID');
-                    if (progress < 1) requestAnimationFrame(update);
-                }
-                requestAnimationFrame(update);
-            }
-
-            // Rank bar animation
-            window.addEventListener('load', () => {
-                document.querySelectorAll('.counter').forEach(animateCounter);
-                setTimeout(() => {
-                    document.getElementById('rankBar').style.width = '80%';
-                }, 600);
-            });
-        </script>
-    @endpush
+<script>
+    function openDetailModal(name, date, status, type) {
+        const statusBadge = (status === 'Dipinjam')
+            ? 'bg-blue-100 text-blue-800'
+            : 'bg-amber-100 text-amber-800';
+        document.getElementById('modalContent').innerHTML = `
+            <div class="flex justify-between border-b pb-2"><span class="text-slate-500">Aset</span><span class="font-semibold">${name}</span></div>
+            <div class="flex justify-between border-b pb-2"><span class="text-slate-500">Kategori</span><span>${type}</span></div>
+            <div class="flex justify-between border-b pb-2"><span class="text-slate-500">Periode</span><span>${date}</span></div>
+            <div class="flex justify-between"><span class="text-slate-500">Status</span><span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold ${statusBadge}">${status}</span></div>
+        `;
+        document.getElementById('detailModal').classList.remove('hidden');
+    }
+    function closeModal() {
+        document.getElementById('detailModal').classList.add('hidden');
+    }
+</script>
 @endsection

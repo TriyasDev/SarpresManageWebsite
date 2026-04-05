@@ -104,8 +104,8 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:peminjam')->group(function () {
         Route::get('/home', [HomeController::class, 'index'])->name('home');
         Route::get('/my-dashboard', [UserDashboardController::class, 'index'])->name('my.dashboard');
-        Route::get('/borrow/{barang?}', [FormController::class, 'index'])->name('borrow');
         Route::post('/borrow', [FormController::class, 'store'])->name('borrow.store');
+        Route::get('/borrow/{barang?}', [FormController::class, 'index'])->name('borrow');
         Route::get('/rankings', [RankController::class, 'index'])->name('rankings');
 
         Route::get('/profile',   [UserDashboardController::class, 'profile'])->name('profile');

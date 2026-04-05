@@ -10,12 +10,17 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class FormController extends Controller
 {
     public function index($barangId = null)
     {
         $user = Auth::user();
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
+        }
+
         $barang = null;
         if ($barangId) {
             $barang = Barang::where('id_barang', $barangId)
@@ -26,154 +31,141 @@ class FormController extends Controller
         $barangs = Barang::whereNull('deleted_at')
             ->where('jumlah_tersedia', '>', 0)
             ->get();
-            
+
+        // Hitung item aktif yang sedang dipinjam
         $activeItemsCount = $this->countActiveItems($user->id_user);
 
-        return view('user.form', compact('user', 'barang', 'barangs'));
+        return view('user.form', compact('user', 'barang', 'barangs', 'activeItemsCount'));
     }
 
     public function store(Request $request)
     {
+        // Validasi dasar
         $request->validate([
             'barang_id'      => 'required|exists:tb_barang,id_barang',
             'jumlah'         => 'required|integer|min:1',
-            'tanggal_kembali' => 'required|date|after:today',
+            'tanggal_kembali'=> 'required|date|after:today',
             'keperluan'      => 'nullable|string|max:500',
         ]);
 
         $user = Auth::user();
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'Silakan login.');
+        }
+
         $barang = Barang::findOrFail($request->barang_id);
         $today = Carbon::today();
 
-        // =============================================================
-        // ATURAN DARI PROPOSAL
-        // =============================================================
-
-        // 1. Cek apakah user dibekukan (is_banned)
+        // -----------------------------------------------------------------
+        // 1. Cek banned
         if ($user->is_banned) {
-            return back()->withErrors(['msg' => 'Akun Anda sedang dibekukan. Hubungi admin.']);
+            return back()->withErrors(['msg' => 'Akun Anda sedang dibekukan. Hubungi admin.'])->withInput();
         }
 
-        // 2. Cek stok barang
+        // 2. Cek stok
         if ($barang->jumlah_tersedia < $request->jumlah) {
-            return back()->withErrors(['jumlah' => 'Stok tidak mencukupi. Tersedia: ' . $barang->jumlah_tersedia]);
+            return back()->withErrors(['jumlah' => "Stok tidak cukup. Tersedia: {$barang->jumlah_tersedia}."])->withInput();
         }
 
-        // 3. Cek durasi maksimal berdasarkan tier
-        $maxDays = $user->max_days; // dari model User
+        // 3. Cek durasi maksimal (max_days)
+        $maxDays = $user->max_days;
         $tanggalKembali = Carbon::parse($request->tanggal_kembali);
         $durationDays = $today->diffInDays($tanggalKembali);
-
         if ($durationDays > $maxDays) {
-            return back()->withErrors([
-                'tanggal_kembali' => "Tier {$user->tier} hanya boleh meminjam maksimal {$maxDays} hari. Anda memilih {$durationDays} hari."
-            ]);
+            return back()->withErrors(['tanggal_kembali' => "Tier {$user->tier} maksimal pinjam {$maxDays} hari. Anda memilih {$durationDays} hari."])->withInput();
         }
 
-        // 4. Hitung total item yang sedang aktif dipinjam (status disetujui atau dipinjam)
+        // 4. Cek total item aktif + item yang diajukan
         $activeItemsCount = $this->countActiveItems($user->id_user);
         $maxItems = $user->max_items;
         $requestedItems = $request->jumlah;
-
         if (($activeItemsCount + $requestedItems) > $maxItems) {
             $sisa = $maxItems - $activeItemsCount;
-            return back()->withErrors([
-                'jumlah' => "Batas maksimal barang yang bisa dipinjam adalah {$maxItems} item (tier {$user->tier}). Saat ini Anda sudah meminjam {$activeItemsCount} item. Sisa kuota: {$sisa} item."
-            ]);
+            return back()->withErrors(['jumlah' => "Batas maksimal barang adalah {$maxItems} (tier {$user->tier}). Anda sudah meminjam {$activeItemsCount}. Sisa kuota: {$sisa}."])->withInput();
         }
 
-        // 5. Cek batas barang elektronik
+        // 5. Cek batas elektronik
         $maxElectronics = $user->max_electronics;
         if ($barang->isElectronic()) {
             if ($maxElectronics == 0) {
-                return back()->withErrors([
-                    'barang_id' => "Tier {$user->tier} tidak diizinkan meminjam barang elektronik."
-                ]);
+                return back()->withErrors(['barang_id' => "Tier {$user->tier} tidak boleh meminjam barang elektronik."])->withInput();
             }
-
             $activeElectronicsCount = $this->countActiveElectronics($user->id_user);
-            $newTotal = $activeElectronicsCount + $requestedItems;
-            if ($newTotal > $maxElectronics) {
+            if (($activeElectronicsCount + $requestedItems) > $maxElectronics) {
                 $sisaElec = $maxElectronics - $activeElectronicsCount;
-                return back()->withErrors([
-                    'barang_id' => "Batas elektronik untuk tier {$user->tier} adalah {$maxElectronics}. Anda sudah meminjam {$activeElectronicsCount} elektronik. Sisa kuota: {$sisaElec}."
-                ]);
+                return back()->withErrors(['barang_id' => "Batas elektronik tier {$user->tier} adalah {$maxElectronics}. Anda sudah meminjam {$activeElectronicsCount}. Sisa kuota: {$sisaElec}."])->withInput();
             }
         }
 
-        // 6. Cek apakah ada pinjaman yang lewat jatuh tempo
+        // 6. Cek overdue
         if ($user->hasOverdueItems()) {
-            return back()->withErrors([
-                'msg' => 'Anda masih memiliki pinjaman yang melewati batas waktu. Harap kembalikan terlebih dahulu.'
-            ]);
+            return back()->withErrors(['msg' => 'Anda masih memiliki pinjaman yang terlambat. Selesaikan terlebih dahulu.'])->withInput();
         }
 
-        // =============================================================
-        // SIMPAN PEMINJAMAN (tanggal_pinjam otomatis hari ini)
-        // =============================================================
+        // -----------------------------------------------------------------
+        // Simpan ke database
         DB::beginTransaction();
         try {
             $peminjaman = Peminjaman::create([
-                'id_user'           => $user->id_user,
-                'id_admin'          => null,
-                'tanggal_pinjam'    => $today, // otomatis hari ini
-                'tanggal_kembali'   => $tanggalKembali,
-                'status'            => 'menunggu',
-                'catatan'           => $request->keperluan,
+                'id_user'         => $user->id_user,
+                'id_admin'        => null,
+                'tanggal_pinjam'  => $today,
+                'tanggal_kembali' => $tanggalKembali,
+                'status'          => 'menunggu',
+                'catatan'         => $request->keperluan,
             ]);
 
-            DetailPeminjaman::create([
+            // Data detail peminjaman
+            $detailData = [
                 'id_peminjaman' => $peminjaman->id_peminjaman,
                 'id_barang'     => $barang->id_barang,
                 'jumlah'        => $request->jumlah,
-                'kondisi_pinjam' => $barang->kondisi,
-            ]);
+            ];
+            // Jika kolom kondisi_pinjam ada, isi (optional)
+            if (\Schema::hasColumn('tb_detail_peminjaman', 'kondisi_pinjam')) {
+                $detailData['kondisi_pinjam'] = $barang->kondisi;
+            }
+            DetailPeminjaman::create($detailData);
 
             DB::commit();
-            return redirect()->route('my.dashboard')->with('success', 'Pengajuan peminjaman berhasil dikirim.');
+
+            return redirect()->route('my.dashboard')->with('success', 'Pengajuan peminjaman berhasil dikirim. Tunggu persetujuan admin.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->withErrors('Terjadi kesalahan: ' . $e->getMessage());
+            Log::error('Error store peminjaman: ' . $e->getMessage());
+            return back()->withErrors('Terjadi kesalahan sistem: ' . $e->getMessage())->withInput();
         }
     }
 
-    /**
-     * Hitung total item (jumlah barang) yang sedang aktif dipinjam user
-     */
     private function countActiveItems($userId)
     {
         $activeLoans = Peminjaman::where('id_user', $userId)
             ->whereIn('status', ['disetujui', 'dipinjam'])
             ->with('detailPeminjaman')
             ->get();
-
-        $totalItems = 0;
+        $total = 0;
         foreach ($activeLoans as $loan) {
             foreach ($loan->detailPeminjaman as $detail) {
-                $totalItems += $detail->jumlah;
+                $total += $detail->jumlah;
             }
         }
-        return $totalItems;
+        return $total;
     }
 
-    /**
-     * Hitung total barang elektronik yang sedang aktif dipinjam
-     */
     private function countActiveElectronics($userId)
     {
         $activeLoans = Peminjaman::where('id_user', $userId)
             ->whereIn('status', ['disetujui', 'dipinjam'])
             ->with('detailPeminjaman.barang')
             ->get();
-
-        $totalElectronic = 0;
+        $total = 0;
         foreach ($activeLoans as $loan) {
             foreach ($loan->detailPeminjaman as $detail) {
                 if ($detail->barang && $detail->barang->isElectronic()) {
-                    $totalElectronic += $detail->jumlah;
+                    $total += $detail->jumlah;
                 }
             }
         }
-        return $totalElectronic;
+        return $total;
     }
 }
