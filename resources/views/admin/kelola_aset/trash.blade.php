@@ -3,14 +3,6 @@
 
 @section('content')
 
-    {{-- Alert --}}
-    @if(session('success'))
-        <div id="flashMsg" class="mb-5 px-5 py-3 bg-green-100 text-green-700 border border-green-200 rounded-[30px] text-sm font-medium flex items-center justify-between">
-            <span>{{ session('success') }}</span>
-            <button onclick="document.getElementById('flashMsg').remove()" class="ml-4 text-green-500 hover:text-green-700 text-lg leading-none">&times;</button>
-        </div>
-    @endif
-
     {{-- Header --}}
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
         <div class="flex items-center gap-3">
@@ -23,7 +15,6 @@
             </a>
             <span class="text-gray-300">/</span>
             <div>
-                <h1 class="text-xl font-bold text-gray-800">Tempat Sampah Aset</h1>
                 <p class="text-sm text-gray-500 mt-0.5">Aset yang telah dihapus sementara</p>
             </div>
         </div>

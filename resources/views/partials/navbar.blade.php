@@ -32,7 +32,7 @@
                     <span
                         class="absolute bottom-0 left-0 w-0 h-0.5 bg-costume-primary transition-all duration-300 group-hover:w-full"></span>
                 </a>
-                <a href="#"
+                <a href="{{ route('rankings') }}"
                     class="nav-link text-sm font-medium text-gray-600 hover:text-costume-primary transition-colors duration-200 relative group">
                     Rank
                     <span

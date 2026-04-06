@@ -75,7 +75,7 @@ class KelolaLaporanController extends Controller
             'foto_bukti'           => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
-        // Cek apakah sudah ada laporan untuk peminjaman ini (opsional)
+        // Cek apakah sudah ada laporan untuk peminjaman ini
         $existing = Laporan::where('id_peminjaman', $request->id_peminjaman)->first();
         if ($existing) {
             return redirect()->back()->withErrors(['id_peminjaman' => 'Peminjaman ini sudah memiliki laporan.'])->withInput();
@@ -96,11 +96,20 @@ class KelolaLaporanController extends Controller
 
         $laporan = Laporan::create($data);
 
-        // === HITUNG DAN TAMBAH POIN UNTUK USER ===
-        $peminjaman = Peminjaman::with('user')->find($request->id_peminjaman);
+        // Ambil peminjaman beserta detail barang
+        $peminjaman = Peminjaman::with(['detailPeminjaman.barang', 'user'])->find($request->id_peminjaman);
+
+        // ==================== UPDATE STOK BARANG ====================
+        // Jika laporan bukan "hilang", berarti barang dikembalikan → stok ditambah
+        if ($request->jenis_laporan !== 'hilang') {
+            $this->kembalikanStokBarang($peminjaman);
+        }
+        // ============================================================
+
+        // ==================== HITUNG DAN TAMBAH POIN ====================
         if ($peminjaman && $peminjaman->user) {
             $user = $peminjaman->user;
-            $tanggalJatuhTempo = $peminjaman->tanggal_kembali; // dari tabel peminjaman
+            $tanggalJatuhTempo = $peminjaman->tanggal_kembali;
             $tanggalDikembalikan = $request->tanggal_dikembalikan ? new \DateTime($request->tanggal_dikembalikan) : null;
 
             $poin = $this->hitungPoin(
@@ -110,16 +119,12 @@ class KelolaLaporanController extends Controller
                 $tanggalJatuhTempo
             );
 
-            // Tambahkan poin ke user
             $user->points = ($user->points ?? 0) + $poin;
             $user->save();
-
-            // (Opsional) Simpan riwayat poin di tabel terpisah
-            // \App\Models\PoinHistory::create([...]);
         }
-        // ======================================
+        // ================================================================
 
-        return redirect()->route('reports.index')->with('success', 'Laporan berhasil ditambahkan. Poin user telah diperbarui.');
+        return redirect()->route('reports.index')->with('success', 'Laporan berhasil ditambahkan. Stok barang dan poin user telah diperbarui.');
     }
 
     // EDIT – form edit laporan
@@ -143,9 +148,28 @@ class KelolaLaporanController extends Controller
         ]);
 
         // Ambil data lama sebelum diubah
-        $oldData = $laporan->only(['jenis_laporan', 'kondisi_barang', 'tanggal_dikembalikan']);
-        $oldPeminjaman = Peminjaman::with('user')->find($laporan->id_peminjaman);
+        $oldJenisLaporan = $laporan->jenis_laporan;
+        $oldKondisiBarang = $laporan->kondisi_barang;
+        $oldTanggalDikembalikan = $laporan->tanggal_dikembalikan;
 
+        $peminjaman = Peminjaman::with(['detailPeminjaman.barang', 'user'])->find($laporan->id_peminjaman);
+
+        // ==================== SESUAIKAN STOK BERDASARKAN PERUBAHAN JENIS LAPORAN ====================
+        // Kasus 1: Dari BUKAN hilang → menjadi hilang
+        if ($oldJenisLaporan !== 'hilang' && $request->jenis_laporan === 'hilang') {
+            // Sebelumnya stok sudah ditambah (karena dikembalikan), sekarang harus dikurangi karena hilang
+            $this->kurangiStokBarang($peminjaman);
+        }
+        // Kasus 2: Dari hilang → menjadi BUKAN hilang
+        elseif ($oldJenisLaporan === 'hilang' && $request->jenis_laporan !== 'hilang') {
+            // Sebelumnya stok tidak ditambah (karena hilang), sekarang harus ditambah karena dikembalikan
+            $this->kembalikanStokBarang($peminjaman);
+        }
+        // Kasus 3: Sama-sama bukan hilang → tidak perlu ubah stok (sudah benar)
+        // Kasus 4: Sama-sama hilang → tidak perlu ubah stok
+        // ============================================================================================
+
+        // Update data laporan
         $data = $request->only(['jenis_laporan', 'kondisi_barang', 'tanggal_dipinjam', 'tanggal_dikembalikan']);
 
         if ($request->hasFile('foto_bukti')) {
@@ -157,16 +181,16 @@ class KelolaLaporanController extends Controller
 
         $laporan->update($data);
 
-        // === UPDATE POIN USER ===
-        if ($oldPeminjaman && $oldPeminjaman->user) {
-            $user = $oldPeminjaman->user;
-            $tanggalJatuhTempo = $oldPeminjaman->tanggal_kembali;
+        // ==================== UPDATE POIN USER ====================
+        if ($peminjaman && $peminjaman->user) {
+            $user = $peminjaman->user;
+            $tanggalJatuhTempo = $peminjaman->tanggal_kembali;
 
-            // Hitung poin lama (sebelum update)
+            // Hitung poin lama
             $poinLama = $this->hitungPoin(
-                $oldData['jenis_laporan'],
-                $oldData['kondisi_barang'],
-                $oldData['tanggal_dikembalikan'] ? new \DateTime($oldData['tanggal_dikembalikan']) : null,
+                $oldJenisLaporan,
+                $oldKondisiBarang,
+                $oldTanggalDikembalikan ? new \DateTime($oldTanggalDikembalikan) : null,
                 $tanggalJatuhTempo
             );
 
@@ -178,21 +202,35 @@ class KelolaLaporanController extends Controller
                 $tanggalJatuhTempo
             );
 
-            // Koreksi poin: kurangi poin lama, tambah poin baru
             $user->points = ($user->points ?? 0) - $poinLama + $poinBaru;
             $user->save();
         }
-        // =================================
+        // ==========================================================
 
-        return redirect()->route('reports.index')->with('success', 'Laporan berhasil diperbarui. Poin user telah disesuaikan.');
+        return redirect()->route('reports.index')->with('success', 'Laporan berhasil diperbarui. Stok barang dan poin user telah disesuaikan.');
     }
 
     // DESTROY – soft delete
     public function destroy($id)
     {
+        $laporan = Laporan::onlyTrashed()->findOrFail($id); // Hati-hati: ini cari yang sudah di trash? Tidak, destroy seharusnya cari yang aktif
+        // Perbaiki: cari laporan aktif, bukan onlyTrashed
         $laporan = Laporan::findOrFail($id);
-        $peminjaman = Peminjaman::with('user')->find($laporan->id_peminjaman);
 
+        $peminjaman = Peminjaman::with(['detailPeminjaman.barang', 'user'])->find($laporan->id_peminjaman);
+
+        // ==================== SESUAIKAN STOK SEBELUM SOFT DELETE ====================
+        // Jika laporan yang dihapus adalah laporan pengembalian (bukan hilang), maka stok harus dikurangi
+        // karena pengembalian dibatalkan, barang kembali ke status dipinjam.
+        if ($laporan->jenis_laporan !== 'hilang') {
+            $this->kurangiStokBarang($peminjaman);
+        } else {
+            // Jika laporan hilang dihapus, berarti barang tidak jadi hilang → stok harus ditambah kembali
+            $this->kembalikanStokBarang($peminjaman);
+        }
+        // ========================================================================
+
+        // ==================== KEMBALIKAN POIN USER ====================
         if ($peminjaman && $peminjaman->user) {
             $user = $peminjaman->user;
             $tanggalJatuhTempo = $peminjaman->tanggal_kembali;
@@ -202,14 +240,14 @@ class KelolaLaporanController extends Controller
                 $laporan->tanggal_dikembalikan ? new \DateTime($laporan->tanggal_dikembalikan) : null,
                 $tanggalJatuhTempo
             );
-            // Kembalikan poin karena laporan dihapus
             $user->points = ($user->points ?? 0) - $poinYangDiberikan;
             $user->save();
         }
+        // =============================================================
 
-        $laporan->delete();
+        $laporan->delete(); // soft delete
 
-        return redirect()->route('reports.index')->with('success', 'Laporan dipindahkan ke tempat sampah. Poin user dikembalikan.');
+        return redirect()->route('reports.index')->with('success', 'Laporan dipindahkan ke tempat sampah. Stok barang dan poin user telah dikembalikan.');
     }
 
     // TRASH – daftar laporan di sampah
@@ -218,7 +256,7 @@ class KelolaLaporanController extends Controller
         $search = $request->get('search');
 
         $laporans = Laporan::onlyTrashed()
-            ->with(['peminjaman.user', 'peminjaman.detailPeminjaman.barang'])  // relasi yang benar
+            ->with(['peminjaman.user', 'peminjaman.detailPeminjaman.barang'])
             ->when($search, function ($q) use ($search) {
                 $q->whereHas('peminjaman.user', fn($q2) => $q2->where('username', 'like', "%$search%"))
                     ->orWhereHas('peminjaman.detailPeminjaman.barang', fn($q2) => $q2->where('nama_barang', 'like', "%$search%"));
@@ -234,8 +272,20 @@ class KelolaLaporanController extends Controller
     public function restore($id)
     {
         $laporan = Laporan::onlyTrashed()->findOrFail($id);
-        $peminjaman = Peminjaman::with('user')->find($laporan->id_peminjaman);
+        $peminjaman = Peminjaman::with(['detailPeminjaman.barang', 'user'])->find($laporan->id_peminjaman);
 
+        // ==================== SESUAIKAN STOK ====================
+        // Jika laporan yang dipulihkan adalah laporan pengembalian (bukan hilang), stok harus ditambah lagi
+        // karena barang kembali ke status dikembalikan.
+        if ($laporan->jenis_laporan !== 'hilang') {
+            $this->kembalikanStokBarang($peminjaman);
+        } else {
+            // Jika laporan hilang dipulihkan, stok harus dikurangi lagi (karena barang hilang)
+            $this->kurangiStokBarang($peminjaman);
+        }
+        // =======================================================
+
+        // ==================== TAMBAHKAN POIN KEMBALI ====================
         if ($peminjaman && $peminjaman->user) {
             $user = $peminjaman->user;
             $tanggalJatuhTempo = $peminjaman->tanggal_kembali;
@@ -248,24 +298,35 @@ class KelolaLaporanController extends Controller
             $user->points = ($user->points ?? 0) + $poin;
             $user->save();
         }
+        // ===============================================================
 
         $laporan->restore();
 
-        return redirect()->route('reports.trash')->with('success', 'Laporan berhasil dipulihkan. Poin user diperbarui.');
+        return redirect()->route('reports.trash')->with('success', 'Laporan berhasil dipulihkan. Stok barang dan poin user diperbarui.');
     }
 
     // FORCE DELETE – hapus permanen + foto
     public function forceDelete($id)
     {
         $laporan = Laporan::onlyTrashed()->findOrFail($id);
+        $peminjaman = Peminjaman::with(['detailPeminjaman.barang', 'user'])->find($laporan->id_peminjaman);
 
+        // ==================== SESUAIKAN STOK (sama seperti soft delete) ====================
+        if ($laporan->jenis_laporan !== 'hilang') {
+            $this->kurangiStokBarang($peminjaman);
+        } else {
+            $this->kembalikanStokBarang($peminjaman);
+        }
+        // =================================================================================
+
+        // Hapus foto jika ada
         if ($laporan->foto_bukti) {
             Storage::disk('public')->delete($laporan->foto_bukti);
         }
 
         $laporan->forceDelete();
 
-        return redirect()->route('reports.trash')->with('success', 'Laporan berhasil dihapus secara permanen.');
+        return redirect()->route('reports.trash')->with('success', 'Laporan berhasil dihapus secara permanen. Stok barang telah disesuaikan.');
     }
 
     // EXPORT PDF
@@ -294,33 +355,67 @@ class KelolaLaporanController extends Controller
         return Excel::download(new LaporanExport($request->all()), 'laporan-' . now()->format('Y-m-d') . '.xlsx');
     }
 
+    // =========================================================================
+    //  PRIVATE HELPER METHODS
+    // =========================================================================
+
+    /**
+     * Menambah stok barang berdasarkan detail peminjaman (barang dikembalikan)
+     */
+    private function kembalikanStokBarang($peminjaman)
+    {
+        if (!$peminjaman) return;
+
+        foreach ($peminjaman->detailPeminjaman as $detail) {
+            $barang = $detail->barang;
+            if ($barang) {
+                $barang->incrementStock($detail->jumlah);
+            }
+        }
+    }
+
+    /**
+     * Mengurangi stok barang berdasarkan detail peminjaman (barang dipinjam/dihilangkan)
+     */
+    private function kurangiStokBarang($peminjaman)
+    {
+        if (!$peminjaman) return;
+
+        foreach ($peminjaman->detailPeminjaman as $detail) {
+            $barang = $detail->barang;
+            if ($barang) {
+                $barang->decrementStock($detail->jumlah);
+            }
+        }
+    }
+
+    /**
+     * Hitung poin berdasarkan jenis laporan, kondisi barang, dan tanggal
+     */
     private function hitungPoin($jenis_laporan, $kondisi_barang, $tanggal_dikembalikan, $tanggal_jatuh_tempo)
     {
         $poin = 0;
 
-        // Jika hilang, langsung -15 tanpa cek lainnya
         if ($jenis_laporan == 'hilang') {
             return -15;
         }
 
-        // 1. Ketepatan waktu
+        // Ketepatan waktu
         if ($jenis_laporan == 'telat mengembalikan') {
-            $poin += -3; // telat
+            $poin += -3;
         } elseif ($jenis_laporan == 'dikembalikan') {
-            // Cek apakah benar-benar tepat waktu berdasarkan tanggal
             if ($tanggal_dikembalikan && $tanggal_jatuh_tempo) {
                 if ($tanggal_dikembalikan <= $tanggal_jatuh_tempo) {
-                    $poin += 2; // tepat waktu
+                    $poin += 2;
                 } else {
-                    $poin += -3; // sebenarnya telat, tapi mungkin admin salah pilih jenis? tetap ikuti aturan
+                    $poin += -3;
                 }
             } else {
-                // fallback: jika tidak ada tanggal, asumsikan tepat waktu? sebaiknya diisi
                 $poin += 2;
             }
         }
 
-        // 2. Kondisi barang
+        // Kondisi barang
         switch ($kondisi_barang) {
             case 'baik':
                 $poin += 3;
@@ -329,7 +424,6 @@ class KelolaLaporanController extends Controller
                 $poin += -5;
                 break;
             case 'masih di pinjam':
-                // Tidak dapat poin karena belum dikembalikan
                 $poin += 0;
                 break;
         }

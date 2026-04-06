@@ -390,70 +390,94 @@
         }
     })();
 
-    // ========== TOGGLE 3 ⇄ 9 + TOMBOL LIAT SEMUA ASET ==========
-    (function() {
-        const popularGrid = document.getElementById('popularGrid');
-        const btnContainer = document.getElementById('buttonContainer');
-        if (!popularGrid || !btnContainer) return;
+// ========== TOGGLE 3 ⇄ max 9 + TOMBOL LIAT SEMUA ASET ==========
+(function() {
+    const popularGrid = document.getElementById('popularGrid');
+    const btnContainer = document.getElementById('buttonContainer');
+    if (!popularGrid || !btnContainer) return;
 
-        const cards = document.querySelectorAll('#popularGrid > div[data-popular-index]');
-        const totalCards = cards.length; // harusnya 9
+    const cards = document.querySelectorAll('#popularGrid > div[data-popular-index]');
+    const totalCards = cards.length; // jumlah aset yang tersedia (1-9)
 
-        let showingAllNine = false; // state: false = 3 card, true = 9 card
+    let showingAll = false; // false = hanya 3 pertama, true = semua card
 
-        function renderButtons() {
-            if (!showingAllNine) {
-                // Tampilkan tombol "Lihat Lebih Banyak"
-                btnContainer.innerHTML = `
-                    <button id="btnShowMore" class="inline-flex items-center gap-2 px-8 py-3 bg-costume-primary text-white rounded-xl font-semibold hover:bg-costume-primary/90 transition-all shadow-md shadow-blue-500/25">
-                        Lihat Lebih Banyak
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                    </button>
-                `;
-                document.getElementById('btnShowMore')?.addEventListener('click', () => setShowNine(true));
-            } else {
-                // Tampilkan dua tombol: "Lihat Lebih Sedikit" dan "Lihat Semua Aset"
-                btnContainer.innerHTML = `
-                    <button id="btnShowLess" class="inline-flex items-center gap-2 px-8 py-3 bg-slate-200 text-slate-700 rounded-xl font-semibold hover:bg-slate-300 transition-all shadow-md">
-                        Lihat Lebih Sedikit
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
-                    </button>
-                    <a href="{{ route('all-assets') }}" id="btnViewAll" class="inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-costume-primary to-blue-600 text-white rounded-xl font-semibold hover:from-costume-primary/90 hover:to-blue-600/90 transition-all shadow-md shadow-blue-500/30 hover:shadow-lg">
-                        Lihat Semua Aset
-                        <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-                    </a>
-                `;
-                document.getElementById('btnShowLess')?.addEventListener('click', () => setShowNine(false));
-                // Link "Lihat Semua Aset" sudah otomatis mengarah ke route all-assets
-            }
+    function updateButtons() {
+        // Jika totalCards <= 3, sembunyikan semua tombol
+        if (totalCards <= 3) {
+            btnContainer.innerHTML = '';
+            return;
         }
 
-        function setShowNine(showNine) {
-            showingAllNine = showNine;
-            cards.forEach((card, idx) => {
-                if (showNine) {
-                    if (idx < 9) {
-                        card.style.display = '';
-                        card.classList.remove('visible');
-                        setTimeout(() => card.classList.add('visible'), 50);
-                    } else {
-                        card.style.display = 'none';
-                    }
+        if (!showingAll) {
+            btnContainer.innerHTML = `
+                <button id="btnShowMore" class="inline-flex items-center gap-2 px-8 py-3 bg-costume-primary text-white rounded-xl font-semibold hover:bg-costume-primary/90 transition-all shadow-md shadow-blue-500/25">
+                    Lihat Lebih Banyak
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+            `;
+            document.getElementById('btnShowMore')?.addEventListener('click', () => setShowAll(true));
+        } else {
+            btnContainer.innerHTML = `
+                <button id="btnShowLess" class="inline-flex items-center gap-2 px-8 py-3 bg-slate-200 text-slate-700 rounded-xl font-semibold hover:bg-slate-300 transition-all shadow-md">
+                    Lihat Lebih Sedikit
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
+                </button>
+                <a href="{{ route('all-assets') }}" id="btnViewAll" class="inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-costume-primary to-blue-600 text-white rounded-xl font-semibold hover:from-costume-primary/90 hover:to-blue-600/90 transition-all shadow-md shadow-blue-500/30 hover:shadow-lg">
+                    Lihat Semua Aset
+                    <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                </a>
+            `;
+            document.getElementById('btnShowLess')?.addEventListener('click', () => setShowAll(false));
+        }
+    }
+
+    function setShowAll(showAll) {
+        showingAll = showAll;
+        cards.forEach((card, idx) => {
+            if (showAll) {
+                // Tampilkan semua card (totalCards)
+                if (idx < totalCards) {
+                    card.style.display = '';
+                    card.classList.remove('visible');
+                    setTimeout(() => card.classList.add('visible'), 50);
                 } else {
-                    if (idx < 3) {
-                        card.style.display = '';
-                        card.classList.remove('visible');
-                        setTimeout(() => card.classList.add('visible'), 50);
-                    } else {
-                        card.style.display = 'none';
-                    }
+                    card.style.display = 'none';
                 }
-            });
-            renderButtons();
-        }
+            } else {
+                // Hanya tampilkan 3 pertama
+                if (idx < 3) {
+                    card.style.display = '';
+                    card.classList.remove('visible');
+                    setTimeout(() => card.classList.add('visible'), 50);
+                } else {
+                    card.style.display = 'none';
+                }
+            }
+        });
+        updateButtons();
+    }
 
-        // Inisialisasi: hanya 3 card yang tampil
-        setShowNine(false);
-    })();
+    // Inisialisasi
+    if (totalCards <= 3) {
+        // Tampilkan semua card tanpa tombol
+        cards.forEach((card, idx) => {
+            card.style.display = '';
+            setTimeout(() => card.classList.add('visible'), 50);
+        });
+        btnContainer.innerHTML = '';
+    } else {
+        // Tampilkan hanya 3 pertama
+        cards.forEach((card, idx) => {
+            if (idx < 3) {
+                card.style.display = '';
+                setTimeout(() => card.classList.add('visible'), 50);
+            } else {
+                card.style.display = 'none';
+            }
+        });
+        showingAll = false;
+        updateButtons();
+    }
+})();
 </script>
 @endpush

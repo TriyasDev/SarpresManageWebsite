@@ -12,9 +12,21 @@ class KelolaAsetController extends Controller
     // ──────────────────────────────────────────────────────────────
     //  INDEX – daftar aset aktif (card grid)
     // ──────────────────────────────────────────────────────────────
-    public function index()
+    public function index(Request $request)
     {
-        $barangs      = Barang::latest()->get();
+        $search   = $request->input('search');
+        $kategori = $request->input('kategori');
+
+        $query = Barang::query();
+
+        if ($search) {
+            $query->where('nama_barang', 'like', '%' . $search . '%');
+        }
+        if ($kategori) {
+            $query->where('kategori', $kategori);
+        }
+
+        $barangs = $query->latest()->paginate(12)->withQueryString();
         $trashedCount = Barang::onlyTrashed()->count();
 
         return view('admin.kelola_aset.index', compact('barangs', 'trashedCount'));
