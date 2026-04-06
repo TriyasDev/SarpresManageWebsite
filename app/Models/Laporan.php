@@ -37,6 +37,11 @@ class Laporan extends Model
     {
         return $this->belongsTo(User::class, 'id_admin', 'id_user');
     }
+    
+    public function details()
+    {
+        return $this->hasMany(LaporanDetail::class, 'id_laporan', 'id_laporan');
+    }
 
     public function getLabelJenisAttribute()
     {

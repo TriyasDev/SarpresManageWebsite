@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Models\Barang;
 
 class KelolaLaporanController extends Controller
 {
@@ -56,7 +57,14 @@ class KelolaLaporanController extends Controller
                     'user' => $loan->user->username,
                     'barang' => $loan->detailPeminjaman->first()?->barang?->nama_barang ?? '-',
                     'tenggat' => $loan->tanggal_kembali->format('d/m/Y'),
-                    'tanggal_pinjam' => $loan->tanggal_pinjam?->format('Y-m-d\TH:i') ?? ''
+                    'tanggal_pinjam' => $loan->tanggal_pinjam?->format('Y-m-d\TH:i') ?? '',
+                    'details' => $loan->detailPeminjaman->map(function ($detail) {
+                        return [
+                            'id_barang' => $detail->id_barang,
+                            'nama_barang' => $detail->barang->nama_barang,
+                            'jumlah_pinjam' => $detail->jumlah,
+                        ];
+                    })->toArray()
                 ];
             });
 
@@ -73,71 +81,94 @@ class KelolaLaporanController extends Controller
             'tanggal_dipinjam'     => 'nullable|date',
             'tanggal_dikembalikan' => 'nullable|date',
             'foto_bukti'           => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'details'              => 'required|array',
+            'details.*.id_barang'  => 'required|exists:tb_barang,id_barang',
+            'details.*.jumlah_dikembalikan' => 'required|integer|min:0',
         ]);
 
-        // Cek apakah sudah ada laporan untuk peminjaman ini
-        $existing = Laporan::where('id_peminjaman', $request->id_peminjaman)->first();
-        if ($existing) {
-            return redirect()->back()->withErrors(['id_peminjaman' => 'Peminjaman ini sudah memiliki laporan.'])->withInput();
+        // Validasi tambahan: jumlah dikembalikan tidak boleh melebihi jumlah pinjam
+        $peminjaman = Peminjaman::with('detailPeminjaman.barang')->findOrFail($request->id_peminjaman);
+        foreach ($request->details as $detail) {
+            $detailPinjam = $peminjaman->detailPeminjaman->firstWhere('id_barang', $detail['id_barang']);
+            if (!$detailPinjam) {
+                return back()->withErrors(['details' => 'Barang tidak valid untuk peminjaman ini.'])->withInput();
+            }
+            if ($detail['jumlah_dikembalikan'] > $detailPinjam->jumlah) {
+                return back()->withErrors(["details.{$detail['id_barang']}" => "Jumlah dikembalikan untuk {$detailPinjam->barang->nama_barang} melebihi jumlah pinjam."])->withInput();
+            }
         }
 
-        $data = $request->only([
-            'id_peminjaman',
-            'jenis_laporan',
-            'kondisi_barang',
-            'tanggal_dipinjam',
-            'tanggal_dikembalikan',
-        ]);
-        $data['id_admin'] = Auth::id();
+        // Cek duplikat laporan
+        if (Laporan::where('id_peminjaman', $request->id_peminjaman)->exists()) {
+            return back()->withErrors(['id_peminjaman' => 'Peminjaman ini sudah memiliki laporan.'])->withInput();
+        }
 
+        // Simpan laporan
+        $data = $request->only(['id_peminjaman', 'jenis_laporan', 'kondisi_barang', 'tanggal_dipinjam', 'tanggal_dikembalikan']);
+        $data['id_admin'] = Auth::id();
         if ($request->hasFile('foto_bukti')) {
             $data['foto_bukti'] = $request->file('foto_bukti')->store('laporan/foto', 'public');
         }
-
         $laporan = Laporan::create($data);
 
-        // Ambil peminjaman beserta detail barang
-        $peminjaman = Peminjaman::with(['detailPeminjaman.barang', 'user'])->find($request->id_peminjaman);
-
-        // ==================== UPDATE STOK BARANG ====================
-        // Jika laporan bukan "hilang", berarti barang dikembalikan → stok ditambah
-        if ($request->jenis_laporan !== 'hilang') {
-            $this->kembalikanStokBarang($peminjaman);
+        // Simpan detail laporan
+        foreach ($request->details as $detail) {
+            $laporan->details()->create([
+                'id_barang' => $detail['id_barang'],
+                'jumlah_dikembalikan' => $detail['jumlah_dikembalikan'],
+            ]);
         }
-        // ============================================================
 
-        // ==================== HITUNG DAN TAMBAH POIN ====================
-        if ($peminjaman && $peminjaman->user) {
-            $user = $peminjaman->user;
+        // Update stok barang (hanya untuk barang yang dikembalikan)
+        if ($request->jenis_laporan !== 'hilang') {
+            foreach ($request->details as $detail) {
+                $barang = Barang::find($detail['id_barang']);
+                if ($barang && $detail['jumlah_dikembalikan'] > 0) {
+                    $barang->incrementStock($detail['jumlah_dikembalikan']);
+                }
+            }
+        }
+
+        // Update status peminjaman
+        $peminjaman->update([
+            'status' => ($request->jenis_laporan === 'hilang') ? 'hilang' : 'dikembalikan',
+            'tanggal_kembali_aktual' => $request->tanggal_dikembalikan ?: now(),
+            'return_condition' => $request->kondisi_barang,
+            'is_late' => ($request->jenis_laporan === 'telat mengembalikan'),
+        ]);
+
+        // Hitung poin user (sesuai logika yang sudah ada)
+        $user = $peminjaman->user;
+        if ($user) {
             $tanggalJatuhTempo = $peminjaman->tanggal_kembali;
             $tanggalDikembalikan = $request->tanggal_dikembalikan ? new \DateTime($request->tanggal_dikembalikan) : null;
-
             $poin = $this->hitungPoin(
                 $request->jenis_laporan,
                 $request->kondisi_barang,
                 $tanggalDikembalikan,
                 $tanggalJatuhTempo
             );
-
             $user->points = ($user->points ?? 0) + $poin;
             $user->save();
         }
-        // ================================================================
 
-        return redirect()->route('reports.index')->with('success', 'Laporan berhasil ditambahkan. Stok barang dan poin user telah diperbarui.');
+        return redirect()->route('reports.index')->with('success', 'Laporan berhasil ditambahkan. Status peminjaman, stok barang, dan poin user telah diperbarui.');
     }
 
     // EDIT – form edit laporan
     public function edit($id)
     {
-        $laporan = Laporan::findOrFail($id);
-        return view('admin.kelola_laporan.edit', compact('laporan'));
+        $laporan = Laporan::with('details')->findOrFail($id);
+        // Ambil data peminjaman untuk menampilkan detail barang yang dipinjam (sebagai referensi)
+        $peminjaman = Peminjaman::with('detailPeminjaman.barang')->find($laporan->id_peminjaman);
+        return view('admin.kelola_laporan.edit', compact('laporan', 'peminjaman'));
     }
 
     // UPDATE – simpan perubahan laporan
     public function update(Request $request, $id)
     {
-        $laporan = Laporan::findOrFail($id);
+        $laporan = Laporan::with('details')->findOrFail($id);
+        $peminjaman = Peminjaman::with('detailPeminjaman.barang')->find($laporan->id_peminjaman);
 
         $request->validate([
             'jenis_laporan'        => 'required|in:dikembalikan,telat mengembalikan,hilang',
@@ -145,69 +176,88 @@ class KelolaLaporanController extends Controller
             'tanggal_dipinjam'     => 'nullable|date',
             'tanggal_dikembalikan' => 'nullable|date',
             'foto_bukti'           => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'details'              => 'required|array',
+            'details.*.id_barang'  => 'required|exists:tb_barang,id_barang',
+            'details.*.jumlah_dikembalikan' => 'required|integer|min:0',
         ]);
 
-        // Ambil data lama sebelum diubah
-        $oldJenisLaporan = $laporan->jenis_laporan;
-        $oldKondisiBarang = $laporan->kondisi_barang;
-        $oldTanggalDikembalikan = $laporan->tanggal_dikembalikan;
-
-        $peminjaman = Peminjaman::with(['detailPeminjaman.barang', 'user'])->find($laporan->id_peminjaman);
-
-        // ==================== SESUAIKAN STOK BERDASARKAN PERUBAHAN JENIS LAPORAN ====================
-        // Kasus 1: Dari BUKAN hilang → menjadi hilang
-        if ($oldJenisLaporan !== 'hilang' && $request->jenis_laporan === 'hilang') {
-            // Sebelumnya stok sudah ditambah (karena dikembalikan), sekarang harus dikurangi karena hilang
-            $this->kurangiStokBarang($peminjaman);
-        }
-        // Kasus 2: Dari hilang → menjadi BUKAN hilang
-        elseif ($oldJenisLaporan === 'hilang' && $request->jenis_laporan !== 'hilang') {
-            // Sebelumnya stok tidak ditambah (karena hilang), sekarang harus ditambah karena dikembalikan
-            $this->kembalikanStokBarang($peminjaman);
-        }
-        // Kasus 3: Sama-sama bukan hilang → tidak perlu ubah stok (sudah benar)
-        // Kasus 4: Sama-sama hilang → tidak perlu ubah stok
-        // ============================================================================================
-
-        // Update data laporan
-        $data = $request->only(['jenis_laporan', 'kondisi_barang', 'tanggal_dipinjam', 'tanggal_dikembalikan']);
-
-        if ($request->hasFile('foto_bukti')) {
-            if ($laporan->foto_bukti) {
-                Storage::disk('public')->delete($laporan->foto_bukti);
+        // Validasi jumlah dikembalikan tidak melebihi jumlah pinjam
+        foreach ($request->details as $detail) {
+            $detailPinjam = $peminjaman->detailPeminjaman->firstWhere('id_barang', $detail['id_barang']);
+            if (!$detailPinjam) {
+                return back()->withErrors(['details' => 'Barang tidak valid.'])->withInput();
             }
+            if ($detail['jumlah_dikembalikan'] > $detailPinjam->jumlah) {
+                return back()->withErrors(["details.{$detail['id_barang']}" => "Jumlah dikembalikan melebihi jumlah pinjam."])->withInput();
+            }
+        }
+
+        // Simpan data lama untuk koreksi stok dan poin
+        $oldDetails = $laporan->details->keyBy('id_barang');
+        $oldJenis = $laporan->jenis_laporan;
+        $oldKondisi = $laporan->kondisi_barang;
+        $oldTglKembali = $laporan->tanggal_dikembalikan;
+
+        // Update laporan
+        $data = $request->only(['jenis_laporan', 'kondisi_barang', 'tanggal_dipinjam', 'tanggal_dikembalikan']);
+        if ($request->hasFile('foto_bukti')) {
+            if ($laporan->foto_bukti) Storage::disk('public')->delete($laporan->foto_bukti);
             $data['foto_bukti'] = $request->file('foto_bukti')->store('laporan/foto', 'public');
         }
-
         $laporan->update($data);
 
-        // ==================== UPDATE POIN USER ====================
-        if ($peminjaman && $peminjaman->user) {
-            $user = $peminjaman->user;
+        // Update detail laporan
+        foreach ($request->details as $detail) {
+            $existing = $laporan->details->firstWhere('id_barang', $detail['id_barang']);
+            if ($existing) {
+                $existing->update(['jumlah_dikembalikan' => $detail['jumlah_dikembalikan']]);
+            } else {
+                $laporan->details()->create($detail);
+            }
+        }
+        // Hapus detail yang tidak ada di request
+        $currentIds = collect($request->details)->pluck('id_barang')->toArray();
+        $laporan->details()->whereNotIn('id_barang', $currentIds)->delete();
+
+        // Koreksi stok barang
+        // 1. Kembalikan stok ke keadaan sebelum laporan (berdasarkan oldDetails)
+        if ($oldJenis !== 'hilang') {
+            foreach ($oldDetails as $detail) {
+                $barang = Barang::find($detail->id_barang);
+                if ($barang && $detail->jumlah_dikembalikan > 0) {
+                    $barang->decrementStock($detail->jumlah_dikembalikan);
+                }
+            }
+        }
+        // 2. Terapkan stok baru berdasarkan laporan yang sudah diupdate
+        if ($request->jenis_laporan !== 'hilang') {
+            foreach ($request->details as $detail) {
+                $barang = Barang::find($detail['id_barang']);
+                if ($barang && $detail['jumlah_dikembalikan'] > 0) {
+                    $barang->incrementStock($detail['jumlah_dikembalikan']);
+                }
+            }
+        }
+
+        // Update status peminjaman
+        $newStatus = ($request->jenis_laporan === 'hilang') ? 'hilang' : 'dikembalikan';
+        $peminjaman->update([
+            'status' => $newStatus,
+            'tanggal_kembali_aktual' => $request->tanggal_dikembalikan ?: now(),
+            'return_condition' => $request->kondisi_barang,
+            'is_late' => ($request->jenis_laporan === 'telat mengembalikan'),
+        ]);
+
+        // Koreksi poin user
+        if ($user = $peminjaman->user) {
             $tanggalJatuhTempo = $peminjaman->tanggal_kembali;
-
-            // Hitung poin lama
-            $poinLama = $this->hitungPoin(
-                $oldJenisLaporan,
-                $oldKondisiBarang,
-                $oldTanggalDikembalikan ? new \DateTime($oldTanggalDikembalikan) : null,
-                $tanggalJatuhTempo
-            );
-
-            // Hitung poin baru
-            $poinBaru = $this->hitungPoin(
-                $request->jenis_laporan,
-                $request->kondisi_barang,
-                $request->tanggal_dikembalikan ? new \DateTime($request->tanggal_dikembalikan) : null,
-                $tanggalJatuhTempo
-            );
-
+            $poinLama = $this->hitungPoin($oldJenis, $oldKondisi, $oldTglKembali ? new \DateTime($oldTglKembali) : null, $tanggalJatuhTempo);
+            $poinBaru = $this->hitungPoin($request->jenis_laporan, $request->kondisi_barang, $request->tanggal_dikembalikan ? new \DateTime($request->tanggal_dikembalikan) : null, $tanggalJatuhTempo);
             $user->points = ($user->points ?? 0) - $poinLama + $poinBaru;
             $user->save();
         }
-        // ==========================================================
 
-        return redirect()->route('reports.index')->with('success', 'Laporan berhasil diperbarui. Stok barang dan poin user telah disesuaikan.');
+        return redirect()->route('reports.index')->with('success', 'Laporan berhasil diperbarui.');
     }
 
     // DESTROY – soft delete

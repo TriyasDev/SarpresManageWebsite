@@ -25,7 +25,7 @@
     </div>
 @endif
 
-<form action="{{ route('reports.store') }}" method="POST" enctype="multipart/form-data">
+<form action="{{ route('reports.store') }}" method="POST" enctype="multipart/form-data" id="reportForm">
     @csrf
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 lg:p-8">
 
@@ -47,13 +47,22 @@
                         <div id="loanDropdown" class="absolute z-20 w-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg max-h-60 overflow-y-auto hidden"></div>
                     </div>
                     @error('id_peminjaman')<p class="text-red-500 text-xs mt-1 ml-3">{{ $message }}</p>@enderror
+
+                    {{-- Detail Barang yang Dipinjam --}}
+                    <div id="detailBarangContainer" class="mt-4 hidden">
+                        <label class="block text-gray-800 font-semibold mb-2 text-sm">Detail Barang & Jumlah Dikembalikan</label>
+                        <div class="bg-gray-50 rounded-2xl p-4 border border-gray-200">
+                            <div id="detailBarangList" class="space-y-3"></div>
+                            <div id="detailError" class="text-red-500 text-xs mt-2 hidden"></div>
+                        </div>
+                    </div>
                 </div>
 
                 {{-- Jenis Laporan --}}
                 <div>
                     <label class="block text-gray-800 font-semibold mb-2 text-sm">Jenis Laporan <span class="text-red-500">*</span></label>
                     <div class="relative">
-                        <select name="jenis_laporan"
+                        <select name="jenis_laporan" id="jenis_laporan"
                                 class="w-full px-5 py-3 border-2 border-gray-300 rounded-full outline-none focus:ring-2 focus:ring-costume-second focus:border-transparent appearance-none bg-white cursor-pointer text-sm transition @error('jenis_laporan') border-red-400 @enderror">
                             <option value="">-- Pilih Jenis --</option>
                             <option value="dikembalikan"        {{ old('jenis_laporan') === 'dikembalikan'        ? 'selected' : '' }}>Dikembalikan</option>
@@ -73,7 +82,7 @@
                 <div>
                     <label class="block text-gray-800 font-semibold mb-2 text-sm">Kondisi Barang <span class="text-red-500">*</span></label>
                     <div class="relative">
-                        <select name="kondisi_barang"
+                        <select name="kondisi_barang" id="kondisi_barang"
                                 class="w-full px-5 py-3 border-2 border-gray-300 rounded-full outline-none focus:ring-2 focus:ring-costume-second focus:border-transparent appearance-none bg-white cursor-pointer text-sm transition @error('kondisi_barang') border-red-400 @enderror">
                             <option value="">-- Pilih Kondisi --</option>
                             <option value="baik"            {{ old('kondisi_barang') === 'baik'            ? 'selected' : '' }}>Baik</option>
@@ -153,7 +162,7 @@
 
 @push('scripts')
 <script>
-    // Data dari controller
+    // Data dari controller (harus mengandung field 'details' berisi array {id_barang, nama_barang, jumlah_pinjam})
     const loansData = @json($activeLoans);
 
     // DOM elements
@@ -162,7 +171,25 @@
     const dropdown = document.getElementById('loanDropdown');
     let filteredLoans = [...loansData];
     let isOpen = false;
-    let selectedDisplayText = ''; // untuk menyimpan teks yang dipilih
+    let selectedDisplayText = '';
+
+    // Fungsi validasi jumlah dikembalikan (client-side)
+    window.validateJumlah = function(input, max) {
+        let val = parseInt(input.value);
+        if (isNaN(val)) val = 0;
+        if (val < 0) val = 0;
+        if (val > max) {
+            val = max;
+            input.value = val;
+        }
+        const errorDiv = document.getElementById('detailError');
+        if (val > max) {
+            errorDiv.innerText = `Jumlah melebihi batas maksimal (${max})`;
+            errorDiv.classList.remove('hidden');
+        } else {
+            errorDiv.classList.add('hidden');
+        }
+    };
 
     function renderDropdown() {
         if (!isOpen) {
@@ -201,11 +228,55 @@
         // Set tanggal dipinjam
         const tglPinjam = document.getElementById('tanggal_dipinjam');
         tglPinjam.value = loan.tanggal_pinjam || '';
+
+        // Tampilkan detail barang yang dipinjam
+        const container = document.getElementById('detailBarangContainer');
+        const listDiv = document.getElementById('detailBarangList');
+        const errorDiv = document.getElementById('detailError');
+        errorDiv.classList.add('hidden');
+
+        if (!loan.details || loan.details.length === 0) {
+            container.classList.add('hidden');
+            return;
+        }
+
+        container.classList.remove('hidden');
+        listDiv.innerHTML = '';
+
+        loan.details.forEach((detail, idx) => {
+            const div = document.createElement('div');
+            div.className = 'flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-200 pb-2 last:border-0';
+            div.innerHTML = `
+                <div class="flex-1">
+                    <span class="font-medium text-gray-800">${escapeHtml(detail.nama_barang)}</span>
+                    <span class="text-xs text-gray-500 ml-2">(Dipinjam: ${detail.jumlah_pinjam})</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <input type="hidden" name="details[${idx}][id_barang]" value="${detail.id_barang}">
+                    <label class="text-sm text-gray-600">Dikembalikan:</label>
+                    <input type="number" name="details[${idx}][jumlah_dikembalikan]"
+                           value="${detail.jumlah_pinjam}"
+                           min="0" max="${detail.jumlah_pinjam}"
+                           class="w-24 px-3 py-1 border border-gray-300 rounded-full text-center text-sm focus:ring-costume-second focus:border-transparent"
+                           onchange="validateJumlah(this, ${detail.jumlah_pinjam})">
+                </div>
+            `;
+            listDiv.appendChild(div);
+        });
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
     }
 
     function filterLoans() {
         const keyword = searchInput.value.trim().toLowerCase();
-        // Jika keyword sama dengan teks yang sudah dipilih, tampilkan semua data (agar dropdown tidak kosong)
         if (keyword === selectedDisplayText.toLowerCase()) {
             filteredLoans = [...loansData];
         } else if (keyword === '') {
@@ -221,7 +292,6 @@
     }
 
     searchInput.addEventListener('input', () => {
-        // Jika user mulai mengetik, reset selectedDisplayText agar filter normal
         if (searchInput.value !== selectedDisplayText) {
             selectedDisplayText = '';
         }
@@ -266,7 +336,18 @@
         tglKembali.value = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
     }
 
-    // Upload foto
+    // Validasi form sebelum submit
+    const form = document.getElementById('reportForm');
+    form.addEventListener('submit', function(e) {
+        if (hiddenId.value === '') {
+            e.preventDefault();
+            alert('Silakan pilih peminjaman terlebih dahulu.');
+            return;
+        }
+        // Optional: cek apakah ada detail barang yang melebihi max (sudah di-handle oleh onchange)
+    });
+
+    // Upload foto (sama seperti sebelumnya)
     const uploadArea = document.getElementById('uploadArea');
     const photoInput = document.getElementById('photoInput');
     const uploadPlaceholder = document.getElementById('uploadPlaceholder');
