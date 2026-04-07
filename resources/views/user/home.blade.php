@@ -145,97 +145,44 @@
         </div>
     </section>
 
-    {{-- SARANA/PRASARANA SECTION --}}
-    <section class="py-24 bg-slate-50" id="sarana">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+{{-- SARANA/PRASARANA SECTION --}}
+<section class="py-24 bg-slate-50" id="sarana">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
 
-            <div class="text-center mb-16 opacity-0 translate-y-5 [&.visible]:opacity-100 [&.visible]:translate-y-0 transition-all duration-700" data-animate>
-                <div class="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 rounded-full mb-4">
-                    <span class="text-sm font-semibold text-costume-primary">Katalog</span>
-                </div>
-                <h2 class="text-3xl lg:text-5xl font-bold text-slate-900 mb-4">Sarana & Prasarana</h2>
-                <p class="text-lg text-slate-600 max-w-2xl mx-auto">Berbagai aset untuk mendukung kegiatan belajar</p>
+        <div class="text-center mb-16 opacity-0 translate-y-5 [&.visible]:opacity-100 [&.visible]:translate-y-0 transition-all duration-700" data-animate>
+            <div class="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 rounded-full mb-4">
+                <span class="text-sm font-semibold text-costume-primary">Katalog</span>
             </div>
-
-            {{-- Category Tabs --}}
-            <div class="flex flex-wrap justify-center gap-3 mb-12 opacity-0 translate-y-5 [&.visible]:opacity-100 [&.visible]:translate-y-0 transition-all duration-700" data-animate>
-                <a href="{{ route('home') }}"
-                    class="px-6 py-2.5 rounded-full font-medium text-sm transition-all
-                           {{ $activeKategori === '' ? 'bg-costume-primary text-white shadow-md shadow-blue-500/25' : 'bg-white text-slate-700 border border-slate-200 hover:border-costume-primary hover:text-costume-primary' }}">
-                    Semua
-                </a>
-                @foreach($kategoriList as $kat)
-                <a href="{{ route('home', ['kategori' => $kat]) }}"
-                    class="px-6 py-2.5 rounded-full font-medium text-sm transition-all
-                           {{ $activeKategori === $kat ? 'bg-costume-primary text-white shadow-md shadow-blue-500/25' : 'bg-white text-slate-700 border border-slate-200 hover:border-costume-primary hover:text-costume-primary' }}">
-                    {{ $kat }}
-                </a>
-                @endforeach
-            </div>
-
-            {{-- Assets Grid --}}
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                @forelse($barangs as $barang)
-                    <div class="group bg-white rounded-2xl border border-slate-200 overflow-hidden hover:border-costume-primary hover:shadow-xl transition-all duration-300 opacity-0 translate-y-5 [&.visible]:opacity-100 [&.visible]:translate-y-0"
-                        data-animate>
-                        <div class="relative h-48 bg-gradient-to-br from-slate-100 to-slate-200 overflow-hidden">
-                            @if($barang->foto && $barang->foto !== 'default.jpg')
-                                <img src="{{ asset('storage/' . $barang->foto) }}" alt="{{ $barang->nama_barang }}"
-                                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                            @else
-                                <div class="w-full h-full flex items-center justify-center">
-                                    <svg class="w-16 h-16 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                    </svg>
-                                </div>
-                            @endif
-                            <div class="absolute top-3 right-3 px-3 py-1.5 text-white text-xs font-bold rounded-full shadow-lg
-                                @if($barang->jumlah_tersedia > 10) bg-emerald-500
-                                @elseif($barang->jumlah_tersedia > 3) bg-amber-500
-                                @elseif($barang->jumlah_tersedia > 0) bg-orange-500
-                                @else bg-red-500 @endif">
-                                {{ $barang->jumlah_tersedia > 0 ? $barang->jumlah_tersedia . ' Tersedia' : 'Habis' }}
-                            </div>
-                        </div>
-                        <div class="p-5">
-                            <div class="flex items-center justify-between mb-3">
-                                <span class="px-3 py-1 bg-blue-50 text-costume-primary text-xs font-semibold rounded-full">
-                                    {{ $barang->kategori }}
-                                </span>
-                                <span class="text-xs font-medium
-                                    @if($barang->kondisi === 'baik') text-emerald-600
-                                    @elseif($barang->kondisi === 'rusak ringan') text-amber-600
-                                    @else text-red-600 @endif">
-                                    {{ ucfirst($barang->kondisi) }}
-                                </span>
-                            </div>
-                            <h3 class="text-lg font-bold text-slate-900 mb-2 truncate">{{ $barang->nama_barang }}</h3>
-                            <div class="flex items-center gap-2 text-xs text-slate-500">
-                                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                                </svg>
-                                <span class="truncate">{{ $barang->deskripsi }}</span>
-                            </div>
-                        </div>
-                    </div>
-                @empty
-                    <div class="col-span-4 py-16 text-center text-slate-400">
-                        <p class="font-medium">Belum ada aset di kategori ini.</p>
-                    </div>
-                @endforelse
-            </div>
-
-            {{-- Empty state --}}
-            <div id="empty-state" class="hidden text-center py-16">
-                <svg class="w-16 h-16 mx-auto text-slate-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                        d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-                </svg>
-                <p class="text-slate-500 text-lg font-medium">Tidak ada aset di kategori ini.</p>
-            </div>
-
+            <h2 class="text-3xl lg:text-5xl font-bold text-slate-900 mb-4">Sarana & Prasarana</h2>
+            <p class="text-lg text-slate-600 max-w-2xl mx-auto">Berbagai aset untuk mendukung kegiatan belajar</p>
         </div>
-    </section>
+
+        {{-- Category Tabs (hanya kategori populer) --}}
+        <div class="flex flex-wrap justify-center gap-3 mb-12 opacity-0 translate-y-5 [&.visible]:opacity-100 [&.visible]:translate-y-0 transition-all duration-700" data-animate>
+            @foreach($popularCategories as $kat)
+            <button type="button"
+                data-kategori="{{ $kat }}"
+                class="kategori-tab px-6 py-2.5 rounded-full font-medium text-sm transition-all
+                    {{ $activeKategori === $kat ? 'bg-costume-primary text-white shadow-md shadow-blue-500/25' : 'bg-white text-slate-700 border border-slate-200 hover:border-costume-primary hover:text-costume-primary' }}">
+                {{ $kat }}
+            </button>
+            @endforeach
+            {{-- Tombol "Lihat Semua" mengarah ke halaman all-assets --}}
+            <a href="{{ route('all-assets') }}"
+                class="px-6 py-2.5 rounded-full font-medium text-sm bg-white text-costume-primary border border-costume-primary hover:bg-costume-primary hover:text-white transition-all">
+                Lihat Semua
+            </a>
+        </div>
+
+        {{-- Container untuk grid asset dan pagination (diisi via AJAX) --}}
+        <div id="sarana-container">
+            <div class="flex justify-center py-12">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-costume-primary"></div>
+            </div>
+        </div>
+
+    </div>
+</section>
 
 {{-- PINJAM SECTION --}}
 <section class="py-24 bg-white" id="pinjam">
@@ -477,6 +424,85 @@
         });
         showingAll = false;
         updateButtons();
+    }
+})();
+
+// ========== AJAX untuk Sarana & Prasarana (pagination + filter kategori) ==========
+(function() {
+    const container = document.getElementById('sarana-container');
+    const tabs = document.querySelectorAll('.kategori-tab');
+    let currentKategori = '{{ $activeKategori }}';
+    let currentPage = 1;
+
+    function loadAssets(kategori, page) {
+        if (!container) return;
+        // Tampilkan loading
+        container.innerHTML = '<div class="flex justify-center py-12"><div class="animate-spin rounded-full h-12 w-12 border-b-2 border-costume-primary"></div></div>';
+
+        fetch(`{{ url('/assets/json') }}?kategori=${encodeURIComponent(kategori)}&page=${page}`)
+            .then(res => res.json())
+            .then(data => {
+                container.innerHTML = data.html;
+                // Re-attach pagination event listeners
+                attachPaginationEvents();
+                // Trigger animasi fade-in untuk kartu baru
+                document.querySelectorAll('#sarana-container [data-animate]').forEach(el => {
+                    el.classList.add('visible');
+                });
+                // Scroll halus ke section sarana (agar tidak loncat ke header)
+                const saranaSection = document.getElementById('sarana');
+                if (saranaSection) {
+                    const offset = 80; // tinggi navbar + sedikit ruang
+                    const elementPosition = saranaSection.getBoundingClientRect().top + window.scrollY;
+                    window.scrollTo({
+                        top: elementPosition - offset,
+                        behavior: 'smooth'
+                    });
+                }
+            })
+            .catch(err => {
+                console.error('Gagal memuat aset:', err);
+                container.innerHTML = '<div class="text-center py-12 text-red-500">Gagal memuat data. Silakan refresh halaman.</div>';
+            });
+    }
+
+    function attachPaginationEvents() {
+        const paginationLinks = document.querySelectorAll('#pagination-container a');
+        paginationLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const url = new URL(this.href);
+                const page = url.searchParams.get('page');
+                if (page) {
+                    currentPage = parseInt(page);
+                    loadAssets(currentKategori, currentPage);
+                }
+            });
+        });
+    }
+
+    // Event listener untuk tab kategori
+    tabs.forEach(tab => {
+        tab.addEventListener('click', function(e) {
+            e.preventDefault();
+            const kategori = this.getAttribute('data-kategori');
+            if (kategori === currentKategori) return;
+            currentKategori = kategori;
+            currentPage = 1;
+            // Update active class pada tabs
+            tabs.forEach(t => {
+                t.classList.remove('bg-costume-primary', 'text-white', 'shadow-md', 'shadow-blue-500/25');
+                t.classList.add('bg-white', 'text-slate-700', 'border', 'border-slate-200');
+            });
+            this.classList.remove('bg-white', 'text-slate-700', 'border', 'border-slate-200');
+            this.classList.add('bg-costume-primary', 'text-white', 'shadow-md', 'shadow-blue-500/25');
+            loadAssets(currentKategori, currentPage);
+        });
+    });
+
+    // Load pertama kali
+    if (container && '{{ $activeKategori }}') {
+        loadAssets(currentKategori, 1);
     }
 })();
 </script>

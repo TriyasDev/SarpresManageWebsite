@@ -42,7 +42,7 @@
                         <select name="kategori"
                             class="w-full px-5 py-3 border-2 border-gray-300 rounded-[30px] outline-none focus:ring-2 focus:ring-costume-second focus:border-transparent appearance-none bg-white cursor-pointer text-sm transition @error('kategori') border-red-400 @enderror">
                             <option value="">Pilih Kategori</option>
-                            @foreach(['Prasaran','Media Pendidikan','Perlengkapan Kelas','Fasilitas Penunjang'] as $kat)
+                            @foreach(['Prasaran','Media Pendidikan','Perlengkapan Kelas','Fasilitas Penunjang', 'Elektronik', 'Alat Kantor', 'Alat Laboratorium'] as $kat)
                                 <option value="{{ $kat }}" {{ old('kategori') == $kat ? 'selected' : '' }}>{{ $kat }}</option>
                             @endforeach
                         </select>
