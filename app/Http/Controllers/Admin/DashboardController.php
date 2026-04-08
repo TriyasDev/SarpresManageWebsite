@@ -12,103 +12,84 @@ use Illuminate\Support\Facades\Log;
 
 class DashboardController extends Controller
 {
+    private $masterCategories = [
+        'Prasaran',
+        'Media Pendidikan',
+        'Perlengkapan Kelas',
+        'Fasilitas Penunjang',
+        'Elektronik',
+        'Alat Kantor',
+        'Alat Laboratorium'
+    ];
+
     public function index()
     {
-        // Auto backup tahun lama + hapus dari DB kalau sudah > 1 tahun lalu
         $this->autoBackupAndCleanOldYears();
 
-        // Resolve filter tahun: ?tahun=ini | ?tahun=lalu | ?tahun=2024
+        // Filter tahun
         $filterInput = request('tahun', 'ini');
-
         if (is_numeric($filterInput)) {
-            $tahun       = (int) $filterInput;
+            $tahun = (int) $filterInput;
             $filterTahun = $tahun;
         } elseif ($filterInput === 'lalu') {
-            $tahun       = now()->year - 1;
+            $tahun = now()->year - 1;
             $filterTahun = 'lalu';
         } else {
-            $tahun       = now()->year;
+            $tahun = now()->year;
             $filterTahun = 'ini';
         }
 
-        // Stat cards — selalu real-time
-        $totalAset               = Barang::count();
-        $pengajuanBaru           = Peminjaman::where('status', 'menunggu')->count();
-        $sedangDipinjam          = Peminjaman::where('status', 'dipinjam')->count();
+        // Stat cards
+        $totalAset = Barang::count();
+        $pengajuanBaru = Peminjaman::where('status', 'menunggu')->count();
+        $sedangDipinjam = Peminjaman::where('status', 'dipinjam')->count();
         $totalPeminjamanBulanIni = Peminjaman::whereMonth('created_at', now()->month)
-                                             ->whereYear('created_at', now()->year)
-                                             ->count();
+            ->whereYear('created_at', now()->year)
+            ->count();
 
-        // Bar & donut — baca dari DB, fallback ke JSON backup kalau sudah diarsip
-        $barChartData              = $this->getBarChartData($tahun);
+        // Data grafik
+        $barChartData = $this->getBarChartData($tahun);
         [$donutLabels, $donutData] = $this->getDonutData($tahun);
-        $donutColors               = ['#2DD4BF', '#FB923C', '#3B82F6', '#9333EA', '#F43F5E', '#EAB308'];
 
-        // Daftar tahun tersedia (DB + file backup JSON) untuk filter view
+        $donutColors = [
+            '#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899', '#06B6D4', '#EF4444'
+        ];
+
         $availableYears = $this->getAvailableYears();
 
         return view('admin.dashboard', compact(
-            'totalAset',
-            'pengajuanBaru',
-            'sedangDipinjam',
-            'totalPeminjamanBulanIni',
-            'barChartData',
-            'donutLabels',
-            'donutData',
-            'donutColors',
-            'filterTahun',
-            'tahun',
-            'availableYears',
+            'totalAset', 'pengajuanBaru', 'sedangDipinjam', 'totalPeminjamanBulanIni',
+            'barChartData', 'donutLabels', 'donutData', 'donutColors',
+            'filterTahun', 'tahun', 'availableYears'
         ));
     }
 
-    // =========================================================================
-    //  BACKUP + CLEAN
-    // =========================================================================
-
-    /**
-     * Simpan maksimal 2 tahun di DB (tahun ini + tahun lalu).
-     * Tahun yang lebih lama: backup ke JSON dulu → baru hapus dari DB.
-     */
+    // ========== BACKUP & CLEAN ==========
     private function autoBackupAndCleanOldYears(): void
     {
-        // Tahun tertua yang masih boleh ada di DB adalah tahun lalu
         $batasAman = now()->year - 1;
-
         $yearsToArchive = Peminjaman::selectRaw('YEAR(created_at) as tahun')
             ->groupBy('tahun')
             ->pluck('tahun')
             ->map(fn($y) => (int) $y)
-            ->filter(fn($y) => $y < $batasAman) // lebih tua dari tahun lalu
+            ->filter(fn($y) => $y < $batasAman)
             ->values();
 
         foreach ($yearsToArchive as $tahun) {
             try {
-                // 1. Backup dulu — kalau gagal, data TIDAK akan dihapus
                 $this->createYearlyBackup($tahun);
-
-                // 2. Baru hapus dari DB
                 $this->deleteYearFromDb($tahun);
-
                 Log::info("Dashboard: tahun {$tahun} diarsipkan dan dihapus dari DB.");
             } catch (\Exception $e) {
-                // Jangan crash dashboard, cukup catat di log
                 Log::error("Dashboard arsip tahun {$tahun} gagal: " . $e->getMessage());
             }
         }
     }
 
-    /**
-     * Buat file JSON backup untuk satu tahun.
-     * Jika file sudah ada → skip, tidak overwrite.
-     */
     private function createYearlyBackup(int $tahun): void
     {
         $path = "backups/dashboard_{$tahun}.json";
-
-        if (Storage::exists($path)) {
-            return;
-        }
+        if (Storage::exists($path)) return;
 
         $rawBar = Peminjaman::selectRaw('MONTH(created_at) as bulan, COUNT(*) as total')
             ->whereYear('created_at', $tahun)
@@ -125,51 +106,37 @@ class DashboardController extends Controller
             ->whereYear('tb_peminjaman.created_at', $tahun)
             ->selectRaw('tb_barang.kategori, SUM(tb_detail_peminjaman.jumlah) as total')
             ->groupBy('tb_barang.kategori')
-            ->orderByDesc('total')
             ->get();
 
         $backup = [
-            'tahun'            => $tahun,
-            'dibuat_pada'      => now()->toDateTimeString(),
-            'total_peminjaman' => (int) Peminjaman::whereYear('created_at', $tahun)->count(),
-            'bar_chart'        => $barData,
-            'donut_labels'     => $rawDonut->pluck('kategori')->toArray(),
-            'donut_data'       => $rawDonut->pluck('total')->map(fn($v) => (int) $v)->toArray(),
+            'tahun' => $tahun,
+            'dibuat_pada' => now()->toDateTimeString(),
+            'total_peminjaman' => Peminjaman::whereYear('created_at', $tahun)->count(),
+            'bar_chart' => $barData,
+            'donut_labels' => $rawDonut->pluck('kategori')->toArray(),
+            'donut_data' => $rawDonut->pluck('total')->map(fn($v) => (int) $v)->toArray(),
         ];
 
-        // Jika Storage::put gagal akan throw exception,
-        // ditangkap di autoBackupAndCleanOldYears supaya delete tidak jalan
         Storage::put($path, json_encode($backup, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
     }
 
-    /**
-     * Hapus data peminjaman + detail untuk satu tahun dari DB.
-     * Dibungkus transaction: kalau gagal di tengah, rollback otomatis.
-     */
     private function deleteYearFromDb(int $tahun): void
     {
         DB::transaction(function () use ($tahun) {
-            $ids = Peminjaman::whereYear('created_at', $tahun)
-                ->pluck('id_peminjaman');
-
+            $ids = Peminjaman::whereYear('created_at', $tahun)->pluck('id_peminjaman');
             DetailPeminjaman::whereIn('id_peminjaman', $ids)->delete();
             Peminjaman::whereYear('created_at', $tahun)->delete();
         });
     }
 
-    // =========================================================================
-    //  DATA GETTER (DB dulu, fallback ke JSON backup kalau sudah diarsip)
-    // =========================================================================
-
+    // ========== DATA GETTER ==========
     private function getBarChartData(int $tahun): array
     {
-        // Masih ada di DB?
         if (Peminjaman::whereYear('created_at', $tahun)->exists()) {
             $rawBar = Peminjaman::selectRaw('MONTH(created_at) as bulan, COUNT(*) as total')
                 ->whereYear('created_at', $tahun)
                 ->groupBy('bulan')
                 ->pluck('total', 'bulan');
-
             $result = [];
             for ($i = 1; $i <= 12; $i++) {
                 $result[] = (int) ($rawBar[$i] ?? 0);
@@ -177,51 +144,43 @@ class DashboardController extends Controller
             return $result;
         }
 
-        // Fallback: baca dari JSON backup
         $path = "backups/dashboard_{$tahun}.json";
         if (Storage::exists($path)) {
             $data = json_decode(Storage::get($path), true);
             return $data['bar_chart'] ?? array_fill(0, 12, 0);
         }
-
         return array_fill(0, 12, 0);
     }
 
     private function getDonutData(int $tahun): array
     {
-        // Masih ada di DB?
+        $realData = [];
         if (Peminjaman::whereYear('created_at', $tahun)->exists()) {
-            $rawDonut = DetailPeminjaman::join('tb_barang', 'tb_detail_peminjaman.id_barang', '=', 'tb_barang.id_barang')
+            $realData = DetailPeminjaman::join('tb_barang', 'tb_detail_peminjaman.id_barang', '=', 'tb_barang.id_barang')
                 ->join('tb_peminjaman', 'tb_detail_peminjaman.id_peminjaman', '=', 'tb_peminjaman.id_peminjaman')
                 ->whereYear('tb_peminjaman.created_at', $tahun)
                 ->selectRaw('tb_barang.kategori, SUM(tb_detail_peminjaman.jumlah) as total')
                 ->groupBy('tb_barang.kategori')
-                ->orderByDesc('total')
-                ->get();
-
-            return [
-                $rawDonut->pluck('kategori')->toArray(),
-                $rawDonut->pluck('total')->map(fn($v) => (int) $v)->toArray(),
-            ];
+                ->pluck('total', 'kategori')
+                ->toArray();
+        } else {
+            $path = "backups/dashboard_{$tahun}.json";
+            if (Storage::exists($path)) {
+                $data = json_decode(Storage::get($path), true);
+                if (isset($data['donut_labels'], $data['donut_data'])) {
+                    $realData = array_combine($data['donut_labels'], $data['donut_data']) ?: [];
+                }
+            }
         }
 
-        // Fallback: baca dari JSON backup
-        $path = "backups/dashboard_{$tahun}.json";
-        if (Storage::exists($path)) {
-            $data = json_decode(Storage::get($path), true);
-            return [
-                $data['donut_labels'] ?? [],
-                $data['donut_data']   ?? [],
-            ];
+        $labels = $this->masterCategories;
+        $data = [];
+        foreach ($labels as $cat) {
+            $data[] = (int) ($realData[$cat] ?? 0);
         }
-
-        return [[], []];
+        return [$labels, $data];
     }
 
-    /**
-     * Gabungan tahun dari DB + file JSON backup, diurutkan terbaru dulu.
-     * Dipakai view untuk render filter dropdown tahun.
-     */
     private function getAvailableYears(): array
     {
         $fromDb = Peminjaman::selectRaw('YEAR(created_at) as tahun')

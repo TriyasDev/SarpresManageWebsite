@@ -98,11 +98,11 @@
         </a>
 
         <a href="{{ route('home') }}"
-            class="group flex items-center gap-3 px-4 py-3 rounded-full text-white font-semibold text-sm transition-all duration-200 {{ request()->routeIs('profile') ? 'bg-white/20 shadow-md' : 'hover:bg-white/10' }}">
+            class="group flex items-center gap-3 px-4 py-3 rounded-full text-white font-semibold text-sm transition-all duration-200 {{ request()->routeIs('home') ? 'bg-white/20 shadow-md' : 'hover:bg-white/10' }}">
             {!! getMenuIcon('home.svg') !!}
             <span class="relative inline-block">
-                Kembali ke home
-                <span class="absolute left-0 bottom-[-4px] {{ request()->routeIs('profile') ? 'w-12' : 'w-0' }} h-[2px] bg-white rounded-full transition-all duration-300 group-hover:w-12"></span>
+                Kembali ke beranda
+                <span class="absolute left-0 bottom-[-4px] {{ request()->routeIs('home') ? 'w-12' : 'w-0' }} h-[2px] bg-white rounded-full transition-all duration-300 group-hover:w-12"></span>
             </span>
         </a>
     </nav>

@@ -110,7 +110,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/my-dashboard', [UserDashboardController::class, 'index'])->name('my.dashboard');
         Route::post('/borrow', [FormController::class, 'store'])->name('borrow.store');
         Route::get('/borrow/{barang?}', [FormController::class, 'index'])->name('borrow');
-        Route::get('/rankings', [RankController::class, 'index'])->name('rankings');
 
         Route::get('/profile',   [UserDashboardController::class, 'profile'])->name('profile');
         Route::get('/history',   [UserDashboardController::class, 'riwayat'])->name('history');
