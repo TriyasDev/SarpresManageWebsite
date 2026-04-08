@@ -61,6 +61,9 @@ class UserDashboardController extends Controller
             $percentage = $range > 0 ? min(100, max(0, ($currentPoints - $currentMin) / $range * 100)) : 0;
         }
 
+        $rank = User::where('role', 'peminjam')->where('points', '>', $user->points)->count() + 1;
+        $totalUsers = User::where('role', 'peminjam')->count();
+
         return view('user.user-dashboard', compact(
             'user',
             'activeLoans',
@@ -73,7 +76,9 @@ class UserDashboardController extends Controller
             'nextTier',
             'pointsToNext',
             'percentage',
-            'tierRequirements'
+            'tierRequirements',
+            'rank',
+            'totalUsers'
         ));
     }
 
@@ -109,7 +114,14 @@ class UserDashboardController extends Controller
             return $loan;
         });
 
-        return view('user.riwayat', compact('loans'));
+        $totalPointsEarned = Peminjaman::where('id_user', $user->id_user)->sum('point_earned');
+        $avgDuration = Peminjaman::where('id_user', $user->id_user)
+            ->whereNotNull('tanggal_kembali')
+            ->where('status', 'dikembalikan')
+            ->get()
+            ->avg(fn($loan) => $loan->tanggal_pinjam->diffInDays($loan->tanggal_kembali)) ?? 0;
+
+        return view('user.riwayat', compact('loans', 'totalPointsEarned', 'avgDuration'));
     }
 
     public function pinjaman()

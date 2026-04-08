@@ -2,26 +2,19 @@
 
 @section('title', 'Dashboard User - KlikAset')
 
-{{-- Optional: font Inter dari Google Fonts (minimal) --}}
 @push('styles')
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
 <style>
-    /* Hanya fallback font, semua styling lain pakai Tailwind */
-    body {
-        font-family: 'Inter', sans-serif;
-    }
+    body { font-family: 'Inter', sans-serif; }
     footer { display: none !important; }
 </style>
 @endpush
 
 @section('content')
 <div class="flex min-h-screen bg-slate-50">
-    {{-- Sidebar user (sudah diperbaiki) --}}
     @include('partials.sidebar-user')
 
-    {{-- Main content --}}
     <div class="flex-1 lg:ml-64">
-        {{-- Mobile header --}}
         <div class="lg:hidden sticky top-0 z-20 bg-white/80 backdrop-blur-sm border-b border-slate-200 px-4 py-3 flex items-center justify-between">
             <button onclick="openSidebarUser()" class="p-2 rounded-lg hover:bg-slate-100 transition">
                 <svg class="w-6 h-6 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -33,13 +26,11 @@
         </div>
 
         <main class="p-4 md:p-6 space-y-6">
-            {{-- Welcome Card dengan gradien tema sidebar --}}
             <div class="bg-gradient-to-r from-costume-primary to-costume-second rounded-2xl p-6 text-white shadow-lg">
                 <h1 class="text-2xl font-bold">Halo, {{ $user->nama ?? $user->username ?? 'Pengguna' }}!</h1>
                 <p class="text-white/80 mt-1">Kelola peminjaman aset dengan mudah & transparan.</p>
             </div>
 
-            {{-- Stat Cards --}}
             <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
                 {{-- Card Total Poin --}}
                 <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm hover:shadow-md transition hover:-translate-y-1">
@@ -52,14 +43,14 @@
                         <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800">Poin Aktif</span>
                     </div>
                     <p class="text-xs text-slate-500 uppercase tracking-wide">Total Poin</p>
-                    <p class="text-3xl font-bold text-slate-800 mt-1">{{ number_format($currentPoints ?? 2450) }}</p>
+                    <p class="text-3xl font-bold text-slate-800 mt-1">{{ number_format($currentPoints) }}</p>
                     <div class="mt-3 space-y-1">
                         <div class="flex justify-between text-xs text-slate-500">
-                            <span>Menuju {{ $nextTier ?? 'Gold' }}</span>
-                            <span>{{ $currentPoints ?? 2450 }} / {{ $nextTier ? ($tierRequirements[$nextTier]['min_points'] ?? 3000) : 3000 }}</span>
+                            <span>Menuju {{ $nextTier ?? 'Paragon' }}</span>
+                            <span>{{ $currentPoints }} / {{ $nextTier ? ($tierRequirements[$nextTier]['min_points'] ?? $currentPoints) : $currentPoints }}</span>
                         </div>
                         <div class="bg-gray-200 rounded-full h-2 overflow-hidden">
-                            <div class="bg-amber-500 h-full rounded-full transition-all duration-700" style="width: {{ $percentage ?? 82 }}%"></div>
+                            <div class="bg-amber-500 h-full rounded-full transition-all duration-700" style="width: {{ $percentage ?? 0 }}%"></div>
                         </div>
                     </div>
                 </div>
@@ -75,7 +66,7 @@
                         <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">Aktif</span>
                     </div>
                     <p class="text-xs text-slate-500 uppercase tracking-wide">Pinjaman Aktif</p>
-                    <p class="text-3xl font-bold text-slate-800 mt-1">{{ $activeLoans ?? 3 }}</p>
+                    <p class="text-3xl font-bold text-slate-800 mt-1">{{ $activeLoans ?? 0 }}</p>
                     @if(isset($activeLoansList) && $activeLoansList->first())
                         <p class="text-xs text-slate-500 mt-2">Terdekat: {{ $activeLoansList->first()->tanggal_kembali->format('d M Y') }}</p>
                     @else
@@ -83,7 +74,7 @@
                     @endif
                 </div>
 
-                {{-- Card Peringkat & Tier (STATIS contoh) --}}
+                {{-- Card Peringkat & Tier --}}
                 <div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-5 text-white shadow-sm hover:shadow-md transition hover:-translate-y-1">
                     <div class="flex items-center justify-between mb-3">
                         <div class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
@@ -94,13 +85,13 @@
                         <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-white/20 text-white">Tier & Peringkat</span>
                     </div>
                     <p class="text-xs uppercase tracking-wide opacity-80">Peringkat Kamu</p>
-                    <p class="text-3xl font-bold mt-1">{{ $currentTier ?? 'Silver' }}</p>
+                    <p class="text-3xl font-bold mt-1">{{ $currentTier }}</p>
                     <p class="text-sm mt-2">
-                        🏆 Peringkat <strong>#{{ $rank ?? 8 }}</strong> dari {{ $totalUsers ?? 94 }} pengguna
+                        🏆 Peringkat <strong>#{{ $rank ?? 1 }}</strong> dari {{ $totalUsers ?? 0 }} pengguna
                     </p>
                     <div class="mt-3 text-xs opacity-80 flex items-center gap-1">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
-                        <span>Butuh {{ $pointsToNextRank ?? 550 }} poin lagi ke peringkat berikutnya</span>
+                        <span>Butuh {{ $pointsToNext ?? 0 }} poin lagi ke peringkat berikutnya</span>
                     </div>
                 </div>
             </div>
@@ -163,7 +154,6 @@
     </div>
 </div>
 
-{{-- Modal Detail --}}
 <div id="detailModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-4" onclick="if(event.target===this) closeModal()">
     <div class="bg-white rounded-2xl max-w-sm w-full shadow-xl overflow-hidden">
         <div class="bg-costume-primary px-5 py-4 text-white flex justify-between items-center">

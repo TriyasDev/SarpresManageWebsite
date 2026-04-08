@@ -15,7 +15,6 @@
     @include('partials.sidebar-user')
 
     <div class="flex-1 lg:ml-64">
-        {{-- Mobile header --}}
         <div class="lg:hidden sticky top-0 z-20 bg-white/80 backdrop-blur-sm border-b border-slate-200 px-4 py-3 flex items-center justify-between">
             <button onclick="openSidebarUser()" class="p-2 rounded-lg hover:bg-slate-100 transition">
                 <svg class="w-6 h-6 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -27,7 +26,6 @@
         </div>
 
         <main class="p-4 md:p-6 space-y-6">
-            {{-- Header dan statistik --}}
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
                     <div class="flex items-center gap-3">
@@ -52,7 +50,7 @@
                         </div>
                         <div>
                             <p class="text-xs text-slate-500 uppercase tracking-wide">Total Poin Diperoleh</p>
-                            <p class="text-2xl font-bold text-green-600">{{ number_format($totalPointsEarned ?? $loans->sum('point_earned')) }}</p>
+                            <p class="text-2xl font-bold text-green-600">{{ number_format($totalPointsEarned ?? 0) }}</p>
                         </div>
                     </div>
                 </div>
@@ -66,13 +64,12 @@
                         </div>
                         <div>
                             <p class="text-xs text-slate-500 uppercase tracking-wide">Rata-rata Durasi</p>
-                            <p class="text-2xl font-bold text-slate-800">{{ $avgDuration ?? '7' }} hari</p>
+                            <p class="text-2xl font-bold text-slate-800">{{ round($avgDuration ?? 0) }} hari</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {{-- Filter & Search --}}
             <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm flex flex-wrap justify-between items-center gap-3">
                 <div class="flex flex-wrap gap-2">
                     <a href="{{ route('history') }}"
@@ -105,7 +102,6 @@
                 </form>
             </div>
 
-            {{-- Tabel Riwayat --}}
             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="min-w-full text-sm">

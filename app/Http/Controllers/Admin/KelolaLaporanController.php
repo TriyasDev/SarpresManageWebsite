@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Laporan;
 use App\Models\Peminjaman;
 use App\Models\User;
+use App\Models\PointLog;
 use App\Exports\LaporanExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -150,6 +151,14 @@ class KelolaLaporanController extends Controller
             );
             $user->points = ($user->points ?? 0) + $poin;
             $user->save();
+            $peminjaman->update(['point_earned' => $poin]);
+
+            PointLog::create([
+                'id_user' => $user->id_user,
+                'id_peminjaman' => $peminjaman->id_peminjaman,
+                'change' => $poin,
+                'reason' => 'Laporan pengembalian (' . $request->jenis_laporan . ', kondisi: ' . $request->kondisi_barang . ')',
+            ]);
         }
 
         return redirect()->route('reports.index')->with('success', 'Laporan berhasil ditambahkan. Status peminjaman, stok barang, dan poin user telah diperbarui.');
@@ -255,6 +264,16 @@ class KelolaLaporanController extends Controller
             $poinBaru = $this->hitungPoin($request->jenis_laporan, $request->kondisi_barang, $request->tanggal_dikembalikan ? new \DateTime($request->tanggal_dikembalikan) : null, $tanggalJatuhTempo);
             $user->points = ($user->points ?? 0) - $poinLama + $poinBaru;
             $user->save();
+            $selisihPoin = $poinBaru - $poinLama;
+            $peminjaman->update(['point_earned' => $poinBaru]);
+            if ($selisihPoin != 0) {
+                PointLog::create([
+                    'id_user' => $user->id_user,
+                    'id_peminjaman' => $peminjaman->id_peminjaman,
+                    'change' => $selisihPoin,
+                    'reason' => 'Edit laporan (perubahan poin)',
+                ]);
+            }
         }
 
         return redirect()->route('reports.index')->with('success', 'Laporan berhasil diperbarui.');
@@ -263,7 +282,6 @@ class KelolaLaporanController extends Controller
     // DESTROY – soft delete
     public function destroy($id)
     {
-        $laporan = Laporan::onlyTrashed()->findOrFail($id); // Hati-hati: ini cari yang sudah di trash? Tidak, destroy seharusnya cari yang aktif
         // Perbaiki: cari laporan aktif, bukan onlyTrashed
         $laporan = Laporan::findOrFail($id);
 
@@ -292,6 +310,13 @@ class KelolaLaporanController extends Controller
             );
             $user->points = ($user->points ?? 0) - $poinYangDiberikan;
             $user->save();
+            $peminjaman->update(['point_earned' => null]);
+            PointLog::create([
+                'id_user' => $user->id_user,
+                'id_peminjaman' => $peminjaman->id_peminjaman,
+                'change' => -$poinYangDiberikan,
+                'reason' => 'Laporan dihapus (poin dikembalikan)',
+            ]);
         }
         // =============================================================
 
@@ -347,6 +372,14 @@ class KelolaLaporanController extends Controller
             );
             $user->points = ($user->points ?? 0) + $poin;
             $user->save();
+            $peminjaman->update(['point_earned' => $poin]);
+
+            PointLog::create([
+                'id_user' => $user->id_user,
+                'id_peminjaman' => $peminjaman->id_peminjaman,
+                'change' => $poin,
+                'reason' => 'Laporan dipulihkan (poin dikembalikan)',
+            ]);
         }
         // ===============================================================
 
