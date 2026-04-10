@@ -450,15 +450,15 @@
                     el.classList.add('visible');
                 });
                 // Scroll halus ke section sarana (agar tidak loncat ke header)
-                const saranaSection = document.getElementById('sarana');
-                if (saranaSection) {
-                    const offset = 80; // tinggi navbar + sedikit ruang
-                    const elementPosition = saranaSection.getBoundingClientRect().top + window.scrollY;
-                    window.scrollTo({
-                        top: elementPosition - offset,
-                        behavior: 'smooth'
-                    });
-                }
+                // const saranaSection = document.getElementById('sarana');
+                // if (saranaSection) {
+                //     const offset = 80; // tinggi navbar + sedikit ruang
+                //     const elementPosition = saranaSection.getBoundingClientRect().top + window.scrollY;
+                //     window.scrollTo({
+                //         top: elementPosition - offset,
+                //         behavior: 'smooth'
+                //     });
+                // }
             })
             .catch(err => {
                 console.error('Gagal memuat aset:', err);

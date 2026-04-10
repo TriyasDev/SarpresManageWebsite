@@ -2,7 +2,6 @@
 @section('title', 'Edit Laporan - KlikAset')
 @section('content')
 
-{{-- Breadcrumb / Back --}}
 <div class="flex items-center gap-3 mb-6">
     <a href="{{ route('reports.index') }}"
        class="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-800 transition">
@@ -25,7 +24,7 @@
     </div>
 @endif
 
-<form action="{{ route('reports.update', $laporan->id_laporan) }}" method="POST" enctype="multipart/form-data">
+<form action="{{ route('reports.update', $laporan->id_laporan) }}" method="POST" enctype="multipart/form-data" id="reportForm">
     @csrf
     @method('PUT')
 
@@ -34,7 +33,7 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
 
-            {{-- Kolom Kiri --}}
+            {{-- KOLOM KIRI --}}
             <div class="space-y-5">
 
                 {{-- ID Peminjaman (readonly) --}}
@@ -42,7 +41,17 @@
                     <label class="block text-gray-800 font-medium mb-2 text-sm">ID Peminjaman:</label>
                     <input type="text" value="{{ $laporan->id_peminjaman }}" disabled
                         class="w-full px-5 py-3 border-2 border-gray-200 rounded-[30px] bg-gray-50 text-gray-500 text-sm cursor-not-allowed"/>
-                    <p class="text-xs text-gray-400 ml-3 mt-1">ID Peminjaman tidak bisa diubah.</p>
+                    <input type="hidden" name="id_peminjaman" value="{{ $laporan->id_peminjaman }}">
+                </div>
+
+                {{-- Detail Barang & Jumlah Dikembalikan (WAJIB) --}}
+                <div>
+                    <label class="block text-gray-800 font-semibold mb-2 text-sm">Detail Barang & Jumlah Dikembalikan <span class="text-red-500">*</span></label>
+                    <div class="bg-gray-50 rounded-2xl p-4 border border-gray-200">
+                        <div id="detailBarangList" class="space-y-3"></div>
+                        <div id="detailError" class="text-red-500 text-xs mt-2 hidden"></div>
+                    </div>
+                    @error('details')<p class="text-red-500 text-xs mt-1 ml-3">{{ $message }}</p>@enderror
                 </div>
 
                 {{-- Jenis Laporan --}}
@@ -100,10 +109,9 @@
                 </div>
             </div>
 
-            {{-- Kolom Kanan: Foto --}}
+            {{-- KOLOM KANAN: Foto --}}
             <div class="flex flex-col gap-5">
 
-                {{-- Foto saat ini --}}
                 @if($laporan->foto_bukti)
                 <div>
                     <label class="block text-gray-800 font-medium mb-2 text-sm">Foto Bukti Saat Ini:</label>
@@ -113,7 +121,6 @@
                 </div>
                 @endif
 
-                {{-- Upload foto baru --}}
                 <div class="flex flex-col flex-1">
                     <div class="flex items-center justify-between mb-2">
                         <label class="text-gray-800 font-medium text-sm">
@@ -139,7 +146,6 @@
                     @error('foto_bukti')<p class="text-red-500 text-xs mt-1 ml-3">{{ $message }}</p>@enderror
                 </div>
 
-                {{-- Tombol --}}
                 <div class="flex gap-3 mt-auto">
                     <a href="{{ route('reports.index') }}"
                        class="flex-1 text-center border-2 border-gray-300 text-gray-700 px-5 py-3 rounded-[30px] font-semibold text-sm hover:bg-gray-50 transition">
@@ -159,15 +165,100 @@
 
 @push('scripts')
 <script>
-    const uploadArea        = document.getElementById('uploadArea');
-    const photoInput        = document.getElementById('photoInput');
+    // Data dari controller (harus mengandung field 'details' dengan jumlah_dikembalikan)
+    const loanData = @json($loanData);
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    function renderDetailBarang() {
+        const listDiv = document.getElementById('detailBarangList');
+        const errorDiv = document.getElementById('detailError');
+        if (!loanData || !loanData.details || loanData.details.length === 0) {
+            listDiv.innerHTML = '<p class="text-sm text-gray-500">Tidak ada detail barang.</p>';
+            return;
+        }
+
+        listDiv.innerHTML = '';
+        loanData.details.forEach((detail, idx) => {
+            const div = document.createElement('div');
+            div.className = 'flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-200 pb-2 last:border-0';
+            div.innerHTML = `
+                <div class="flex-1">
+                    <span class="font-medium text-gray-800">${escapeHtml(detail.nama_barang)}</span>
+                    <span class="text-xs text-gray-500 ml-2">(Dipinjam: ${detail.jumlah_pinjam})</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <input type="hidden" name="details[${idx}][id_barang]" value="${detail.id_barang}">
+                    <label class="text-sm text-gray-600">Dikembalikan:</label>
+                    <input type="number" name="details[${idx}][jumlah_dikembalikan]"
+                           value="${detail.jumlah_dikembalikan}"
+                           min="0" max="${detail.jumlah_pinjam}"
+                           class="w-24 px-3 py-1 border border-gray-300 rounded-full text-center text-sm focus:ring-costume-second focus:border-transparent"
+                           onchange="validateJumlah(this, ${detail.jumlah_pinjam})">
+                </div>
+            `;
+            listDiv.appendChild(div);
+        });
+    }
+
+    window.validateJumlah = function(input, max) {
+        let val = parseInt(input.value);
+        if (isNaN(val)) val = 0;
+        if (val < 0) val = 0;
+        if (val > max) {
+            val = max;
+            input.value = val;
+        }
+        const errorDiv = document.getElementById('detailError');
+        if (val > max) {
+            errorDiv.innerText = `Jumlah melebihi batas maksimal (${max})`;
+            errorDiv.classList.remove('hidden');
+        } else {
+            errorDiv.classList.add('hidden');
+        }
+    };
+
+    // Render detail barang saat halaman dimuat
+    renderDetailBarang();
+
+    // Validasi form sebelum submit
+    const form = document.getElementById('reportForm');
+    form.addEventListener('submit', function(e) {
+        let hasError = false;
+        const inputs = document.querySelectorAll('input[name^="details"][name$="[jumlah_dikembalikan]"]');
+        inputs.forEach(input => {
+            const max = parseInt(input.getAttribute('max'));
+            const val = parseInt(input.value);
+            if (val > max) {
+                hasError = true;
+                input.classList.add('border-red-500');
+            } else {
+                input.classList.remove('border-red-500');
+            }
+        });
+        if (hasError) {
+            e.preventDefault();
+            alert('Ada jumlah dikembalikan yang melebihi batas pinjam. Periksa kembali.');
+        }
+    });
+
+    // Upload foto (sama seperti sebelumnya)
+    const uploadArea = document.getElementById('uploadArea');
+    const photoInput = document.getElementById('photoInput');
     const uploadPlaceholder = document.getElementById('uploadPlaceholder');
-    const imagePreview      = document.getElementById('imagePreview');
-    const previewImg        = document.getElementById('previewImg');
-    const removeImageBtn    = document.getElementById('removeImage');
+    const imagePreview = document.getElementById('imagePreview');
+    const previewImg = document.getElementById('previewImg');
+    const removeImageBtn = document.getElementById('removeImage');
 
     uploadArea.addEventListener('click', () => photoInput.click());
-
     photoInput.addEventListener('change', () => {
         const file = photoInput.files[0];
         if (!file) return;
@@ -180,18 +271,21 @@
         };
         reader.readAsDataURL(file);
     });
-
     removeImageBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        previewImg.src   = '';
+        previewImg.src = '';
         photoInput.value = '';
         imagePreview.classList.add('hidden');
         uploadPlaceholder.classList.remove('hidden');
         removeImageBtn.classList.add('hidden');
     });
-
-    uploadArea.addEventListener('dragover',  (e) => { e.preventDefault(); uploadArea.classList.add('border-blue-400', 'bg-blue-50'); });
-    uploadArea.addEventListener('dragleave', ()  => { uploadArea.classList.remove('border-blue-400', 'bg-blue-50'); });
+    uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.classList.add('border-blue-400', 'bg-blue-50');
+    });
+    uploadArea.addEventListener('dragleave', () => {
+        uploadArea.classList.remove('border-blue-400', 'bg-blue-50');
+    });
     uploadArea.addEventListener('drop', (e) => {
         e.preventDefault();
         uploadArea.classList.remove('border-blue-400', 'bg-blue-50');

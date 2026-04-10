@@ -52,24 +52,43 @@
                 <x-icon-magnifer class="w-5 h-5 absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"/>
             </div>
 
-            {{-- Filter Kategori --}}
-            <div class="lg:w-64">
-                <div class="relative">
-                    <select name="kategori" id="filterKategori"
-                        onchange="document.getElementById('filterForm').submit()"
-                        class="w-full px-5 py-3 border-2 border-gray-300 rounded-[30px] outline-none focus:ring-2 focus:ring-costume-second focus:border-transparent appearance-none bg-white cursor-pointer text-sm transition">
-                        <option value="">Semua Kategori</option>
-                        @foreach(['Prasaran','Media Pendidikan','Perlengkapan Kelas','Fasilitas Penunjang', 'Elektronik', 'Alat Kantor', 'Alat Laboratorium'] as $kat)
-                            <option value="{{ $kat }}" {{ request('kategori') == $kat ? 'selected' : '' }}>{{ $kat }}</option>
-                        @endforeach
-                    </select>
-                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-5 text-gray-500">
-                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                            <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
-                        </svg>
-                    </div>
-                </div>
-            </div>
+{{-- Filter Kategori --}}
+<div class="lg:w-64">
+    <div class="relative">
+        <select name="kategori" id="filterKategori"
+            onchange="document.getElementById('filterForm').submit()"
+            class="w-full px-5 py-3 border-2 border-gray-300 rounded-[30px] outline-none focus:ring-2 focus:ring-costume-second focus:border-transparent appearance-none bg-white cursor-pointer text-sm transition">
+            <option value="">Semua Kategori</option>
+            @foreach(['Prasaran','Media Pendidikan','Perlengkapan Kelas','Fasilitas Penunjang', 'Elektronik', 'Alat Kantor', 'Alat Laboratorium'] as $kat)
+                <option value="{{ $kat }}" {{ request('kategori') == $kat ? 'selected' : '' }}>{{ $kat }}</option>
+            @endforeach
+        </select>
+        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-5 text-gray-500">
+            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
+            </svg>
+        </div>
+    </div>
+</div>
+
+{{-- Filter Kondisi (BARU) --}}
+<div class="lg:w-56">
+    <div class="relative">
+        <select name="kondisi" id="filterKondisi"
+            onchange="document.getElementById('filterForm').submit()"
+            class="w-full px-5 py-3 border-2 border-gray-300 rounded-[30px] outline-none focus:ring-2 focus:ring-costume-second focus:border-transparent appearance-none bg-white cursor-pointer text-sm transition">
+            <option value="">Semua Kondisi</option>
+            <option value="baik" {{ request('kondisi') == 'baik' ? 'selected' : '' }}>Baik</option>
+            <option value="rusak ringan" {{ request('kondisi') == 'rusak ringan' ? 'selected' : '' }}>Rusak Ringan</option>
+            <option value="rusak berat" {{ request('kondisi') == 'rusak berat' ? 'selected' : '' }}>Rusak Berat</option>
+        </select>
+        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-5 text-gray-500">
+            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
+            </svg>
+        </div>
+    </div>
+</div>
         </div>
     </div>
 </form>

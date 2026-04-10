@@ -61,7 +61,7 @@ class AuthController extends Controller
         }
 
         if ($user->role === 'peminjam') {
-            return redirect()->intended(route('home'))->with('success', "Selamat datang, {$user->username}!");
+            return redirect()->route('home')->with('success', "Selamat datang, {$user->username}!");
         }
 
         Auth::logout();

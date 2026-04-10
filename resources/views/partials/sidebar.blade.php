@@ -76,6 +76,15 @@
                 <span class="absolute left-0 bottom-[-4px] {{ request()->routeIs('users.*') ? 'w-12' : 'w-0' }} h-[2px] bg-white rounded-full transition-all duration-300 group-hover:w-12"></span>
             </span>
         </a>
+
+        <a href="{{ route('index') }}"
+            class="group flex items-center gap-3 px-4 py-3 rounded-full text-white font-semibold text-sm transition-all duration-200 {{ request()->routeIs('home*') ? 'bg-costume-second shadow-md' : 'hover:bg-white/10' }}">
+            <x-icon-home class="w-10 h-10 shrink-0 text-white" />
+            <span class="relative inline-block">
+                Kembali Ke  Home
+                <span class="absolute left-0 bottom-[-4px] {{ request()->routeIs('home*') ? 'w-12' : 'w-0' }} h-[2px] bg-white rounded-full transition-all duration-300 group-hover:w-12"></span>
+            </span>
+        </a>
     </nav>
 
     {{-- Divider --}}

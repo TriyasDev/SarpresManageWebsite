@@ -16,6 +16,7 @@ class KelolaAsetController extends Controller
     {
         $search   = $request->input('search');
         $kategori = $request->input('kategori');
+        $kondisi  = $request->input('kondisi'); // baru
 
         $query = Barang::query();
 
@@ -24,6 +25,9 @@ class KelolaAsetController extends Controller
         }
         if ($kategori) {
             $query->where('kategori', $kategori);
+        }
+        if ($kondisi) { // baru
+            $query->where('kondisi', $kondisi);
         }
 
         $barangs = $query->latest()->paginate(12)->withQueryString();
