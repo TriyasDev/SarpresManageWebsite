@@ -59,6 +59,8 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('role:admin,super-admin')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/dashboard/export/excel', [DashboardController::class, 'exportExcel'])->name('dashboard.export_excel');
+        Route::get('/dashboard/export/pdf', [DashboardController::class, 'exportPdf'])->name('dashboard.export_pdf');
 
         Route::prefix('assets')->name('assets.')->group(function () {
             Route::get('/',                  [KelolaAsetController::class, 'index'])->name('index');

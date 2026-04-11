@@ -34,20 +34,45 @@
 
 <div class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
     {{-- BAR CHART CARD --}}
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 lg:p-5 mb-4">
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2.5 mb-4">
-            <div>
-                <h2 class="text-sm lg:text-base font-bold text-gray-800">Statistik Peminjaman Bulanan</h2>
-                <p class="text-[11px] text-gray-400 mt-0.5">
-                    {{ $yearLabel }} · Total
-                    <span class="font-semibold text-gray-600">{{ $totalBar }}</span> peminjaman
-                </p>
-            </div>
-            <div class="flex gap-1 bg-gray-100 p-0.5 rounded-full flex-shrink-0">
-                <a href="?tahun=ini" class="px-3 py-1 rounded-full text-[11px] font-semibold transition-all duration-200 whitespace-nowrap {{ $filterTahun !== 'lalu' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700' }}">Tahun Ini</a>
-                <a href="?tahun=lalu" class="px-3 py-1 rounded-full text-[11px] font-semibold transition-all duration-200 whitespace-nowrap {{ $filterTahun === 'lalu' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700' }}">Tahun Lalu</a>
-            </div>
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 lg:p-5 mb-4">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2.5 mb-4">
+        <div>
+            <h2 class="text-sm lg:text-base font-bold text-gray-800">Statistik Peminjaman Bulanan</h2>
+            <p class="text-[11px] text-gray-400 mt-0.5">
+                {{ $yearLabel }} · Total
+                <span class="font-semibold text-gray-600">{{ $totalBar }}</span> peminjaman
+            </p>
         </div>
+{{-- Tombol Export (Excel & PDF) --}}
+<div class="flex items-center gap-2">
+    <div class="flex gap-1.5">
+        {{-- Export Excel --}}
+        <a href="{{ route('dashboard.export_excel', ['tahun' => $filterTahun]) }}"
+           class="flex items-center gap-1.5 px-3 py-1.5 border border-green-200 rounded-full bg-green-50 text-green-700 text-xs font-medium hover:bg-green-100 transition"
+           title="Export data ke Excel">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            <span>Excel</span>
+        </a>
+        {{-- Export PDF --}}
+        <a href="{{ route('dashboard.export_pdf', ['tahun' => $filterTahun]) }}"
+           class="flex items-center gap-1.5 px-3 py-1.5 border border-blue-200 rounded-full bg-blue-50 text-blue-700 text-xs font-medium hover:bg-blue-100 transition"
+           title="Export data ke PDF">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            <span>PDF</span>
+        </a>
+    </div>
+
+    {{-- Filter Tahun --}}
+    <div class="flex gap-1 bg-gray-100 p-0.5 rounded-full flex-shrink-0">
+        <a href="?tahun=ini" class="px-3 py-1 rounded-full text-[11px] font-semibold transition-all duration-200 whitespace-nowrap {{ $filterTahun !== 'lalu' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700' }}">Tahun Ini</a>
+        <a href="?tahun=lalu" class="px-3 py-1 rounded-full text-[11px] font-semibold transition-all duration-200 whitespace-nowrap {{ $filterTahun === 'lalu' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700' }}">Tahun Lalu</a>
+    </div>
+</div>
+    </div>
 
         <div class="bar-canvas-wrap">
             <canvas id="barChart"></canvas>

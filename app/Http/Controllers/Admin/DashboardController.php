@@ -9,6 +9,10 @@ use App\Models\DetailPeminjaman;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\DashboardExport;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class DashboardController extends Controller
 {
@@ -52,15 +56,29 @@ class DashboardController extends Controller
         [$donutLabels, $donutData] = $this->getDonutData($tahun);
 
         $donutColors = [
-            '#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899', '#06B6D4', '#EF4444'
+            '#3B82F6',
+            '#10B981',
+            '#F59E0B',
+            '#8B5CF6',
+            '#EC4899',
+            '#06B6D4',
+            '#EF4444'
         ];
 
         $availableYears = $this->getAvailableYears();
 
         return view('admin.dashboard', compact(
-            'totalAset', 'pengajuanBaru', 'sedangDipinjam', 'totalPeminjamanBulanIni',
-            'barChartData', 'donutLabels', 'donutData', 'donutColors',
-            'filterTahun', 'tahun', 'availableYears'
+            'totalAset',
+            'pengajuanBaru',
+            'sedangDipinjam',
+            'totalPeminjamanBulanIni',
+            'barChartData',
+            'donutLabels',
+            'donutData',
+            'donutColors',
+            'filterTahun',
+            'tahun',
+            'availableYears'
         ));
     }
 
@@ -200,5 +218,75 @@ class DashboardController extends Controller
             ->sortDesc()
             ->values()
             ->toArray();
+    }
+
+    // Export Excel
+    public function exportExcel(Request $request)
+    {
+        $tahun = $request->get('tahun', 'ini');
+        if ($tahun === 'lalu') {
+            $tahunInt = now()->year - 1;
+        } elseif (is_numeric($tahun)) {
+            $tahunInt = (int) $tahun;
+        } else {
+            $tahunInt = now()->year;
+        }
+
+        $barChartData = $this->getBarChartData($tahunInt);
+        [$donutLabels, $donutData] = $this->getDonutData($tahunInt);
+
+        $data = [
+            'barChart' => $barChartData,
+            'donutLabels' => $donutLabels,
+            'donutData' => $donutData,
+            'totalAset' => Barang::count(),
+            'pengajuanBaru' => Peminjaman::where('status', 'menunggu')->count(),
+            'sedangDipinjam' => Peminjaman::where('status', 'dipinjam')->count(),
+            'peminjamanBulanIni' => Peminjaman::whereMonth('created_at', now()->month)
+                ->whereYear('created_at', now()->year)
+                ->count(),
+            'totalPeminjaman' => Peminjaman::whereYear('created_at', $tahunInt)->count(),
+        ];
+
+        return Excel::download(new DashboardExport($data, $tahunInt), 'dashboard_' . $tahunInt . '.xlsx');
+    }
+
+    // Export PDF
+    public function exportPdf(Request $request)
+    {
+        $tahunParam = $request->get('tahun', 'ini');
+        if ($tahunParam === 'lalu') {
+            $tahun = now()->year - 1;
+        } elseif (is_numeric($tahunParam)) {
+            $tahun = (int) $tahunParam;
+        } else {
+            $tahun = now()->year;
+        }
+
+        $barChartData = $this->getBarChartData($tahun);
+        [$donutLabels, $donutData] = $this->getDonutData($tahun);
+
+        $totalAset = Barang::count();
+        $pengajuanBaru = Peminjaman::where('status', 'menunggu')->count();
+        $sedangDipinjam = Peminjaman::where('status', 'dipinjam')->count();
+        $peminjamanBulanIni = Peminjaman::whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year)
+            ->count();
+
+        $months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'];
+
+        $pdf = Pdf::loadView('admin.dashboard_export_pdf', compact(
+            'tahun',
+            'barChartData',
+            'donutLabels',
+            'donutData',
+            'totalAset',
+            'pengajuanBaru',
+            'sedangDipinjam',
+            'peminjamanBulanIni',
+            'months'
+        ));
+        $pdf->setPaper('a4', 'portrait');
+        return $pdf->download('dashboard_' . $tahun . '.pdf');
     }
 }
