@@ -231,24 +231,29 @@
 
     // Validasi form sebelum submit
     const form = document.getElementById('reportForm');
-    form.addEventListener('submit', function(e) {
-        let hasError = false;
-        const inputs = document.querySelectorAll('input[name^="details"][name$="[jumlah_dikembalikan]"]');
-        inputs.forEach(input => {
-            const max = parseInt(input.getAttribute('max'));
-            const val = parseInt(input.value);
-            if (val > max) {
-                hasError = true;
-                input.classList.add('border-red-500');
-            } else {
-                input.classList.remove('border-red-500');
-            }
-        });
-        if (hasError) {
-            e.preventDefault();
-            alert('Ada jumlah dikembalikan yang melebihi batas pinjam. Periksa kembali.');
+form.addEventListener('submit', function(e) {
+    let hasError = false;
+    const inputs = document.querySelectorAll('input[name^="details"][name$="[jumlah_dikembalikan]"]');
+    inputs.forEach(input => {
+        const val = parseInt(input.value);
+        if (isNaN(val) || val < 1) {
+            hasError = true;
+            input.classList.add('border-red-500');
+            alert('Jumlah dikembalikan harus minimal 1');
+        } else {
+            input.classList.remove('border-red-500');
+        }
+        const max = parseInt(input.getAttribute('max'));
+        if (val > max) {
+            hasError = true;
+            input.classList.add('border-red-500');
+            alert('Jumlah dikembalikan tidak boleh melebihi jumlah pinjam (' + max + ')');
         }
     });
+    if (hasError) {
+        e.preventDefault();
+    }
+});
 
     // Upload foto (sama seperti sebelumnya)
     const uploadArea = document.getElementById('uploadArea');

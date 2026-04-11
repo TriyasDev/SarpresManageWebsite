@@ -25,22 +25,22 @@
         </a>
 
         {{-- Export Excel --}}
-        <a href="{{ route('reports.export_excel', request()->query()) }}"
-           class="flex items-center gap-2 px-4 py-2.5 border-2 border-green-200 rounded-full bg-green-50 text-green-700 text-sm font-semibold hover:bg-green-100 transition">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-            </svg>
-            Excel
-        </a>
+<a href="{{ route('reports.export_excel', request()->query()) }}"
+   class="flex items-center gap-2 px-4 py-2.5 border-2 border-green-200 rounded-full bg-green-50 text-green-700 text-sm font-semibold hover:bg-green-100 transition">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+    </svg>
+    Excel
+</a>
 
         {{-- Export PDF --}}
-        <a href="{{ route('reports.export_pdf', request()->query()) }}"
-           class="flex items-center gap-2 px-4 py-2.5 border-2 border-blue-200 rounded-full bg-blue-50 text-blue-700 text-sm font-semibold hover:bg-blue-100 transition">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-            </svg>
-            PDF
-        </a>
+<a href="{{ route('reports.export_pdf', request()->query()) }}"
+   class="flex items-center gap-2 px-4 py-2.5 border-2 border-blue-200 rounded-full bg-blue-50 text-blue-700 text-sm font-semibold hover:bg-blue-100 transition">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+    </svg>
+    PDF
+</a>
 
         {{-- Tombol Tambah Laporan --}}
         <a href="{{ route('reports.create') }}"
@@ -60,27 +60,22 @@
 
             {{-- Pencarian --}}
             <div class="flex-1 relative">
-                <input
-                    type="text"
-                    name="search"
-                    value="{{ request('search') }}"
-                    placeholder="Cari peminjam / barang..."
-                    id="searchInput"
-                    class="w-full px-5 py-3 pr-12 border-2 border-gray-300 rounded-full outline-none focus:ring-2 focus:ring-costume-second focus:border-transparent text-sm transition"
-                />
+                <label class="block text-xs font-medium text-gray-500 mb-1 ml-3">Cari</label>
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari peminjam / barang..."
+                    id="searchInput" class="w-full px-5 py-3 pr-12 border-2 border-gray-300 rounded-full outline-none focus:ring-2 focus:ring-costume-second focus:border-transparent text-sm transition"/>
                 <x-icon-magnifer class="w-5 h-5 absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"/>
             </div>
 
             {{-- Filter Jenis Laporan --}}
             <div class="lg:w-52">
+                <label class="block text-xs font-medium text-gray-500 mb-1 ml-3">Jenis Laporan</label>
                 <div class="relative">
-                    <select name="jenis_laporan"
-                        onchange="document.getElementById('filterForm').submit()"
+                    <select name="jenis_laporan" onchange="document.getElementById('filterForm').submit()"
                         class="w-full px-5 py-3 border-2 border-gray-300 rounded-full outline-none focus:ring-2 focus:ring-costume-second focus:border-transparent appearance-none bg-white cursor-pointer text-sm transition">
                         <option value="">Semua Jenis</option>
-                        <option value="dikembalikan"        {{ request('jenis_laporan') === 'dikembalikan'        ? 'selected' : '' }}>Dikembalikan</option>
+                        <option value="dikembalikan" {{ request('jenis_laporan') === 'dikembalikan' ? 'selected' : '' }}>Dikembalikan</option>
                         <option value="telat mengembalikan" {{ request('jenis_laporan') === 'telat mengembalikan' ? 'selected' : '' }}>Telat Mengembalikan</option>
-                        <option value="hilang"              {{ request('jenis_laporan') === 'hilang'              ? 'selected' : '' }}>Hilang</option>
+                        <option value="hilang" {{ request('jenis_laporan') === 'hilang' ? 'selected' : '' }}>Hilang</option>
                     </select>
                     <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-5 text-gray-500">
                         <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -92,14 +87,14 @@
 
             {{-- Filter Kondisi --}}
             <div class="lg:w-48">
+                <label class="block text-xs font-medium text-gray-500 mb-1 ml-3">Kondisi</label>
                 <div class="relative">
-                    <select name="kondisi_barang"
-                        onchange="document.getElementById('filterForm').submit()"
+                    <select name="kondisi_barang" onchange="document.getElementById('filterForm').submit()"
                         class="w-full px-5 py-3 border-2 border-gray-300 rounded-full outline-none focus:ring-2 focus:ring-costume-second focus:border-transparent appearance-none bg-white cursor-pointer text-sm transition">
                         <option value="">Semua Kondisi</option>
-                        <option value="baik"             {{ request('kondisi_barang') === 'baik'            ? 'selected' : '' }}>Baik</option>
-                        <option value="masih di pinjam"  {{ request('kondisi_barang') === 'masih di pinjam' ? 'selected' : '' }}>Masih Di Pinjam</option>
-                        <option value="rusak"            {{ request('kondisi_barang') === 'rusak'           ? 'selected' : '' }}>Rusak</option>
+                        <option value="baik" {{ request('kondisi_barang') === 'baik' ? 'selected' : '' }}>Baik</option>
+                        <option value="masih di pinjam" {{ request('kondisi_barang') === 'masih di pinjam' ? 'selected' : '' }}>Masih Di Pinjam</option>
+                        <option value="rusak" {{ request('kondisi_barang') === 'rusak' ? 'selected' : '' }}>Rusak</option>
                     </select>
                     <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-5 text-gray-500">
                         <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -108,6 +103,44 @@
                     </div>
                 </div>
             </div>
+
+            {{-- Filter Tanggal Mulai --}}
+            <div class="lg:w-48">
+                <label class="block text-xs font-medium text-gray-500 mb-1 ml-3">Dari Tanggal</label>
+                <div class="relative">
+                    <input type="date" name="start_date" value="{{ request('start_date') }}"
+                        onchange="document.getElementById('filterForm').submit()"
+                        class="w-full px-5 py-3 border-2 border-gray-300 rounded-full outline-none focus:ring-2 focus:ring-costume-second focus:border-transparent text-sm transition">
+                    <svg class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                </div>
+            </div>
+
+            {{-- Filter Tanggal Sampai --}}
+            <div class="lg:w-48">
+                <label class="block text-xs font-medium text-gray-500 mb-1 ml-3">Sampai Tanggal</label>
+                <div class="relative">
+                    <input type="date" name="end_date" value="{{ request('end_date') }}"
+                        onchange="document.getElementById('filterForm').submit()"
+                        class="w-full px-5 py-3 border-2 border-gray-300 rounded-full outline-none focus:ring-2 focus:ring-costume-second focus:border-transparent text-sm transition">
+                    <svg class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                </div>
+            </div>
+
+            {{-- Tombol Reset Filter --}}
+            @if(request('search') || request('jenis_laporan') || request('kondisi_barang') || request('start_date') || request('end_date'))
+            <div class="lg:w-auto flex items-end">
+                <a href="{{ route('reports.index') }}" class="flex items-center justify-center gap-2 px-5 py-3 bg-gray-100 text-gray-600 rounded-full text-sm font-semibold hover:bg-gray-200 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                    Reset Filter
+                </a>
+            </div>
+            @endif
         </div>
     </div>
 </form>

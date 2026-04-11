@@ -32,6 +32,15 @@ class LaporanExport implements FromQuery, WithHeadings, WithMapping, WithStyles,
             $query->where('kondisi_barang', $this->filters['kondisi_barang']);
         }
 
+        // Filter tanggal berdasarkan tanggal_dikembalikan
+        if (!empty($this->filters['start_date'])) {
+            $query->whereDate('tanggal_dikembalikan', '>=', $this->filters['start_date']);
+        }
+
+        if (!empty($this->filters['end_date'])) {
+            $query->whereDate('tanggal_dikembalikan', '<=', $this->filters['end_date']);
+        }
+
         return $query;
     }
 

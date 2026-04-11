@@ -191,6 +191,31 @@
         }
     };
 
+    // Tambahkan fungsi untuk memeriksa validasi berdasarkan jenis laporan
+function validateJumlahWithType(input, max) {
+    let val = parseInt(input.value);
+    if (isNaN(val)) val = 0;
+    const jenisLaporan = document.getElementById('jenis_laporan').value;
+    if (jenisLaporan !== 'hilang' && val === 0) {
+        input.classList.add('border-red-500');
+        document.getElementById('detailError').innerText = 'Jumlah dikembalikan minimal 1 untuk laporan selain Hilang.';
+        document.getElementById('detailError').classList.remove('hidden');
+        return;
+    }
+    if (jenisLaporan === 'hilang' && val !== 0) {
+        input.classList.add('border-red-500');
+        document.getElementById('detailError').innerText = 'Untuk laporan Hilang, jumlah dikembalikan harus 0.';
+        document.getElementById('detailError').classList.remove('hidden');
+        return;
+    }
+    if (val > max) {
+        val = max;
+        input.value = val;
+    }
+    input.classList.remove('border-red-500');
+    document.getElementById('detailError').classList.add('hidden');
+}
+
     function renderDropdown() {
         if (!isOpen) {
             dropdown.classList.add('hidden');
