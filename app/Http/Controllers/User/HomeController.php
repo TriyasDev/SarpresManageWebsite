@@ -12,6 +12,14 @@ class HomeController extends Controller
 {
     public function index(Request $request)
     {
+        if (auth()->guest()) {
+            return view('user.home', [
+                'popularCategories' => [],
+                'activeKategori' => '',
+                'popularItems' => collect(),
+            ]);
+        }
+
         // Ambil 5 kategori terpopuler berdasarkan jumlah peminjaman
         $popularCategories = Peminjaman::select('tb_barang.kategori', DB::raw('COUNT(*) as total'))
             ->join('tb_detail_peminjaman', 'tb_peminjaman.id_peminjaman', '=', 'tb_detail_peminjaman.id_peminjaman')
@@ -55,6 +63,14 @@ class HomeController extends Controller
      */
     public function getAssetsJson(Request $request)
     {
+
+        if (auth()->guest()) {
+            return response()->json([
+                'html' => '<div class="text-center py-12 text-slate-500">Silakan <a href="' . route('auth.login') . '" class="text-costume-primary underline">login</a> untuk melihat aset.</div>',
+                'pagination' => ''
+            ]);
+        }
+
         $kategori = $request->get('kategori');
         $page = $request->get('page', 1);
         $perPage = 12;

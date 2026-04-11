@@ -176,9 +176,18 @@
 
         {{-- Container untuk grid asset dan pagination (diisi via AJAX) --}}
         <div id="sarana-container">
-            <div class="flex justify-center py-12">
-                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-costume-primary"></div>
-            </div>
+            @guest
+                <div class="text-center py-12 bg-white/80 backdrop-blur-sm rounded-2xl">
+                    <p class="text-slate-600">Silakan
+                    <a href="{{ route('auth.login') }}" class="text-costume-primary font-semibold underline">
+                        login
+                    </a> untuk melihat daftar aset.</p>
+                </div>
+            @else
+                <div class="flex justify-center py-12">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-costume-primary"></div>
+                </div>
+            @endguest
         </div>
 
     </div>
@@ -201,6 +210,14 @@
 
         {{-- Grid untuk 9 aset terpopuler (hanya 3 tampil awal) --}}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16" id="popularGrid">
+            @guest
+                <div class="col-span-full text-center py-12 bg-slate-50 rounded-2xl">
+                    <p class="text-slate-600"> Silakan
+                        <a href="{{ route('auth.login') }}" class="text-costume-primary font-semibold underline">login</a>
+                        untuk melihat aset yang tersedia.
+                    </p>
+                </div>
+            @else
             @foreach($popularItems as $index => $item)
                 <div class="group bg-white rounded-2xl border border-slate-200 overflow-hidden hover:border-costume-primary hover:shadow-xl hover:-translate-y-1 transition-all duration-300 opacity-0 translate-y-5 [&.visible]:opacity-100 [&.visible]:translate-y-0"
                      data-animate data-popular-index="{{ $index }}"
@@ -266,6 +283,7 @@
                     </div>
                 </div>
             @endforeach
+            @endguest
         </div>
 
         {{-- Container tombol (akan diisi JavaScript) --}}
@@ -339,6 +357,7 @@
 
 // ========== TOGGLE 3 ⇄ max 9 + TOMBOL LIAT SEMUA ASET ==========
 (function() {
+    @guest return; @endguest
     const popularGrid = document.getElementById('popularGrid');
     const btnContainer = document.getElementById('buttonContainer');
     if (!popularGrid || !btnContainer) return;
@@ -429,6 +448,7 @@
 
 // ========== AJAX untuk Sarana & Prasarana (pagination + filter kategori) ==========
 (function() {
+    @guest return; @endguest
     const container = document.getElementById('sarana-container');
     const tabs = document.querySelectorAll('.kategori-tab');
     let currentKategori = '{{ $activeKategori }}';

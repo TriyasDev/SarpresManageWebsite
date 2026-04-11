@@ -21,8 +21,8 @@ use App\Http\Controllers\User\RankController;
 */
 
 Route::get('/', [HomeController::class, 'index'])->name('index');
-Route::get('/all-assets', [App\Http\Controllers\User\AssetCatalogController::class, 'index'])->name('all-assets');
-Route::get('/rankings', [RankController::class, 'index'])->name('rankings');
+Route::get('/all-assets', [App\Http\Controllers\User\AssetCatalogController::class, 'index'])->name('all-assets')->middleware('auth');
+Route::get('/rankings', [RankController::class, 'index'])->name('rankings')->middleware('auth');
 Route::get('/get-assets', [App\Http\Controllers\User\HomeController::class, 'getAssetsJson'])->name('get.assets');
 Route::get('/assets/json', [App\Http\Controllers\User\HomeController::class, 'getAssetsJson'])->name('assets.json');
 
