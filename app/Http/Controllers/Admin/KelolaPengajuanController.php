@@ -7,7 +7,9 @@ use App\Models\Peminjaman;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
+use App\Exports\PengajuanExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class KelolaPengajuanController extends Controller
 {
@@ -20,25 +22,36 @@ class KelolaPengajuanController extends Controller
             'approver'
         ])->withCount('detailPeminjaman as details_count');
 
+        // Filter status
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
+        // Filter pencarian (nama peminjam, NIPD, nama barang)
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->whereHas('user', function ($q2) use ($search) {
                     $q2->where('username', 'like', "%{$search}%")
-                       ->orWhere('nipd', 'like', "%{$search}%");
+                        ->orWhere('nipd', 'like', "%{$search}%");
                 })->orWhereHas('detailPeminjaman.barang', function ($q2) use ($search) {
                     $q2->where('nama_barang', 'like', "%{$search}%");
                 });
             });
         }
 
+        // 🔽 Filter tanggal (baru)
+        if ($request->filled('start_date')) {
+            $query->whereDate('tanggal_pinjam', '>=', $request->start_date);
+        }
+        if ($request->filled('end_date')) {
+            $query->whereDate('tanggal_pinjam', '<=', $request->end_date);
+        }
+
         $query->orderBy('created_at', 'desc');
         $pengajuans = $query->paginate(10)->withQueryString();
 
+        // Statistik (tetap sama, tidak terpengaruh filter tanggal agar konsisten)
         $startOfMonth = now()->startOfMonth();
         $endOfMonth   = now()->endOfMonth();
 
@@ -261,8 +274,69 @@ class KelolaPengajuanController extends Controller
         return redirect()->back()->with('success', 'Pengajuan berhasil dibatalkan.');
     }
 
-    public function export(Request $request)
+    public function exportExcel(Request $request)
     {
-        // Implementasi export jika diperlukan
+        $query = $this->getFilteredQuery($request);
+        $pengajuans = $query->get();
+
+        return Excel::download(new PengajuanExport($pengajuans), 'pengajuan_' . date('Y-m-d_Hi') . '.xlsx');
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $query = $this->getFilteredQuery($request);
+        $pengajuans = $query->get();
+
+        // Pastikan semua key ada meskipun null
+        $filters = [
+            'search' => $request->search,
+            'status' => $request->status,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+        ];
+
+        $pdf = Pdf::loadView('admin.kelola_pengajuan.export_pdf', [
+            'pengajuans' => $pengajuans,
+            'filters' => $filters
+        ]);
+
+        return $pdf->download('pengajuan_' . date('Y-m-d_Hi') . '.pdf');
+    }
+
+    private function getFilteredQuery(Request $request)
+    {
+        $query = Peminjaman::with([
+            'user',
+            'detailPeminjaman.barang',
+            'admin',
+            'approver'
+        ])->withCount('detailPeminjaman as details_count');
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('user', function ($q2) use ($search) {
+                    $q2->where('username', 'like', "%{$search}%")
+                        ->orWhere('nipd', 'like', "%{$search}%");
+                })->orWhereHas('detailPeminjaman.barang', function ($q2) use ($search) {
+                    $q2->where('nama_barang', 'like', "%{$search}%");
+                });
+            });
+        }
+
+        if ($request->filled('start_date')) {
+            $query->whereDate('tanggal_pinjam', '>=', $request->start_date);
+        }
+        if ($request->filled('end_date')) {
+            $query->whereDate('tanggal_pinjam', '<=', $request->end_date);
+        }
+
+        $query->orderBy('created_at', 'desc');
+
+        return $query;
     }
 }

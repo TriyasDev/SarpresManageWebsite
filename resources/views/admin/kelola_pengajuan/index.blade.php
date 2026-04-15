@@ -8,6 +8,25 @@
         <h1 class="text-xl font-bold text-gray-800">Kelola Pengajuan</h1>
         <p class="text-sm text-gray-500 mt-0.5">Daftar pengajuan peminjaman barang</p>
     </div>
+    <div class="flex items-center gap-2 flex-wrap">
+        {{-- Export Excel --}}
+        <a href="{{ route('approvals.export_excel', request()->query()) }}"
+           class="flex items-center gap-2 px-4 py-2.5 border-2 border-green-200 rounded-full bg-green-50 text-green-700 text-sm font-semibold hover:bg-green-100 transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            Excel
+        </a>
+
+        {{-- Export PDF --}}
+        <a href="{{ route('approvals.export_pdf', request()->query()) }}"
+           class="flex items-center gap-2 px-4 py-2.5 border-2 border-blue-200 rounded-full bg-blue-50 text-blue-700 text-sm font-semibold hover:bg-blue-100 transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            PDF
+        </a>
+    </div>
 </div>
 
 {{-- Statistik Card --}}
@@ -80,6 +99,43 @@
                     </div>
                 </div>
             </div>
+{{-- Filter Tanggal Mulai --}}
+<div class="lg:w-48">
+    <label class="block text-xs font-medium text-gray-500 mb-1 ml-3">Dari Tanggal</label>
+    <div class="relative">
+        <input type="date" name="start_date" value="{{ request('start_date') }}"
+            onchange="document.getElementById('filterForm').submit()"
+            class="w-full px-5 py-3 border-2 border-gray-300 rounded-full outline-none focus:ring-2 focus:ring-costume-second focus:border-transparent text-sm transition">
+        <svg class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+        </svg>
+    </div>
+</div>
+
+{{-- Filter Tanggal Sampai --}}
+<div class="lg:w-48">
+    <label class="block text-xs font-medium text-gray-500 mb-1 ml-3">Sampai Tanggal</label>
+    <div class="relative">
+        <input type="date" name="end_date" value="{{ request('end_date') }}"
+            onchange="document.getElementById('filterForm').submit()"
+            class="w-full px-5 py-3 border-2 border-gray-300 rounded-full outline-none focus:ring-2 focus:ring-costume-second focus:border-transparent text-sm transition">
+        <svg class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+        </svg>
+    </div>
+</div>
+
+{{-- Tombol Reset Filter (muncul jika ada filter aktif) --}}
+@if(request('search') || request('status') || request('start_date') || request('end_date'))
+<div class="lg:w-auto flex items-end">
+    <a href="{{ route('approvals.index') }}" class="flex items-center justify-center gap-2 px-5 py-3 bg-gray-100 text-gray-600 rounded-full text-sm font-semibold hover:bg-gray-200 transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+        Reset Filter
+    </a>
+</div>
+@endif
         </div>
     </div>
 </form>

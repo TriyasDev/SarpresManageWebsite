@@ -106,6 +106,8 @@ Route::middleware('auth')->group(function () {
             Route::get('/',                  [KelolaPengajuanController::class, 'index'])->name('index');
             Route::put('/{id}/approve',      [KelolaPengajuanController::class, 'approve'])->name('approve');
             Route::put('/{id}/reject',       [KelolaPengajuanController::class, 'reject'])->name('reject');
+            Route::get('/export/pdf', [KelolaPengajuanController::class, 'exportPdf'])->name('export_pdf');
+            Route::get('/export/excel', [KelolaPengajuanController::class, 'exportExcel'])->name('export_excel');
         });
     });
 
