@@ -135,7 +135,8 @@
     </table>
 
     <div class="footer">
-        Dicetak oleh: {{ auth()->user()->nama ?? auth()->user()->username }}
+        $rows[] = ['Dicetak oleh', auth()->user()->nama ?? auth()->user()->username];
+        $rows[] = ['Tanggal cetak', now()->format('d/m/Y H:i')];
     </div>
 </body>
 </html>

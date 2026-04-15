@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Barang;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Exports\AsetExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class KelolaAsetController extends Controller
 {
@@ -175,5 +178,48 @@ class KelolaAsetController extends Controller
 
         return redirect()->route('assets.trash')
             ->with('success', 'Aset berhasil dihapus secara permanen.');
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $query = Barang::query();
+
+        if ($request->filled('search')) {
+            $query->where('nama_barang', 'like', '%' . $request->search . '%');
+        }
+        if ($request->filled('kategori')) {
+            $query->where('kategori', $request->kategori);
+        }
+        if ($request->filled('kondisi')) {
+            $query->where('kondisi', $request->kondisi);
+        }
+
+        $barangs = $query->latest()->get();
+
+        $pdf = Pdf::loadView('admin.kelola_aset.export_pdf', [
+            'barangs' => $barangs,
+            'filters' => $request->only(['search', 'kategori', 'kondisi'])
+        ]);
+
+        return $pdf->download('aset_' . date('Y-m-d_Hi') . '.pdf');
+    }
+
+    public function exportExcel(Request $request)
+    {
+        $query = Barang::query();
+
+        if ($request->filled('search')) {
+            $query->where('nama_barang', 'like', '%' . $request->search . '%');
+        }
+        if ($request->filled('kategori')) {
+            $query->where('kategori', $request->kategori);
+        }
+        if ($request->filled('kondisi')) {
+            $query->where('kondisi', $request->kondisi);
+        }
+
+        $barangs = $query->latest()->get();
+
+        return Excel::download(new AsetExport($barangs), 'aset_' . date('Y-m-d_Hi') . '.xlsx');
     }
 }

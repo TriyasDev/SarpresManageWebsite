@@ -18049,45 +18049,6 @@ namespace Illuminate\Http {
             }
     }
 
-namespace Illuminate\Database\Eloquent {
-            /**
-     * @template TKey of array-key
-     * @template TModel of \Illuminate\Database\Eloquent\Model
-     * @extends \Illuminate\Support\Collection<TKey, TModel>
-     */        class Collection {
-            }
-    }
-
-namespace Illuminate\Notifications {
-            /**
-     * @template TKey of array-key
-     * @template TModel of DatabaseNotification
-     * @extends \Illuminate\Database\Eloquent\Collection<TKey, TModel>
-     */        class DatabaseNotificationCollection {
-            }
-    }
-
-namespace App\Http\Requests {
-            /**
-     */        class ForgotPasswordRequest {
-            }
-            /**
-     */        class LoginRequest {
-            }
-            /**
-     */        class ResetPasswordRequest {
-            }
-            /**
-     */        class VerifyCodeRequest {
-            }
-    }
-
-namespace Illuminate\Foundation\Http {
-            /**
-     */        class FormRequest {
-            }
-    }
-
 
 namespace  {
             class App extends \Illuminate\Support\Facades\App {}

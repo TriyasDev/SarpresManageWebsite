@@ -72,6 +72,8 @@ Route::middleware('auth')->group(function () {
             Route::delete('/{barang}',       [KelolaAsetController::class, 'destroy'])->name('destroy');
             Route::put('/{id}/restore',      [KelolaAsetController::class, 'restore'])->name('restore');
             Route::delete('/{id}/force',     [KelolaAsetController::class, 'forceDelete'])->name('force_delete');
+            Route::get('/export/pdf', [KelolaAsetController::class, 'exportPdf'])->name('export_pdf');
+            Route::get('/export/excel', [KelolaAsetController::class, 'exportExcel'])->name('export_excel');
         });
 
         Route::prefix('users')->name('users.')->group(function () {

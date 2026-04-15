@@ -157,22 +157,25 @@
             <p class="text-lg text-slate-600 max-w-2xl mx-auto">Berbagai aset untuk mendukung kegiatan belajar</p>
         </div>
 
-        {{-- Category Tabs (hanya kategori populer) --}}
-        <div class="flex flex-wrap justify-center gap-3 mb-12 opacity-0 translate-y-5 [&.visible]:opacity-100 [&.visible]:translate-y-0 transition-all duration-700" data-animate>
-            @foreach($popularCategories as $kat)
-            <button type="button"
-                data-kategori="{{ $kat }}"
-                class="kategori-tab px-6 py-2.5 rounded-full font-medium text-sm transition-all
-                    {{ $activeKategori === $kat ? 'bg-costume-primary text-white shadow-md shadow-blue-500/25' : 'bg-white text-slate-700 border border-slate-200 hover:border-costume-primary hover:text-costume-primary' }}">
-                {{ $kat }}
-            </button>
-            @endforeach
-            {{-- Tombol "Lihat Semua" mengarah ke halaman all-assets --}}
-            <a href="{{ route('all-assets') }}"
-                class="px-6 py-2.5 rounded-full font-medium text-sm bg-white text-costume-primary border border-costume-primary hover:bg-costume-primary hover:text-white transition-all">
-                Lihat Semua
-            </a>
-        </div>
+{{-- Category Tabs (hanya kategori populer) --}}
+<div class="flex flex-wrap justify-center gap-3 mb-12 opacity-0 translate-y-5 [&.visible]:opacity-100 [&.visible]:translate-y-0 transition-all duration-700" data-animate>
+    @foreach($popularCategories as $kat)
+    <button type="button"
+        data-kategori="{{ $kat }}"
+        class="kategori-tab px-6 py-2.5 rounded-full font-medium text-sm transition-all
+            {{ $activeKategori === $kat ? 'bg-costume-primary text-white shadow-md shadow-blue-500/25' : 'bg-white text-slate-700 border border-slate-200 hover:border-costume-primary hover:text-costume-primary' }}">
+        {{ $kat }}
+    </button>
+    @endforeach
+
+    @auth
+    {{-- Tombol "Lihat Semua" hanya untuk user yang login --}}
+    <a href="{{ route('all-assets') }}"
+        class="px-6 py-2.5 rounded-full font-medium text-sm bg-white text-costume-primary border border-costume-primary hover:bg-costume-primary hover:text-white transition-all">
+        Lihat Semua
+    </a>
+    @endauth
+</div>
 
         {{-- Container untuk grid asset dan pagination (diisi via AJAX) --}}
         <div id="sarana-container">
@@ -193,6 +196,7 @@
     </div>
 </section>
 
+@auth
 {{-- PINJAM SECTION --}}
 <section class="py-24 bg-white" id="pinjam">
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
@@ -210,19 +214,10 @@
 
         {{-- Grid untuk 9 aset terpopuler (hanya 3 tampil awal) --}}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16" id="popularGrid">
-            @guest
-                <div class="col-span-full text-center py-12 bg-slate-50 rounded-2xl">
-                    <p class="text-slate-600"> Silakan
-                        <a href="{{ route('auth.login') }}" class="text-costume-primary font-semibold underline">login</a>
-                        untuk melihat aset yang tersedia.
-                    </p>
-                </div>
-            @else
             @foreach($popularItems as $index => $item)
                 <div class="group bg-white rounded-2xl border border-slate-200 overflow-hidden hover:border-costume-primary hover:shadow-xl hover:-translate-y-1 transition-all duration-300 opacity-0 translate-y-5 [&.visible]:opacity-100 [&.visible]:translate-y-0"
                      data-animate data-popular-index="{{ $index }}"
                      @if($index >= 3) style="display: none;" @endif>
-                    {{-- Card content (sama seperti sebelumnya) --}}
                     <div class="relative h-56 bg-gradient-to-br from-slate-100 to-slate-200 overflow-hidden">
                         @if($item->foto && $item->foto !== 'default.jpg')
                             <img src="{{ asset('storage/' . $item->foto) }}" alt="{{ $item->nama_barang }}"
@@ -283,13 +278,13 @@
                     </div>
                 </div>
             @endforeach
-            @endguest
         </div>
 
         {{-- Container tombol (akan diisi JavaScript) --}}
         <div class="flex flex-wrap items-center justify-center gap-4" id="buttonContainer"></div>
     </div>
 </section>
+@endauth
 
 @endsection
 
