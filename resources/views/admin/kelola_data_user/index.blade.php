@@ -24,6 +24,24 @@
             @endif
         </a>
 
+        {{-- Export Excel --}}
+<a href="{{ route('users.export_excel', request()->query()) }}"
+   class="flex items-center gap-2 px-4 py-2.5 border-2 border-green-200 rounded-full bg-green-50 text-green-700 text-sm font-semibold hover:bg-green-100 transition">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+    </svg>
+    Excel
+</a>
+
+{{-- Export PDF --}}
+<a href="{{ route('users.export_pdf', request()->query()) }}"
+   class="flex items-center gap-2 px-4 py-2.5 border-2 border-blue-200 rounded-full bg-blue-50 text-blue-700 text-sm font-semibold hover:bg-blue-100 transition">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+    </svg>
+    PDF
+</a>
+
         {{-- Tombol Tambah User --}}
         <a href="{{ route('users.create') }}"
            class="flex items-center gap-2 px-5 py-2.5 bg-costume-primary text-white text-sm font-semibold rounded-full hover:bg-blue-700 transition shadow-sm">

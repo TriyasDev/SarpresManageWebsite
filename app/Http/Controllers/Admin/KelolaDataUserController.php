@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use App\Exports\UserExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class KelolaDataUserController extends Controller
 {
@@ -217,5 +220,50 @@ class KelolaDataUserController extends Controller
 
         return redirect()->route('users.trash')
             ->with('success', 'User berhasil dihapus secara permanen.');
+    }
+
+    private function getFilteredUsersQuery(Request $request)
+    {
+        $query = User::when(auth()->user()->role === 'admin', function ($query) {
+            $query->where('role', 'peminjam');
+        })
+            ->when($request->filled('search'), function ($query) use ($request) {
+                $search = $request->search;
+                $query->where(function ($q) use ($search) {
+                    $q->where('username', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%")
+                        ->orWhere('nipd', 'like', "%{$search}%");
+                });
+            })
+            ->when($request->filled('role') && in_array($request->role, ['admin', 'peminjam']) && auth()->user()->role === 'super-admin', function ($query) use ($request) {
+                $query->where('role', $request->role);
+            })
+            ->latest();
+
+        return $query;
+    }
+
+    public function exportExcel(Request $request)
+    {
+        $query = $this->getFilteredUsersQuery($request);
+        $users = $query->get();
+
+        return Excel::download(new UserExport($users), 'users_' . date('Y-m-d_Hi') . '.xlsx');
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $query = $this->getFilteredUsersQuery($request);
+        $users = $query->get();
+
+        $pdf = Pdf::loadView('admin.kelola_data_user.export_pdf', [
+            'users' => $users,
+            'filters' => [
+                'search' => $request->search,
+                'role'   => $request->role,
+            ]
+        ]);
+
+        return $pdf->download('users_' . date('Y-m-d_Hi') . '.pdf');
     }
 }

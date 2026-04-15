@@ -196,9 +196,16 @@ class KelolaAsetController extends Controller
 
         $barangs = $query->latest()->get();
 
+        // Kirim semua key dengan nilai null jika tidak ada
+        $filters = [
+            'search'   => $request->search,
+            'kategori' => $request->kategori,
+            'kondisi'  => $request->kondisi,
+        ];
+
         $pdf = Pdf::loadView('admin.kelola_aset.export_pdf', [
             'barangs' => $barangs,
-            'filters' => $request->only(['search', 'kategori', 'kondisi'])
+            'filters' => $filters
         ]);
 
         return $pdf->download('aset_' . date('Y-m-d_Hi') . '.pdf');
